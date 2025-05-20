@@ -6,16 +6,16 @@ import Login from "./pages/login/login.jsx";
 import Register from "./pages/register/register.jsx";
 import NotFound404 from "./pages/notFound/notFound.jsx";
 import { createBrowserRouter, Outlet } from "react-router-dom";
-import PrivateRoute from "./components/PrivateRoute.jsx";
-import Navbar from "./components/navbar.jsx";
+import PrivateRoute from "./triggers/PrivateRoute.jsx";
+import Navbar from "./components/Navbar/Navbar.jsx";
 
 const Layout = () => {
   return (
     <>
       <Navbar />
-      <main className="outlet-container flex justify-center pt-50 h-auto items-start min-h-screen bg-primary ">
+      <div className="outlet-container pt-21 h-auto min-h-screen bg-primary">
         <Outlet />
-      </main>
+      </div>
     </>
   );
 };
