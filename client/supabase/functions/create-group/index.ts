@@ -11,9 +11,9 @@ const supabaseUrl = Deno.env.get("_SUPABASE_URL") ?? "";
 const supabaseKey = Deno.env.get("_SUPABASE_SERVICE_ROLE_KEY") ?? "";
 const supabase = createClient(supabaseUrl, supabaseKey);
 const corsHeaders = {
-          "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*",
-        }
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+          }
 serve(async (req) => {
   // Handle preflight OPTIONS request for CORS
   if (req.method === "OPTIONS") {
@@ -28,27 +28,49 @@ serve(async (req) => {
   }
 
   try {
-    const { user_id, fname, lname, email, phone, address } = await req.json();
-
-    const { data: user, error } = await supabase
-      .from("users")
-      .insert([{ user_id, fname, lname, email, phone, address }])
+    const { owner_id, name, description } = await req.json();
+    const { data: groupData , error: groupError } = await supabase
+      .from("groups")
+      .insert([{ owner_id, name, description }])
       .select();
-      
+    
+    if (groupError) {
+      console.error("Error creating group:", groupError);
+      return new Response(
+        JSON.stringify({ error: groupError.message }),
+        {
+          status: 400,
+          headers: corsHeaders,
+        }
+      );
+    }
+    console.log("Group created successfully:", groupData);
+    const { data: _roleData, error: roleError } = await supabase
+      .from("group_members")
+      .insert([{ user_id: owner_id, group_id: groupData[0]?.id, role_id: 1 }])
+
+    if (roleError) {
+      console.error("Error assigning leadership:", roleError);
+      return new Response(
+        JSON.stringify({ error: roleError.message }),
+        {
+          status: 400,
+          headers: corsHeaders,
+        }
+      );
+    }
     return new Response(
       JSON.stringify({
-        message: `Created user ${user?.[0]?.fname} ${user?.[0]?.lname}`,
-        user,
-        error,
+        message: `Group created successfully`,
       }),
       {
-        status: error ? 400 : 200,
+        status: 200,
         headers: corsHeaders,
       }
     );
   } catch (e) {
     return new Response(
-      JSON.stringify({ error: e }),
+      JSON.stringify({ error: e}),
       {
         status: 500,
         headers: corsHeaders,

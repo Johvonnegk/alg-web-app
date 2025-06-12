@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../supabaseClient";
 
-export const useUserProfile = () => {
-  const [profile, setProfile] = useState(null);
+export const useOwnership = () => {
+  const [ownerships, setOwnerships] = useState(null); // role_id
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
   useEffect(() => {
-    const fetchProfile = async () => {
+    const fetchOwnership = async () => {
       try {
         setLoading(true);
 
@@ -22,17 +22,21 @@ export const useUserProfile = () => {
           return;
         }
 
-        // Fetch user profile from 'users' table using ID
-        const { data, error: profileError } = await supabase
-          .from("users")
-          .select("*")
-          .eq("user_id", user.id)
-          .single();
+        // Fetch role from group_members
+        const { data, error: ownershipError } = await supabase
+          .from("group_members")
+          .select("role_id")
+          .eq("user_id", user.id);
 
-        if (profileError) {
-          setError(profileError.message);
+        if (ownershipError) {
+          setError(ownershipError.message);
+        }
+        if (!data) {
+          setError("No ownership data found for the user");
+          setOwnerships(null);
         } else {
-          setProfile(data);
+          const roleIds = data.map((item) => item.role_id);
+          setOwnerships(roleIds);
         }
       } catch (err) {
         setError(err.message || "Unexpected error occurred");
@@ -41,8 +45,8 @@ export const useUserProfile = () => {
       }
     };
 
-    fetchProfile();
+    fetchOwnership();
   }, []);
 
-  return { profile, loading, error };
+  return { ownerships, loading, error };
 };

@@ -11,9 +11,9 @@ const supabaseUrl = Deno.env.get("_SUPABASE_URL") ?? "";
 const supabaseKey = Deno.env.get("_SUPABASE_SERVICE_ROLE_KEY") ?? "";
 const supabase = createClient(supabaseUrl, supabaseKey);
 const corsHeaders = {
-          "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*",
-        }
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+          }
 serve(async (req) => {
   // Handle preflight OPTIONS request for CORS
   if (req.method === "OPTIONS") {
@@ -28,21 +28,28 @@ serve(async (req) => {
   }
 
   try {
-    const { user_id, fname, lname, email, phone, address } = await req.json();
+    const { user_id, group_id } = await req.json();
+    console.log("Received user_id:", user_id);
+    const { data: _data, error: error } = await supabase
+      .from("group_members")
+      .insert([{ user_id, group_id, role_id: 4 }])
 
-    const { data: user, error } = await supabase
-      .from("users")
-      .insert([{ user_id, fname, lname, email, phone, address }])
-      .select();
-      
+    if (error) {
+      console.error("Error assigning leadership:", error);
+      return new Response(
+        JSON.stringify({ error: error.message }),
+        {
+          status: 400,
+          headers: corsHeaders,
+        }
+      );
+    }
     return new Response(
       JSON.stringify({
-        message: `Created user ${user?.[0]?.fname} ${user?.[0]?.lname}`,
-        user,
-        error,
+        message: `Joined group successfully`,
       }),
       {
-        status: error ? 400 : 200,
+        status: 200,
         headers: corsHeaders,
       }
     );
@@ -51,7 +58,10 @@ serve(async (req) => {
       JSON.stringify({ error: e }),
       {
         status: 500,
-        headers: corsHeaders,
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+        },
       }
     );
   }

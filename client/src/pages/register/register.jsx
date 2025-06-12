@@ -13,7 +13,6 @@ const register = () => {
   const [loading, setLoading] = useState("");
   const { session, signUpNewUser } = UserAuth();
   const navigate = useNavigate();
-  console.log(session);
 
   const handleSignUp = async (e) => {
     e.preventDefault();
@@ -28,12 +27,17 @@ const register = () => {
     };
     try {
       const result = await signUpNewUser(signupInfo);
-      console.log(result);
       if (result.success) {
         navigate("/dashboard");
+      } else {
+        switch (result.error.code) {
+          case "user_already_exists":
+            setError(
+              "This email is already registered with an account,\n please choose another email address"
+            );
+            break;
+        }
       }
-    } catch (error) {
-      setError("An error occured");
     } finally {
       setLoading(false);
     }
@@ -110,7 +114,11 @@ const register = () => {
             Sign Up
           </button>
         </div>
-        {error && <p className="text-red-600 text-center pt-4">{error}</p>}
+        {error && (
+          <p className="text-red-600 text-center pt-4 whitespace-pre-line">
+            {error}
+          </p>
+        )}
       </form>
     </>
   );

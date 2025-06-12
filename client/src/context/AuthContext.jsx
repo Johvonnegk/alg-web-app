@@ -30,15 +30,48 @@ export const AuthContextProvider = ({ children }) => {
 
     const { data: signUpData, error: signUpError } = await supabase.auth.signUp(
       {
-        email: email,
-        password: password,
+        email,
+        password,
       }
     );
+
     if (signUpError) {
       return { success: false, error: signUpError };
     }
 
-    return { success: true, data: signUpData };
+    const { data: user, error: userError } = await supabase.functions.invoke(
+      "create-user",
+      {
+        body: {
+          fname: fname,
+          lname: lname,
+          email: email,
+          phone: phone,
+          address: address,
+          user_id: signUpData.user.id,
+        },
+      }
+    );
+
+    if (userError) {
+      console.error("There was an error creating the user:", userError);
+      return { success: false, error: userError };
+    }
+
+    const { data: roleResult, error: roleError } =
+      await supabase.functions.invoke("create-user-role", {
+        body: {
+          user_id: signUpData.user.id,
+        },
+      });
+
+    if (roleError) {
+      console.log("roleResult: ", signUpData.user.id);
+      console.error("There was an error assigning the user role:", roleError);
+      return { success: false, error: roleError };
+    }
+
+    return { success: true, data: user };
   };
 
   useEffect(() => {

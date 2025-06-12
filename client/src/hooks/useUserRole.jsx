@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../supabaseClient";
 
-export const useUserProfile = () => {
-  const [profile, setProfile] = useState(null);
+export const useUserRole = () => {
+  const [role, setRole] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
   useEffect(() => {
-    const fetchProfile = async () => {
+    const fetchRole = async () => {
       try {
         setLoading(true);
 
@@ -23,16 +23,16 @@ export const useUserProfile = () => {
         }
 
         // Fetch user profile from 'users' table using ID
-        const { data, error: profileError } = await supabase
-          .from("users")
+        const { data, error: roleError } = await supabase
+          .from("user_roles")
           .select("*")
           .eq("user_id", user.id)
           .single();
 
-        if (profileError) {
-          setError(profileError.message);
+        if (roleError) {
+          setError(roleError.message);
         } else {
-          setProfile(data);
+          setRole(data.role_id);
         }
       } catch (err) {
         setError(err.message || "Unexpected error occurred");
@@ -41,8 +41,8 @@ export const useUserProfile = () => {
       }
     };
 
-    fetchProfile();
+    fetchRole();
   }, []);
 
-  return { profile, loading, error };
+  return { role, loading, error };
 };

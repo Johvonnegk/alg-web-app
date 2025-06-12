@@ -11,9 +11,9 @@ const supabaseUrl = Deno.env.get("_SUPABASE_URL") ?? "";
 const supabaseKey = Deno.env.get("_SUPABASE_SERVICE_ROLE_KEY") ?? "";
 const supabase = createClient(supabaseUrl, supabaseKey);
 const corsHeaders = {
-          "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*",
-        }
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+          }
 serve(async (req) => {
   // Handle preflight OPTIONS request for CORS
   if (req.method === "OPTIONS") {
@@ -28,33 +28,66 @@ serve(async (req) => {
   }
 
   try {
-    const { user_id, fname, lname, email, phone, address } = await req.json();
+    const { user_id, group_id, email } = await req.json();
+    const { data: targetData, error: targetError } = await supabase
+    .from("users")
+    .select("user_id")
+    .eq("email", email)
+    .single()
+    if (targetError){
+      console.error("Error matching fetching user: ", targetError)
+      return new Response(
+        JSON.stringify({ error: targetError.message }),
+        {
+          status: 403,
+          headers: corsHeaders,
+        }
+      );
+    }
+    if (!targetData || targetData == null){
+            return new Response(
+        JSON.stringify({ error: "No user found" }),
+        {
+          status: 404,
+          headers: corsHeaders,
+        }
+      );
+    }
+    console.log("Target Data: ", targetData)
+    const {data: _, error: joinRequestError} = await supabase
+    .from("requests")
+    .insert({
+      target_id: targetData?.id, 
+      user_id: user_id, 
+      type: "request_join_group", 
+      group_id: group_id 
+    })
 
-    const { data: user, error } = await supabase
-      .from("users")
-      .insert([{ user_id, fname, lname, email, phone, address }])
-      .select();
-      
+    if (joinRequestError){
+      return new Response(
+        JSON.stringify({ error: "Error adding user" }),
+        {
+          status: 404,
+          headers: corsHeaders,
+        }
+      );
+    }
+    return new Response(JSON.stringify({
+      message: `Join request sent successfully`,
+      joinRequestError,
+    }))
+  } catch (e){
     return new Response(
-      JSON.stringify({
-        message: `Created user ${user?.[0]?.fname} ${user?.[0]?.lname}`,
-        user,
-        error,
-      }),
-      {
-        status: error ? 400 : 200,
-        headers: corsHeaders,
-      }
-    );
-  } catch (e) {
-    return new Response(
-      JSON.stringify({ error: e }),
+      JSON.stringify({ error: e}),
       {
         status: 500,
-        headers: corsHeaders,
+        headers: corsHeaders
       }
     );
   }
+  
+    
+
 });
 
 
