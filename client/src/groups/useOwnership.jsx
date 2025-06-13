@@ -23,10 +23,14 @@ export const useOwnership = () => {
         }
 
         // Fetch role from group_members
-        const { data, error: ownershipError } = await supabase
-          .from("group_members")
-          .select("role_id")
-          .eq("user_id", user.id);
+        const { data, error: ownershipError } = await supabase.functions.invoke(
+          "get-ownership",
+          {
+            body: {
+              user_id: user?.id,
+            },
+          }
+        );
 
         if (ownershipError) {
           setError(ownershipError.message);
@@ -35,6 +39,7 @@ export const useOwnership = () => {
           setError("No ownership data found for the user");
           setOwnerships(null);
         } else {
+          console.log("USEOWNERSHIP ROLEIDS: ", data);
           const roleIds = data.map((item) => item.role_id);
           setOwnerships(roleIds);
         }

@@ -5,78 +5,44 @@
 // Setup type definitions for built-in Supabase Runtime APIs
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { serve } from "https://deno.land/std@0.177.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.7.0";
+import { errorResponse, getUserId, supabase, corsHeaders, handleOptions } from "../utils/helper.ts"
 
-const supabaseUrl = Deno.env.get("_SUPABASE_URL") ?? "";
-const supabaseKey = Deno.env.get("_SUPABASE_SERVICE_ROLE_KEY") ?? "";
-const supabase = createClient(supabaseUrl, supabaseKey);
-  const corsHeaders = {
-            "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "*",
-          }
+
 serve(async (req) => {
   // Handle preflight OPTIONS request for CORS
-  if (req.method === "OPTIONS") {
-    return new Response(null, {
-      status: 204,
-      headers: {
-        "Access-Control-Allow-Origin": "*", // or restrict to your domain
-        "Access-Control-Allow-Methods": "POST, OPTIONS",
-        "Access-Control-Allow-Headers": "Content-Type, Authorization, apikey, X-Client-Info, X-Supabase-Api-Version",
-      },
-    });
-  }
+  const optionRes = handleOptions(req)
+  if (optionRes) return optionRes
 
   try {
     const { user_id } = await req.json();
-    if (!user_id) {
-      return new Response(
-        JSON.stringify({ error: "user_id is required" }),
-        {
-          status: 400,
-          headers: corsHeaders,
-        }
-      );
+    const userId = await getUserId(user_id)
+    if (!userId) {
+      return errorResponse(`Error getting user`, 404)
     }
-    console.log("Received user_id:", user_id);
     const { data: group , error: groupIdError } = await supabase
       .from("group_members")
       .select("group_id")
-      .eq("user_id", user_id)
+      .eq("user_id", userId)
       .not("role_id", "in", "(1,2)")
       .maybeSingle()
       
     if (groupIdError) {
-      console.error("Error fetching group:", groupIdError);
-      return new Response(
-        JSON.stringify({ error: groupIdError.message }),
-        {
-          status: 400,
-          headers: corsHeaders,
-        }
-      );
+      return errorResponse(`Error fetching group: ${groupIdError.message}`, 400);
     }
     if (!group){
-      return new Response(JSON.stringify({ error: "User is not in a group" }), 
-      {
-        status: 404,
-        headers: corsHeaders,
-      });
+      return errorResponse("User is not in a group", 400)
     }
+
     const groupId = group?.group_id
-    console.log("Group members data:", groupId);
     const {data: groupMembers, error: groupError} = await supabase
     .from("group_members")
     .select("user_id, role_id, users(fname, lname), groups(name)")
     .eq("group_id", groupId)
 
     if (groupError){
-      return new Response(JSON.stringify({ error: groupError.message }), 
-      {
-        status: 400,
-        headers: corsHeaders,
-      });
+      return errorResponse(groupError.message, 400);
     }
+
     return new Response(
       JSON.stringify(groupMembers),
       {
@@ -86,13 +52,7 @@ serve(async (req) => {
     );
 
   } catch (e) {
-    return new Response(
-      JSON.stringify({ error: e }),
-      {
-        status: 500,
-        headers: corsHeaders,
-      }
-    );
+    return errorResponse(`${e}`, 500);
   }
 });
 

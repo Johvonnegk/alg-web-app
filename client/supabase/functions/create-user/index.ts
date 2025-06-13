@@ -5,31 +5,15 @@
 // Setup type definitions for built-in Supabase Runtime APIs
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { serve } from "https://deno.land/std@0.177.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.7.0";
+import { errorResponse, supabase, corsHeaders, handleOptions } from "../utils/helper.ts"
 
-const supabaseUrl = Deno.env.get("_SUPABASE_URL") ?? "";
-const supabaseKey = Deno.env.get("_SUPABASE_SERVICE_ROLE_KEY") ?? "";
-const supabase = createClient(supabaseUrl, supabaseKey);
-const corsHeaders = {
-          "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*",
-        }
 serve(async (req) => {
   // Handle preflight OPTIONS request for CORS
-  if (req.method === "OPTIONS") {
-    return new Response(null, {
-      status: 204,
-      headers: {
-        "Access-Control-Allow-Origin": "*", // or restrict to your domain
-        "Access-Control-Allow-Methods": "POST, OPTIONS",
-        "Access-Control-Allow-Headers": "Content-Type, Authorization, apikey, X-Client-Info, X-Supabase-Api-Version",
-      },
-    });
-  }
+  const optionRes = handleOptions(req)
+  if (optionRes) return optionRes
 
   try {
     const { user_id, fname, lname, email, phone, address } = await req.json();
-
     const { data: user, error } = await supabase
       .from("users")
       .insert([{ user_id, fname, lname, email, phone, address }])
@@ -47,13 +31,7 @@ serve(async (req) => {
       }
     );
   } catch (e) {
-    return new Response(
-      JSON.stringify({ error: e }),
-      {
-        status: 500,
-        headers: corsHeaders,
-      }
-    );
+    return errorResponse(`${e}`, 500);
   }
 });
 

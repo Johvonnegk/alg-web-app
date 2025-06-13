@@ -1,20 +1,22 @@
 import React from "react";
 import { useState } from "react";
-import { useAddUserGroup } from "../../../../../groups/useAddGroup";
+import { useInviteToGroup } from "../../../../../groups/useInviteToGroup";
 const GroupManager = ({ groupType, group, memberMap }) => {
   const [email, setEmail] = useState("");
-  const addGroup = useAddUserGroup();
   const groupName = group[0]?.groups.name;
-  const addMember = async (e) => {
-    // e.preventDefault();
-    // const result = await addGroup(userId, email);
-    // if (result.success) {
-    //   console.log("Join request sent successfully");
-    //   setEmail("");
-    // } else {
-    //   setEmail("");
-    //   console.error("An error occurerd while sending the invite");
-    // }
+  const groupId = group[0]?.groups.id;
+  console.log("GORUP ID: ", groupId);
+  const { inviteToGroup: invite, loading: invLoading } = useInviteToGroup();
+  const sendInvite = async (e) => {
+    e.preventDefault();
+    const result = await invite(groupId, email);
+    if (result.success) {
+      console.log("Join request sent successfully");
+      setEmail("");
+    } else {
+      setEmail("");
+      console.error("An error occurerd while sending the invite");
+    }
   };
   return (
     <div className="group-management">
@@ -41,7 +43,7 @@ const GroupManager = ({ groupType, group, memberMap }) => {
       </div>
       <div className="add-member">
         <form
-          onSubmit={addMember}
+          onSubmit={sendInvite}
           className="flex flex-col w-md m-auto"
           action=""
         >
@@ -56,6 +58,13 @@ const GroupManager = ({ groupType, group, memberMap }) => {
             placeholder="Email"
             className="p-3 mt-6 bg-gray-50"
           />
+          <button
+            type="submit"
+            disabled={invLoading}
+            className="bg-accent text-white px-2 py-0.5 rounded-md"
+          >
+            Invite User
+          </button>
         </form>
       </div>
     </div>

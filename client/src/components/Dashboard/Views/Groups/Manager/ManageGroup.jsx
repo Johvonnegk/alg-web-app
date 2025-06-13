@@ -2,7 +2,6 @@ import React from "react";
 import { useViewManagedGroups } from "../../../../../groups/useViewManagedGroups";
 import { BsPersonFillAdd, BsPersonFillDash } from "react-icons/bs";
 import { useState } from "react";
-import { useAddUserGroup } from "../../../../../groups/useAddGroup";
 import GroupManager from "./GroupManager";
 const ManageGroup = ({ memberMap }) => {
   const { leaderGroup, coLeaderGroup, loading, error } = useViewManagedGroups();
