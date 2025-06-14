@@ -21,16 +21,25 @@ export const useViewGeneralGroups = () => {
           return;
         }
         const result = await supabase.functions.invoke("view-general-members", {
-          body: { user_id: user_id },
+          body: { user_id },
         });
+
+        if (!result.data || result.error) {
+          console.log(result);
+          setError(result.error?.message || "Unkown exception occured");
+          return;
+        } else if (result.data.message === "No user found") {
+          setGroup(null);
+          return;
+        }
+
         setGroup(result.data);
       } catch (e) {
         console.error("Supabase function error: ", e);
-
         try {
           const errRes = await e.response.json();
+          console.log("ERROR: ", errRes);
           if (errRes?.error === "User is not in a group") {
-            console.error("You are not curently in a group");
             setError("You are not curently in a group");
           } else {
             setError(errRes?.error || "An unknown exception occured");

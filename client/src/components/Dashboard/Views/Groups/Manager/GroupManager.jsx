@@ -5,18 +5,17 @@ const GroupManager = ({ groupType, group, memberMap }) => {
   const [email, setEmail] = useState("");
   const groupName = group[0]?.groups.name;
   const groupId = group[0]?.groups.id;
-  console.log("GORUP ID: ", groupId);
   const { inviteToGroup: invite, loading: invLoading } = useInviteToGroup();
   const sendInvite = async (e) => {
     e.preventDefault();
+    console.log("EMAIL: ", email);
     const result = await invite(groupId, email);
     if (result.success) {
       console.log("Join request sent successfully");
-      setEmail("");
     } else {
-      setEmail("");
       console.error("An error occurerd while sending the invite");
     }
+    setEmail("");
   };
   return (
     <div className="group-management">
@@ -53,6 +52,7 @@ const GroupManager = ({ groupType, group, memberMap }) => {
           </label>
           <input
             onChange={(e) => setEmail(e.target.value)}
+            value={email}
             type="email"
             name="email"
             placeholder="Email"

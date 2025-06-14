@@ -7,7 +7,6 @@ const GeneralView = ({ memberMap, otherGroups }) => {
   if (error) return <p className="text-red-600">Error: {error}</p>;
   const groupName = group?.length > 0 ? group[0]?.groups?.name : null;
 
-  console.log("GENERAL GROUP: ", group);
   return (
     <div className="view-group">
       {group ? (

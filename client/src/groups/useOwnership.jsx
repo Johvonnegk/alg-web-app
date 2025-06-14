@@ -21,26 +21,24 @@ export const useOwnership = () => {
           setError(userError?.message || "No authenticated user found");
           return;
         }
-
         // Fetch role from group_members
         const { data, error: ownershipError } = await supabase.functions.invoke(
-          "get-ownership",
+          "get-group-role",
           {
             body: {
               user_id: user?.id,
             },
           }
         );
-
         if (ownershipError) {
+          console.log(ownershipError);
           setError(ownershipError.message);
         }
         if (!data) {
           setError("No ownership data found for the user");
           setOwnerships(null);
         } else {
-          console.log("USEOWNERSHIP ROLEIDS: ", data);
-          const roleIds = data.map((item) => item.role_id);
+          const roleIds = data.roles.map((item) => item.role_id);
           setOwnerships(roleIds);
         }
       } catch (err) {

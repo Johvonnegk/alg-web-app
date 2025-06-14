@@ -14,13 +14,13 @@ serve(async (req) => {
 
   try {
     const { owner_id, name, description } = await req.json();
-    const userId = getUserId(owner_id);
+    const userId = await getUserId(owner_id);
     if (!userId) {
       return errorResponse(`Error getting user`, 404)
     }
     const { data: groupData , error: groupError } = await supabase
       .from("groups")
-      .insert([{ userId, name, description }])
+      .insert([{ owner_id: userId, name, description }])
       .select();
     
     if (groupError) {

@@ -1,8 +1,8 @@
 import React from "react";
 import { Navigate } from "react-router-dom";
-import { UserAuth } from "../context/AuthContext";
+import { useAuth } from "../context/AuthContext";
 const PrivateRoute = ({ children }) => {
-  const { session } = UserAuth();
+  const { session } = useAuth();
 
   if (session === undefined) {
     return <p>Loading...</p>;

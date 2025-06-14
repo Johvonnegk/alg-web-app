@@ -3,6 +3,7 @@ import { useOwnership } from "../../../../groups/useOwnership";
 import CreateGroup from "./CreateGroup";
 import ManageGroup from "./Manager/ManageGroup";
 import GeneralView from "./General/GeneralView";
+import GroupInvitations from "./GroupInvitations";
 
 const Groups = ({ role }) => {
   const memberMap = ["Leader", "Apprentice", "Assistant", "General"];
@@ -59,6 +60,9 @@ const Groups = ({ role }) => {
           group*
         </p>
       )}
+      <div>
+        <GroupInvitations />
+      </div>
     </div>
   );
 };

@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { UserAuth } from "../../context/AuthContext";
+import { useAuth } from "../../context/AuthContext";
 
 const login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState("");
-  const { session, signInUser } = UserAuth();
+  const { session, signInUser } = useAuth();
   const navigate = useNavigate();
 
   const handleLogIn = async (e) => {

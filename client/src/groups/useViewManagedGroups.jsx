@@ -27,13 +27,13 @@ export const useViewManagedGroups = () => {
               user_id: user_id,
             },
           });
+
         if (groupError) {
           console.error("There was an error fetching the group:", groupError);
           setError("Failed to fetch group data");
           return;
         }
 
-        console.log("Group fetched successfully:", groupData);
         setLeaderGroup(groupData.leaderMembers);
         setcoLeaderGroup(groupData.coLeaderMembers);
       } finally {

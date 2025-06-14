@@ -94,13 +94,19 @@ export const AuthContextProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ session, signInUser, signUpNewUser, signOut }}
+      value={{
+        session,
+        signInUser,
+        signUpNewUser,
+        signOut,
+        userId: session?.user?.id ?? null,
+      }}
     >
       {children}
     </AuthContext.Provider>
   );
 };
 
-export const UserAuth = () => {
+export const useAuth = () => {
   return useContext(AuthContext);
 };

@@ -2,14 +2,14 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useUserProfile } from "../../hooks/useUserProfile";
 import { useUserRole } from "../../hooks/useUserRole";
-import { UserAuth } from "../../context/AuthContext";
+import { useAuth } from "../../context/AuthContext";
 import Overview from "../../components/Dashboard/Views/Overview";
 import Groups from "../../components/Dashboard/Views/Groups/Groups";
 import Growth from "../../components/Dashboard/Views/Growth";
 import Dashboard from "../../components/Dashboard/Dashboard";
 import Sidebar from "../../components/Sidebar/Sidebar";
 const dashboard = () => {
-  const { signOut } = UserAuth();
+  const { signOut } = useAuth();
   const navigate = useNavigate();
   const [view, setView] = useState("overview");
 

@@ -17,15 +17,17 @@ serve(async (req) => {
     if (!userId) return errorResponse(`Error getting user`, 404)
 
     const { data: role, error: roleError } = await supabase
-      .from("group_members")
+      .from("user_roles")
       .select("role_id")
       .eq("user_id", userId)
+      .maybeSingle()
 
-    if (roleError || !role) return errorResponse(roleError.message, 400)
+    if (roleError || !role) return errorResponse(roleError ? roleError.message: "Cannot find user", 400)
     
     return new Response(
       JSON.stringify({
-        message: "Fetched roles successfully"
+        message: "Fetched roles successfully",
+        role_id: role?.role_id,
       }), {status: 200, headers: corsHeaders}
     )
   } catch (e) {

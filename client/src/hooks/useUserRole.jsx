@@ -23,13 +23,16 @@ export const useUserRole = () => {
         }
 
         // Fetch user profile from 'users' table using ID
-        const { data, error: roleError } = await supabase
-          .from("user_roles")
-          .select("*")
-          .eq("user_id", user.id)
-          .single();
+        const { data, error: roleError } = await supabase.functions.invoke(
+          "get-user-role",
+          {
+            body: {
+              user_id: user?.id,
+            },
+          }
+        );
 
-        if (roleError) {
+        if (roleError || !data) {
           setError(roleError.message);
         } else {
           setRole(data.role_id);
