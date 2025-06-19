@@ -5,7 +5,7 @@
 // Setup type definitions for built-in Supabase Runtime APIs
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { serve } from "https://deno.land/std@0.177.0/http/server.ts";
-import { errorResponse, getUserId, supabase, corsHeaders, handleOptions } from "../utils/helper.ts"
+import { errorResponse, transformUserId, getUserId, supabase, corsHeaders, handleOptions } from "../utils/helper.ts"
 
 
 serve(async (req) => {
@@ -14,11 +14,9 @@ serve(async (req) => {
   if (optionRes) return optionRes
 
   try {
-    const { user_id } = await req.json();
-    const userId = await getUserId(user_id)
-    if (!userId) {
-      return errorResponse(`Error getting user`, 404)
-    }
+    const id = await getUserId(req)
+    if (!id) return errorResponse("Unauthorized", 401)
+    const userId = await transformUserId(id)
     const { data: group , error: groupIdError } = await supabase
       .from("group_members")
       .select("group_id")
@@ -39,7 +37,7 @@ serve(async (req) => {
     const groupId = group?.group_id
     const {data: groupMembers, error: groupError} = await supabase
     .from("group_members")
-    .select("user_id, role_id, users(fname, lname), groups(name)")
+    .select("role_id, users(fname, lname), groups(name)")
     .eq("group_id", groupId)
 
     if (groupError){

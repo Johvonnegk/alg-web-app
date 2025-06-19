@@ -37,7 +37,21 @@ export function errorResponse(
   });
 }
 
-export async function getUserId(user_id: string){
+export async function joinGroup(group_id: string, user_id: string){
+  if (!group_id || !user_id) {
+      console.error("invalid group id")
+      return errorResponse("Missing or invalid group_id/user_id")
+    }
+  const { data: _, error: joinError } = await supabase
+    .from("group_members")
+    .insert([{user_id, group_id, role_id: 4}])
+
+    if (joinError) return false
+
+      return true
+}
+
+export async function transformUserId(user_id: string){
   if (!user_id){
     throw new Error("No user id provided")
   }
@@ -49,6 +63,17 @@ export async function getUserId(user_id: string){
 
   if (getUserErr || !user){
     throw new Error("User not found")
+  }
+  return user.id
+}
+
+export async function getUserId(req){
+  const authHeader = req.headers.get("Authorization")
+  const jwt = authHeader?.replace("Bearer ", "");
+  if (!jwt) return null
+  const {data: { user }, error} = await supabase.auth.getUser(jwt)
+  if (error || !user) {
+    return null
   }
   return user.id
 }

@@ -22,27 +22,16 @@ serve(async (req) => {
       .eq("user_id", userId)
       .maybeSingle()
 
-    if (roleError || !role) return errorResponse(roleError ? roleError.message: "Cannot find user", 400)
-    
+    if (roleError || !role) return errorResponse(`${roleError?.message}`, 400)
+    let allowed;
+    [1, 2, 4, 5].includes(role.role_id) ? allowed = true : allowed = false
     return new Response(
       JSON.stringify({
-        message: "Fetched roles successfully",
-        role_id: role?.role_id,
+        message: "Fetched create access",
+        allowed,
       }), {status: 200, headers: corsHeaders}
     )
   } catch (e) {
     return errorResponse(`${e}`, 500);
   }
 })
-
-/* To invoke locally:
-
-  1. Run `supabase start` (see: https://supabase.com/docs/reference/cli/supabase-start)
-  2. Make an HTTP request:
-
-  curl -i --location --request POST 'http://127.0.0.1:54321/functions/v1/get-ownership' \
-    --header 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0' \
-    --header 'Content-Type: application/json' \
-    --data '{"name":"Functions"}'
-
-*/

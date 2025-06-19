@@ -58,7 +58,7 @@ export const AuthContextProvider = ({ children }) => {
       return { success: false, error: userError };
     }
 
-    const { data: roleResult, error: roleError } =
+    const { data: _roleResult, error: roleError } =
       await supabase.functions.invoke("create-user-role", {
         body: {
           user_id: signUpData.user.id,

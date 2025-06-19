@@ -1,8 +1,8 @@
 @import "tailwindcss";
-
+@import "tw-animate-css";
 
 @theme {
-    --color-primary: #f2f2f2;
-    --color-secondary: #171717;
-    --color-accent: #006162;
+  --color-primary: #f2f2f2;
+  --color-secondary: #171717;
+  --color-accent: #006162;
 }

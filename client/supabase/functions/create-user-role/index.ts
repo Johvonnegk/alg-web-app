@@ -5,7 +5,7 @@
 // Setup type definitions for built-in Supabase Runtime APIs
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { serve } from "https://deno.land/std@0.177.0/http/server.ts";
-import { errorResponse, getUserId, supabase, corsHeaders, handleOptions } from "../utils/helper.ts"
+import { errorResponse, getUserId, supabase, corsHeaders, handleOptions, transformUserId } from "../utils/helper.ts"
 
 serve(async (req) => {
   // Handle preflight OPTIONS request for CORS
@@ -13,12 +13,9 @@ serve(async (req) => {
   if (optionRes) return optionRes
 
   try {
-    const { user_id } = await req.json();
-    const userId = await getUserId(user_id)
-    if (!userId) {
-      return errorResponse(`Error getting user`, 404)
-    }
-    console.log("USERID: ", userId)
+    const id = await getUserId(req)
+    if (!id) return errorResponse("Unauthorized", 401)
+    const userId = await transformUserId(id)
     const { data , error } = await supabase
       .from("user_roles")
       .insert([{ "user_id": userId, role_id : 6 }])
