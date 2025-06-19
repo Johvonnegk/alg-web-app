@@ -13,14 +13,16 @@ serve(async (req) => {
   if (optionRes) return optionRes
 
   try {
-    const id = await getUserId(req)
-    if (!id) return errorResponse("Unauthorized", 401)
-    const userId = await transformUserId(id)
+    const { user_id } = await req.json()
+    const userId = await transformUserId(user_id)
+    console.log("USER_ID: " , user_id)
+    console.log("UserId: ", userId)
     const { data , error } = await supabase
       .from("user_roles")
       .insert([{ "user_id": userId, role_id : 6 }])
       .select();
       
+    if (error) return errorResponse(error.message, 400)
     return new Response(
       JSON.stringify({
         message: `User granted role successfully`,

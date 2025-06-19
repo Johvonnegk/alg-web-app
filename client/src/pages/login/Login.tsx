@@ -1,22 +1,63 @@
 import React, { useState } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import toast from "react-hot-toast";
+import {
+  Card,
+  CardAction,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+
+const formSchema = z.object({
+  email: z.string().email(),
+  password: z
+    .string()
+    .min(8, { message: "Password must be at least 8 characters." })
+    .max(50, { message: "Maximum password length is 50 characters." }),
+});
 
 const Login = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const { session, signInUser } = useAuth();
   const navigate = useNavigate();
 
-  const handleLogIn = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  });
+  const handleLogIn = async (values: z.infer<typeof formSchema>) => {
     setLoading(true);
     try {
-      const result = await signInUser(email, password);
-      if (result.success) {
+      const result = await signInUser(values.email, values.password);
+      if (result?.success) {
         navigate("/dashboard");
+        toast.success("Logged in");
+      } else {
+        setError(result?.error || "Login failed");
+        toast.error("Login failed");
       }
     } catch (error) {
       setError("An error occured");
@@ -27,45 +68,83 @@ const Login = () => {
 
   return (
     <>
-      <form
-        onSubmit={handleLogIn}
-        className="flex flex-col items-center max-w-md m-auto"
-        action=""
-      >
-        <h2 className="font-bold pb-2">Login</h2>
-        <p>
-          Don't have have an account?{" "}
-          <Link className="hover:text-accent" to="/signup">
-            Sign Up!
-          </Link>
-        </p>
-        <div className="flex flex-col py-4 w-full">
-          <input
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="Email"
-            className="p-3 mt-6 bg-gray-50"
-            type="email"
-            name=""
-            id=""
-          />
-          <input
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Password"
-            className="p-3 mt-6 bg-gray-50"
-            type="password"
-            name=""
-            id=""
-          />
-          <button
-            type="submit"
-            disabled={loading}
-            className="mt-10 bg-accent w-1/2 text-white py-2 rounded-md self-center"
-          >
-            Log In
-          </button>
-        </div>
-        {error && <p className="text-red-600 text-center pt-4">{error}</p>}
-      </form>
+      <div className="flex justify-center items-center min-h-screen">
+        <Card className="w-full max-w-sm border-0">
+          <CardHeader>
+            <CardTitle className="text-lg">Make your account</CardTitle>
+            <CardDescription>
+              Don't have an account?{" "}
+              <Link className="text-accent font-semibold underline" to="/login">
+                Sign-up here
+              </Link>
+            </CardDescription>
+            <CardDescription className="text-stone-400">
+              *Enter your account information below to register
+            </CardDescription>
+            <CardAction>
+              <Button variant="link">Login</Button>
+            </CardAction>
+          </CardHeader>
+          <CardContent>
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(handleLogIn)}>
+                <div className="flex flex-col gap-6">
+                  <div className="grid gap-2">
+                    <FormField
+                      control={form.control}
+                      name="email"
+                      render={({ field }) => (
+                        <FormItem className="flex flex-col">
+                          <FormLabel className="font-semibold">Email</FormLabel>
+                          <FormControl>
+                            <Input
+                              className="border border-stone-300"
+                              placeholder="Email"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage className="text-sm text-red-500" />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <div className="grid gap-2 ">
+                    <FormField
+                      control={form.control}
+                      name="password"
+                      render={({ field }) => (
+                        <FormItem className="flex flex-col">
+                          <FormLabel className="font-semibold">
+                            Password
+                          </FormLabel>
+                          <FormControl>
+                            <Input
+                              type="password"
+                              className="border border-stone-300"
+                              placeholder="Password"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage className="text-sm text-red-500" />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <Button
+                    type="submit"
+                    className="w-full border border-stone-300 hover:bg-accent hover:text-white"
+                  >
+                    Log In
+                  </Button>
+                </div>
+              </form>
+            </Form>
+          </CardContent>
+          <CardFooter className="flex-col gap-2">
+            {error ? <p className="text-sm text-red-500">{error}</p> : ""}
+          </CardFooter>
+        </Card>
+      </div>
     </>
   );
 };

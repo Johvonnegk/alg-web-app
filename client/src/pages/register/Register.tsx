@@ -1,59 +1,116 @@
+"use client";
+
 import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import toast from "react-hot-toast";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { z } from "zod";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
+  Card,
+  CardAction,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Calendar } from "@/components/ui/calendar";
+import { CalendarIcon } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { format } from "date-fns";
 
-interface FromValues {
-  fname: string,
-  lname: string,
-  email: string,
-  password: string,
-  confirmPassword: string,
-  phone: string,
-  address: string,
-}
+const formSchema = z
+  .object({
+    fname: z
+      .string()
+      .min(2, { message: "First name must be at least 2 characters." })
+      .max(50, { message: "First name max of 50 characters." }),
+    lname: z
+      .string()
+      .min(2, { message: "Last name must be at least 2 characters." })
+      .max(50, { message: "First name max of 50 characters." }),
+    email: z.string().email(),
+    password: z
+      .string()
+      .min(8, { message: "Password must be at least 8 characters." })
+      .max(50, { message: "Maximum password length is 50 characters." }),
+    confirmPassword: z
+      .string()
+      .min(8, { message: "Password must be at least 8 characters." })
+      .max(50, { message: "Maximum password length is 50 characters." }),
+    phone: z
+      .string()
+      .min(10, "Phone number is too short")
+      .max(15, "Phone number is too long")
+      .regex(/^[+0-9\s\-()]+$/, "Invalid phone number format"),
+    address: z.string().max(100),
+    birthday: z.date(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "passwords do not match",
+    path: ["confirmPassword"],
+  });
 
 const Register = () => {
-  const [values, setValues] = useState<FromValues>({
-    fname: "",
-    lname: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
-    phone: "",
-    address: "",
-  });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const { session, signUpNewUser } = useAuth();
 
   const navigate = useNavigate();
 
-  const handleChange = ( e: React.ChangeEvent<HTMLInputElement>) => {
-    const {name, value} = e.target
-    setValues((prev) => ({
-      ...prev,
-      [name]: value, 
-    }))
-  }
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      fname: "",
+      lname: "",
+      email: "",
+      password: "",
+      address: "",
+      phone: undefined,
+      birthday: new Date(),
+    },
+  });
 
-  const handleSignUp = async (e) => {
-    e.preventDefault();
+  const handleSignUp = async (values: z.infer<typeof formSchema>) => {
     setLoading(true);
     const signupInfo = values;
     try {
       const result = await signUpNewUser(signupInfo);
       if (result.success) {
-        navigate("/dashboard");
+        navigate("/signup/email-confirmation");
         toast.success("Successfully registered");
       } else {
-        switch (result.error.code) {
+        const code = result?.error?.code || result?.error;
+        switch (code) {
           case "user_already_exists":
             setError(
-              "This email is already registered with an account,\n please choose another email address"
+              "This email is already registered with an account,\nplease choose another email address."
             );
             break;
+          default:
+            setError("Something went wrong. Please try again later.");
+            break;
         }
+        toast.error("Registration failed");
       }
     } finally {
       setLoading(false);
@@ -62,96 +119,237 @@ const Register = () => {
 
   return (
     <>
-      <form
-        onSubmit={handleSignUp}
-        className="flex flex-col items-center max-w-md m-auto"
-        action=""
-      >
-        <h2 className="text-lg font-bold pb-2">Sign Up</h2>
-        <p>
-          Already have an account?{" "}
-          <Link className="hover:text-accent" to="/login">
-            Login!
-          </Link>
-        </p>
-        <div className="flex flex-col py-4 w-full">
-          <input
-            onChange={(e) => handleChange(e)}
-            placeholder="First Name"
-            className="p-3 mt-6 bg-gray-50"
-            value={values.fname}
-            name="fname"
-            type="text"
-            id=""
-          />
-          <input
-            onChange={(e) => handleChange(e)}
-            placeholder="Last Name"
-            className="p-3 mt-6 bg-gray-50"
-            type="text"
-            value={values.lname}
-            name="lname"
-            id=""
-          />
-          <input
-            onChange={(e) => handleChange(e)}
-            placeholder="Email"
-            className="p-3 mt-6 bg-gray-50"
-            type="email"
-            value={values.email}
-            name="email"
-            id=""
-          />
-          <input
-            onChange={(e) => handleChange(e)}
-            placeholder="Password"
-            className="p-3 mt-6 bg-gray-50"
-            type="password"
-            value={values.password}
-            name="password"
-            id=""
-          />
-          <input
-            onChange={(e) => handleChange(e)}
-            placeholder="Confirm Password"
-            className="p-3 mt-6 bg-gray-50"
-            type="password"
-            value={values.confirmPassword}
-            name="confirmPassword"
-            id=""
-          />
-          <input
-            onChange={(e) => handleChange(e)}
-            placeholder="Phone Number"
-            className="p-3 mt-6 bg-gray-50"
-            type="text"
-            value={values.phone}
-            name="phone"
-            id=""
-          />
-          <input
-            onChange={(e) => handleChange(e)}
-            placeholder="Address"
-            className="p-3 mt-6 bg-gray-50"
-            type="text"
-            value={values.address}
-            name="address"
-            id=""
-          />
-          <button
-            type="submit"
-            disabled={loading}
-            className="mt-10 bg-accent w-1/2 text-white py-2 rounded-md self-center"
-          >
-            Sign Up
-          </button>
-        </div>
-        {error && (
-          <p className="text-red-600 text-center pt-4 whitespace-pre-line">
-            {error}
-          </p>
-        )}
-      </form>
+      <div className="flex justify-center items-center min-h-screen">
+        <Card className="w-full max-w-sm border-0">
+          <CardHeader>
+            <CardTitle className="text-lg">Make your account</CardTitle>
+            <CardDescription>
+              Already have an account?{" "}
+              <Link className="text-accent font-semibold underline" to="/login">
+                Login here
+              </Link>
+            </CardDescription>
+            <CardDescription className="text-stone-400">
+              *Enter your account information below to register
+            </CardDescription>
+            <CardAction>
+              <Button variant="link">Sign Up</Button>
+            </CardAction>
+          </CardHeader>
+          <CardContent>
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(handleSignUp)}>
+                <div className="flex flex-col gap-6">
+                  <div className="grid grid-cols-2 gap-2 items-stretch">
+                    <FormField
+                      control={form.control}
+                      name="fname"
+                      render={({ field }) => (
+                        <FormItem className="flex flex-col">
+                          <FormLabel className="font-semibold">
+                            First Name
+                          </FormLabel>
+                          <FormControl>
+                            <Input
+                              className="border border-stone-300"
+                              placeholder="First Name"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage className="text-sm text-red-500" />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="lname"
+                      render={({ field }) => (
+                        <FormItem className="flex flex-col">
+                          <FormLabel className="font-semibold">
+                            Last Name
+                          </FormLabel>
+                          <FormControl>
+                            <Input
+                              className="border border-stone-300"
+                              placeholder="Last Name"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage className="text-sm text-red-500" />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <div className="grid gap-2">
+                    <FormField
+                      control={form.control}
+                      name="email"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="font-semibold">Email</FormLabel>
+                          <FormControl>
+                            <Input
+                              className="border border-stone-300"
+                              placeholder="Password"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage className="text-sm text-red-500" />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <div className="grid gap-2">
+                    <FormField
+                      control={form.control}
+                      name="password"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="font-semibold">
+                            Password
+                          </FormLabel>
+                          <FormControl>
+                            <Input
+                              type="password"
+                              className="border border-stone-300"
+                              placeholder="Password"
+                              {...field}
+                            />
+                          </FormControl>
+
+                          <FormMessage className="text-sm text-red-500" />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <div className="grid gap-2">
+                    <FormField
+                      control={form.control}
+                      name="confirmPassword"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="font-semibold">
+                            Confirm Password
+                          </FormLabel>
+                          <FormControl>
+                            <Input
+                              type="password"
+                              className="border border-stone-300"
+                              placeholder="Confirm Password"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage className="text-sm text-red-500" />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <div className="grid gap-2">
+                    <FormField
+                      control={form.control}
+                      name="phone"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="font-semibold">Phone</FormLabel>
+                          <FormControl>
+                            <Input
+                              className="border border-stone-300"
+                              placeholder="Phone Number"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage className="text-sm text-red-500" />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <div className="grid gap-2">
+                    <FormField
+                      control={form.control}
+                      name="address"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="font-semibold">
+                            Address
+                          </FormLabel>
+                          <FormControl>
+                            <Input
+                              className="border border-stone-300"
+                              placeholder="Password"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage className="text-sm text-red-500" />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <div className="grid gap-2">
+                    <FormField
+                      control={form.control}
+                      name="birthday"
+                      render={({ field }) => (
+                        <FormItem className="flex flex-col w-full">
+                          <FormLabel className="font-semibold">
+                            Date of birth
+                          </FormLabel>
+                          <Popover>
+                            <PopoverTrigger asChild>
+                              <FormControl>
+                                <Button
+                                  className={cn(
+                                    "pl-3 text-left font-normal w-full border border-stone-300",
+                                    !field.value && "text-muted-foreground"
+                                  )}
+                                >
+                                  {field.value ? (
+                                    format(field.value, "PPP")
+                                  ) : (
+                                    <span>Pick a date</span>
+                                  )}
+                                  <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                </Button>
+                              </FormControl>
+                            </PopoverTrigger>
+                            <PopoverContent
+                              className="w-full p-0 bg-stone-200 border-stone-300 border shadow-lg"
+                              align="center"
+                            >
+                              <Calendar
+                                mode="single"
+                                selected={field.value}
+                                onSelect={field.onChange}
+                                disabled={(date) =>
+                                  date > new Date() ||
+                                  date < new Date("1900-01-01")
+                                }
+                                captionLayout="dropdown"
+                              />
+                            </PopoverContent>
+                          </Popover>
+                          <FormDescription>
+                            Your date of birth is used to calculate your age.
+                          </FormDescription>
+                          <FormMessage className="text-sm text-red-500" />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <Button
+                    type="submit"
+                    className="w-full border border-stone-300 hover:bg-accent hover:text-white"
+                  >
+                    Sign Up
+                  </Button>
+                </div>
+              </form>
+            </Form>
+          </CardContent>
+          <CardFooter className="flex-col gap-2">
+            {error ? <p className="text-sm text-red-500">{error}</p> : ""}
+          </CardFooter>
+        </Card>
+      </div>
     </>
   );
 };

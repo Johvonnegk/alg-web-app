@@ -13,12 +13,24 @@ serve(async (req) => {
   if (optionRes) return optionRes
 
   try {
-    const { user_id, fname, lname, email, phone, address } = await req.json();
+    const { user_id, fname, lname, email, phone, address, birthday } = await req.json();
     const { data: user, error } = await supabase
       .from("users")
-      .insert([{ user_id, fname, lname, email, phone, address }])
+      .insert([{ user_id, fname, lname, email, phone, address, birthday }])
       .select();
       
+    if (error && error.message.includes("duplicate key")) {
+      return new Response(
+        JSON.stringify({
+          success: false,
+          error: "user_already_exists",
+        }),
+        { status: 200,
+          headers: corsHeaders
+         } // conflict
+      );
+    }
+
     return new Response(
       JSON.stringify({
         message: `Created user ${user?.[0]?.fname} ${user?.[0]?.lname}`,

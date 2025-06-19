@@ -1,8 +1,15 @@
 @import "tailwindcss";
+@import "tailwindcss/preflight"
 @import "tw-animate-css";
 
 @theme {
   --color-primary: #f2f2f2;
   --color-secondary: #171717;
   --color-accent: #006162;
+}
+
+[aria-label*="today"],
+[data-day][class*="today"] {
+  background-color: transparent !important;
+  font-weight: normal !important;
 }

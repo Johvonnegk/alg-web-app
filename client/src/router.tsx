@@ -1,10 +1,12 @@
 import React from "react";
 import Dashboard from "./pages/dashboard/Dashboard";
-import Home from "./pages/home/homepage";
+import Home from "./pages/home/Homepage";
 import About from "./pages/about/About";
 import Login from "./pages/login/Login";
 import Register from "./pages/register/Register";
-import NotFound404 from "./pages/notFound/notFound";
+import NotFound404 from "./pages/notFound/NotFound";
+import EmailConfirmation from "./pages/register/EmailConfirmation";
+import EmailVerified from "./pages/register/EmailVerified";
 import { createBrowserRouter, Outlet } from "react-router-dom";
 import PrivateRoute from "./triggers/PrivateRoute";
 import Navbar from "./components/Navbar/Navbar";
@@ -37,6 +39,8 @@ export const router = createBrowserRouter([
       { path: "/about", element: <About /> },
       { path: "/login", element: <Login /> },
       { path: "/signup", element: <Register /> },
+      { path: "/signup/email-confirmation", element: <EmailConfirmation /> },
+      { path: "/email-verified", element: <EmailVerified /> },
       { path: "*", element: <NotFound404 /> },
     ],
   },

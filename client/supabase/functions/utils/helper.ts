@@ -67,7 +67,7 @@ export async function transformUserId(user_id: string){
   return user.id
 }
 
-export async function getUserId(req){
+export async function getUserId(req: Request): Promise<string | null>{
   const authHeader = req.headers.get("Authorization")
   const jwt = authHeader?.replace("Bearer ", "");
   if (!jwt) return null
