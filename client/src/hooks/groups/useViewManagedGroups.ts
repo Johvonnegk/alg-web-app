@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { supabase } from "../supabaseClient";
+import { supabase } from "@/supabaseClient";
 
 interface GroupMember {
   user_id: string;
@@ -24,7 +24,7 @@ interface UseViewManagedGroupsReturn {
   coLeaderGroup: GroupMember[];
   loading: boolean;
   error: string;
-  refetch: () => Promise<void>
+  refetch: () => Promise<void>;
 }
 
 export const useViewManagedGroups = (): UseViewManagedGroupsReturn => {
@@ -37,7 +37,9 @@ export const useViewManagedGroups = (): UseViewManagedGroupsReturn => {
     try {
       setLoading(true);
 
-      const { data, error } = await supabase.functions.invoke<ManagedGroupData>("view-managed-group");
+      const { data, error } = await supabase.functions.invoke<ManagedGroupData>(
+        "view-managed-group"
+      );
 
       if (error) {
         console.error("There was an error fetching the group:", error);

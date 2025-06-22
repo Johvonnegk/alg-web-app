@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { supabase } from "../supabaseClient";
+import { supabase } from "@/supabaseClient";
 
 interface Role {
   role_id: number;
@@ -25,9 +25,8 @@ export const useOwnership = (): UseOwnershipReturn => {
       try {
         setLoading(true);
 
-        const { data, error: ownershipError } = await supabase.functions.invoke<OwnershipData>(
-          "get-group-role"
-        );
+        const { data, error: ownershipError } =
+          await supabase.functions.invoke<OwnershipData>("get-group-role");
 
         if (ownershipError) {
           console.error(ownershipError);

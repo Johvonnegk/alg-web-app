@@ -10,7 +10,7 @@ import { errorResponse, transformUserId, getUserId, supabase, corsHeaders, handl
 async function fetchGroupMembers(groupId: number){
   const {data, error} = await supabase
   .from("group_members")
-  .select("user_id, role_id, users(fname, lname), groups(name, id)")
+  .select("role_id, users(fname, lname, email), groups(name, id)")
   .eq("group_id", groupId)
 
   if (error){

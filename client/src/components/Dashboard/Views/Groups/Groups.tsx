@@ -1,26 +1,40 @@
 import React from "react";
-import { useOwnership } from "../../../../groups/useOwnership";
+import { useOwnership } from "../../../../hooks/groups/useOwnership";
 import CreateGroup from "./CreateGroup";
 import ManageGroup from "./Manager/ManageGroup";
 import GeneralView from "./General/GeneralView";
-import { useCreateAccess } from "../../../../groups/useCreateAccess";
+import { useCreateAccess } from "../../../../hooks/groups/useCreateAccess";
 import GroupInvitations from "./GroupInvitations";
-import {useViewManagedGroups} from "../../../../groups/useViewManagedGroups";
-import toast from "react-hot-toast"
+import { useViewManagedGroups } from "../../../../hooks/groups/useViewManagedGroups";
+import AllGroups from "./General/AllGroups";
+import toast from "react-hot-toast";
 
-const Groups = ({ role }) => {
+const Groups = () => {
   const memberMap = ["Leader", "Apprentice", "Assistant", "General"];
   var otherGroups = false;
   const { ownerships, loading: ownLoading, error: ownError } = useOwnership();
-  const { allowed, loading: createLoading, error: allowError } = useCreateAccess();
-  const { leaderGroup, coLeaderGroup, loading: groupLoading, error: groupError, refetch: refetchGroups } = useViewManagedGroups();
+  const {
+    allowed,
+    loading: createLoading,
+    error: allowError,
+  } = useCreateAccess();
+  const {
+    leaderGroup,
+    coLeaderGroup,
+    loading: groupLoading,
+    error: groupError,
+  } = useViewManagedGroups();
   if (ownLoading || createLoading || groupLoading) return <p>Loading...</p>;
-  if (ownError){
+  if (ownError) {
     return <p className="text-red-600">Error fetching ownership: {ownError}</p>;
   } else if (allowError) {
-    return <p className="text-red-600">Error fetching create group access: {allowError}</p>
+    return (
+      <p className="text-red-600">
+        Error fetching create group access: {allowError}
+      </p>
+    );
   } else if (groupError) {
-    return <p className="text-red-600">Error fetching groups: {groupError}</p>
+    return <p className="text-red-600">Error fetching groups: {groupError}</p>;
   }
   const setManageAccess = () => {
     if (!ownerships) {
@@ -53,26 +67,37 @@ const Groups = ({ role }) => {
   const manageAccess = setManageAccess();
   const createAccess = setCreateAccess();
   return (
-    <div className="px-2">
-      <h1 className="text-2xl my-2 font-semibold border-stone-300">
+    <div className="px-14">
+      <h1 className="text-2xl mb-2 font-semibold border-stone-300">
         Group Settings
       </h1>
-      <div className="group-management">
-        {manageAccess ? <ManageGroup leaderGroup={leaderGroup} coLeaderGroup={coLeaderGroup} memberMap={memberMap} refetch={refetchGroups} /> : null}
-      </div>
-      <div className="view-group">
-        <GeneralView memberMap={memberMap} otherGroups={otherGroups} />
-      </div>
-      {createAccess ? (
-        <CreateGroup/>
-      ) : (
-        <p className="text-stone-500 text-sm">
-          *You cannot create another group while being the leader of an existing
-          group*
-        </p>
-      )}
-      <div>
-        <GroupInvitations />
+      <hr className="mb-20 text-stone-300 w-7/8" />
+      <div className="groups-contianer grid grid-cols-2 gap-x-20 gap-y-15">
+        <div className="view-group">
+          <GeneralView memberMap={memberMap} otherGroups={otherGroups} />
+        </div>
+        <div>
+          <GroupInvitations />
+        </div>
+        <div className="group-management col-span-2">
+          {manageAccess ? (
+            <ManageGroup
+              leaderGroup={leaderGroup}
+              coLeaderGroup={coLeaderGroup}
+              memberMap={memberMap}
+            />
+          ) : null}
+        </div>
+        <div className="col-span-2 flex justify-center">
+          {createAccess ? (
+            <CreateGroup />
+          ) : (
+            "You cannot create groups right now"
+          )}
+        </div>
+        <div className="col-span-2">
+          <AllGroups />
+        </div>
       </div>
     </div>
   );

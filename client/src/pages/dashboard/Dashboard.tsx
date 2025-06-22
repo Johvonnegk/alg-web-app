@@ -1,14 +1,13 @@
 import { useEffect, useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useUserProfile } from "../../hooks/useUserProfile";
-import { useUserRole } from "../../hooks/useUserRole";
 import { useAuth } from "../../context/AuthContext";
 import Overview from "../../components/Dashboard/Views/Overview";
 import Groups from "../../components/Dashboard/Views/Groups/Groups";
-import Growth from "../../components/Dashboard/Views/Growth";
+import Growth from "../../components/Dashboard/Views/Growth/Growth";
 import DashboardContainer from "../../components/Dashboard/DashboardContainer";
 import Sidebar from "../../components/Sidebar/Sidebar";
-import { UserProfile } from "../../types/UserProfile"
+import { UserProfile } from "../../types/UserProfile";
 const Dashboard = () => {
   const { signOut } = useAuth();
   const navigate = useNavigate();
@@ -31,23 +30,22 @@ const Dashboard = () => {
   };
 
   const { profile, loading: pLoading, error: pError } = useUserProfile();
-  const { role, loading: rLoading, error: rError } = useUserRole();
 
   const renderView = useMemo(() => {
     if (!profile) return null;
     switch (view) {
       case "overview":
-        return <Overview/>;
+        return <Overview />;
       case "groups":
-        return <Groups role={role} />;
+        return <Groups role={profile.role} />;
       case "growth":
-        return <Growth/>;
+        return <Growth />;
       default:
-        return <Overview/>;
+        return <Overview />;
     }
-  }, [view, profile, role]);
-  
-  if (pLoading || rLoading) return <p>Loading...</p>;
+  }, [view, profile]);
+
+  if (pLoading) return <p>Loading...</p>;
 
   if (pError || !profile)
     return (
@@ -58,20 +56,6 @@ const Dashboard = () => {
         <button onClick={handleSignOut}>Sign Out</button>
       </main>
     );
-
-  if (rError || !role)
-    return (
-      <main>
-        <p className="flex justify-center text-red-600">
-          {rError ? `Error user has no role` : `No user role data found`}
-        </p>
-        <button onClick={handleSignOut}>Sign Out</button>
-      </main>
-    );
-
-
-
-
 
   return (
     <main className="grid gap-4 p-4 grid-cols-[220px_1fr]">

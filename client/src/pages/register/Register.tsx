@@ -7,7 +7,6 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import toast from "react-hot-toast";
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { z } from "zod";
 import {
@@ -132,9 +131,6 @@ const Register = () => {
             <CardDescription className="text-stone-400">
               *Enter your account information below to register
             </CardDescription>
-            <CardAction>
-              <Button variant="link">Sign Up</Button>
-            </CardAction>
           </CardHeader>
           <CardContent>
             <Form {...form}>
@@ -190,7 +186,7 @@ const Register = () => {
                           <FormControl>
                             <Input
                               className="border border-stone-300"
-                              placeholder="Password"
+                              placeholder="mail@example.com"
                               {...field}
                             />
                           </FormControl>
@@ -275,7 +271,7 @@ const Register = () => {
                           <FormControl>
                             <Input
                               className="border border-stone-300"
-                              placeholder="Password"
+                              placeholder="Address"
                               {...field}
                             />
                           </FormControl>

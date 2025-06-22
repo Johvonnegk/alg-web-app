@@ -13,3 +13,10 @@
   background-color: transparent !important;
   font-weight: normal !important;
 }
+
+button {
+  font-weight: 600;
+}
+button:hover {
+  cursor: pointer;
+}

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { supabase } from "../supabaseClient";
-import { GroupMember } from "../types/Group";
+import { supabase } from "@/supabaseClient";
+import { GroupMember } from "@/types/Group";
 
 interface SupabaseFunctionResult {
   data: GroupMember[] | { message: string } | null;
@@ -22,7 +22,9 @@ export const useViewGeneralGroups = (): UseViewGeneralGroupsReturn => {
     const fetchGroup = async () => {
       setLoading(true);
       try {
-        const result = await supabase.functions.invoke("view-general-members") as SupabaseFunctionResult;
+        const result = (await supabase.functions.invoke(
+          "view-general-members"
+        )) as SupabaseFunctionResult;
 
         if (result.error) {
           setError(result.error.message || "Unknown error occurred");

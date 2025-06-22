@@ -5,58 +5,62 @@
 // Setup type definitions for built-in Supabase Runtime APIs
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { serve } from "https://deno.land/std@0.177.0/http/server.ts";
-import { errorResponse, transformUserId, getUserId, supabase, corsHeaders, handleOptions } from "../utils/helper.ts"
-
+import {
+  errorResponse,
+  transformUserId,
+  getUserId,
+  supabase,
+  corsHeaders,
+  handleOptions,
+} from "../utils/helper.ts";
 
 serve(async (req) => {
   // Handle preflight OPTIONS request for CORS
-  const optionRes = handleOptions(req)
-  if (optionRes) return optionRes
+  const optionRes = handleOptions(req);
+  if (optionRes) return optionRes;
 
   try {
-    const id = await getUserId(req)
-    if (!id) return errorResponse("Unauthorized", 401)
-    const userId = await transformUserId(id)
-    const { data: group , error: groupIdError } = await supabase
+    const id = await getUserId(req);
+    if (!id) return errorResponse("Unauthorized", 401);
+    const userId = await transformUserId(id);
+    const { data: group, error: groupIdError } = await supabase
       .from("group_members")
       .select("group_id")
       .eq("user_id", userId)
       .not("role_id", "in", "(1,2)")
-      .maybeSingle()
-      
+      .maybeSingle();
+
     if (groupIdError) {
-      return errorResponse(`Error fetching group: ${groupIdError.message}`, 400);
+      return errorResponse(
+        `Error fetching group: ${groupIdError.message}`,
+        400
+      );
     }
-    if (!group){
-      return new Response(
-        JSON.stringify({message: "No user found"}),
-        {status: 200, headers: corsHeaders}
-      )
+    if (!group) {
+      return new Response(JSON.stringify({ message: "No user found" }), {
+        status: 200,
+        headers: corsHeaders,
+      });
     }
 
-    const groupId = group?.group_id
-    const {data: groupMembers, error: groupError} = await supabase
-    .from("group_members")
-    .select("role_id, users(fname, lname), groups(name)")
-    .eq("group_id", groupId)
+    const groupId = group?.group_id;
+    const { data: groupMembers, error: groupError } = await supabase
+      .from("group_members")
+      .select("role_id, users(fname, lname, email), groups(name)")
+      .eq("group_id", groupId);
 
-    if (groupError){
+    if (groupError) {
       return errorResponse(groupError.message, 400);
     }
 
-    return new Response(
-      JSON.stringify(groupMembers),
-      {
-        status: 200,
-        headers: corsHeaders,
-      }
-    );
-
+    return new Response(JSON.stringify(groupMembers), {
+      status: 200,
+      headers: corsHeaders,
+    });
   } catch (e) {
     return errorResponse(`${e}`, 500);
   }
 });
-
 
 /* To invoke locally:
 

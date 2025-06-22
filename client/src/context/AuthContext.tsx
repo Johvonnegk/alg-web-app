@@ -8,11 +8,13 @@ import React, {
 import { supabase } from "../supabaseClient";
 import { Session, User } from "@supabase/supabase-js";
 import { format } from "date-fns";
+import toast from "react-hot-toast";
 
 // Define the shape of your context value
 interface AuthContextType {
   session: Session | null | undefined;
   userId: string | null;
+  email: string | null;
 
   signInUser: (
     email: string,
@@ -104,20 +106,6 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
       return { success: false, error: "user_already_exists" };
     }
 
-    const { error: roleError } = await supabase.functions.invoke(
-      "create-user-role",
-      {
-        body: {
-          user_id: signUpData.user?.id,
-        },
-      }
-    );
-
-    if (roleError) {
-      console.error("There was an error assigning the user role:", roleError);
-      return { success: false, error: roleError };
-    }
-
     return { success: true, data: user };
   };
 
@@ -139,8 +127,9 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
 
   const signOut = () => {
     supabase.auth.signOut().catch((error) => {
-      console.error("There was an error signing out: ", error);
+      toast.error("There was an error signing out: ", error);
     });
+    toast.success("Successfully signed out");
   };
 
   return (
@@ -150,6 +139,7 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
         signInUser,
         signUpNewUser,
         signOut,
+        email: session?.user?.email ?? null,
         userId: session?.user?.id ?? null,
       }}
     >

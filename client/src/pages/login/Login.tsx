@@ -7,7 +7,6 @@ import { useAuth } from "../../context/AuthContext";
 import toast from "react-hot-toast";
 import {
   Card,
-  CardAction,
   CardContent,
   CardDescription,
   CardFooter,
@@ -17,14 +16,12 @@ import {
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 
 const formSchema = z.object({
@@ -54,7 +51,7 @@ const Login = () => {
       const result = await signInUser(values.email, values.password);
       if (result?.success) {
         navigate("/dashboard");
-        toast.success("Logged in");
+        toast.success("Login success");
       } else {
         setError(result?.error || "Login failed");
         toast.error("Login failed");
@@ -71,19 +68,19 @@ const Login = () => {
       <div className="flex justify-center items-center min-h-screen">
         <Card className="w-full max-w-sm border-0">
           <CardHeader>
-            <CardTitle className="text-lg">Make your account</CardTitle>
+            <CardTitle className="text-lg">Login to your account</CardTitle>
             <CardDescription>
               Don't have an account?{" "}
-              <Link className="text-accent font-semibold underline" to="/login">
+              <Link
+                className="text-accent font-semibold underline"
+                to="/signup"
+              >
                 Sign-up here
               </Link>
             </CardDescription>
             <CardDescription className="text-stone-400">
-              *Enter your account information below to register
+              *Enter your account information below to login
             </CardDescription>
-            <CardAction>
-              <Button variant="link">Login</Button>
-            </CardAction>
           </CardHeader>
           <CardContent>
             <Form {...form}>

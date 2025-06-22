@@ -1,4 +1,4 @@
-import { supabase } from "../supabaseClient";
+import { supabase } from "@/supabaseClient";
 import { useState, useCallback } from "react";
 
 interface InviteToGroupResponse {
@@ -13,15 +13,16 @@ export const useInviteToGroup = () => {
     async (group_id: number, email: string): Promise<InviteToGroupResponse> => {
       setLoading(true);
       try {
-        const { data, error } = await supabase.functions.invoke<InviteToGroupResponse>(
-          "invite-to-group",
-          {
-            body: {
-              group_id,
-              email,
-            },
-          }
-        );
+        const { data, error } =
+          await supabase.functions.invoke<InviteToGroupResponse>(
+            "invite-to-group",
+            {
+              body: {
+                group_id,
+                email,
+              },
+            }
+          );
 
         if (error) {
           return { success: false, error: error.message };

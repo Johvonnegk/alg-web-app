@@ -4,7 +4,7 @@ const Navbar = () => {
   return (
     <>
       <nav className="flex">
-        <ul className="text-white fixed top-0 h-20 w-screen flex justify-around items-center bg-secondary shadow-lg font-semibold">
+        <ul className="text-white fixed top-0 h-20 w-screen flex justify-around items-center bg-secondary shadow-lg font-semibold z-50">
           <li>
             <Link to="/">Home</Link>
           </li>

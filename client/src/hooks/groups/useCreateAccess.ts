@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
-import { supabase } from "../supabaseClient";
+import { supabase } from "@/supabaseClient";
 
 interface UseCreateReturn {
-  allowed: boolean,
-  loading: boolean,
-  error: string,
+  allowed: boolean;
+  loading: boolean;
+  error: string;
 }
 
-export const useCreateAccess = ():UseCreateReturn => {
+export const useCreateAccess = (): UseCreateReturn => {
   const [allowed, setAllowed] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");

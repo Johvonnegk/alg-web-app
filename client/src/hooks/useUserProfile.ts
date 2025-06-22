@@ -1,15 +1,14 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../supabaseClient";
-import { UserProfile } from "../types/UserProfile"
-import { User } from "@supabase/supabase-js";
+import { UserProfile } from "../types/UserProfile";
 
 interface UseUserProfileReturn {
-  profile: UserProfile | null,
-  loading: boolean,
-  error: string
+  profile: UserProfile | null;
+  loading: boolean;
+  error: string;
 }
 
-export const useUserProfile = ():UseUserProfileReturn => {
+export const useUserProfile = (): UseUserProfileReturn => {
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");

@@ -5,29 +5,35 @@
 // Setup type definitions for built-in Supabase Runtime APIs
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { serve } from "https://deno.land/std@0.177.0/http/server.ts";
-import { errorResponse, supabase, corsHeaders, handleOptions } from "../utils/helper.ts"
+import {
+  errorResponse,
+  supabase,
+  corsHeaders,
+  handleOptions,
+} from "../utils/helper.ts";
 
 serve(async (req) => {
   // Handle preflight OPTIONS request for CORS
-  const optionRes = handleOptions(req)
-  if (optionRes) return optionRes
+  const optionRes = handleOptions(req);
+  if (optionRes) return optionRes;
 
   try {
-    const { user_id, fname, lname, email, phone, address, birthday } = await req.json();
+    const { user_id, fname, lname, email, phone, address, birthday } =
+      await req.json();
     const { data: user, error } = await supabase
       .from("users")
-      .insert([{ user_id, fname, lname, email, phone, address, birthday }])
+      .insert([
+        { user_id, fname, lname, email, phone, address, birthday, role_id: 6 },
+      ])
       .select();
-      
+
     if (error && error.message.includes("duplicate key")) {
       return new Response(
         JSON.stringify({
           success: false,
           error: "user_already_exists",
         }),
-        { status: 200,
-          headers: corsHeaders
-         } // conflict
+        { status: 200, headers: corsHeaders } // conflict
       );
     }
 
@@ -46,7 +52,6 @@ serve(async (req) => {
     return errorResponse(`${e}`, 500);
   }
 });
-
 
 /* To invoke locally:
 

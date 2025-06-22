@@ -5,20 +5,28 @@
 // Setup type definitions for built-in Supabase Runtime APIs
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { serve } from "https://deno.land/std@0.177.0/http/server.ts";
-import { errorResponse, transformUserId, getUserId, supabase, corsHeaders, handleOptions } from "../utils/helper.ts"
+import {
+  errorResponse,
+  transformUserId,
+  getUserId,
+  supabase,
+  corsHeaders,
+  handleOptions,
+} from "../utils/helper.ts";
 
 serve(async (req) => {
-  const optionRes = handleOptions(req)
-  if (optionRes) return optionRes
+  const optionRes = handleOptions(req);
+  if (optionRes) return optionRes;
 
-  try{
-    const id = await getUserId(req)
-    if (!id) return errorResponse("Unauthorized", 401)
-    const userId = await transformUserId(id)
+  try {
+    const id = await getUserId(req);
+    if (!id) return errorResponse("Unauthorized", 401);
+    const userId = await transformUserId(id);
 
     const { data: invites, error: invitesError } = await supabase
       .from("group_invites")
-      .select(`
+      .select(
+        `
           id, 
           status, 
           group_id, 
@@ -27,21 +35,25 @@ serve(async (req) => {
           groups(name),
           created_at,
           updated_at
-        `)
+        `
+      )
       .eq("recipient_id", userId)
+      .eq("archive", false);
 
-    if (invitesError || !invites) return errorResponse(invitesError.message, 400)
-    
+    if (invitesError || !invites)
+      return errorResponse(invitesError.message, 400);
+
     return new Response(
       JSON.stringify({
         message: "Fetched invites successfully",
         invites,
-      }), {status: 200, headers: corsHeaders}
-    )
+      }),
+      { status: 200, headers: corsHeaders }
+    );
   } catch (e) {
     return errorResponse(`${e}`, 500);
   }
-})
+});
 
 /* To invoke locally:
 

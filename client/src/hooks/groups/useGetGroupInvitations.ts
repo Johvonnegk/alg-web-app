@@ -1,14 +1,13 @@
 import { useEffect, useState } from "react";
-import { supabase } from "../supabaseClient";
-import { useAuth } from "../context/AuthContext";
-import { Invite } from "../types/Invite"
+import { supabase } from "@/supabaseClient";
+import { Invite } from "@/types/Invite";
 interface UseGetGroupReturn {
-  invites: Invite[] | null,
-  loading: boolean,
-  error: string
+  invites: Invite[] | null;
+  loading: boolean;
+  error: string;
 }
 
-export const useGetGroupInvitations = ():UseGetGroupReturn => {
+export const useGetGroupInvitations = (): UseGetGroupReturn => {
   const [invites, setInvites] = useState<Invite[] | null>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
