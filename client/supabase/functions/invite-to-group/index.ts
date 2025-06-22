@@ -67,6 +67,7 @@ serve(async (req) => {
           {
             message,
             type: "invite",
+            status: "pending",
             updated_at: new Date().toISOString(),
             archive: false,
           },
