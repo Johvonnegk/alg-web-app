@@ -25,9 +25,7 @@ export const LeaveGroupDialog = ({
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button className="mb-10 bg-red-500 w-[10rem] text-white font-semibold hover:bg-red-700 hover:cursor-pointer">
-          Leave Group
-        </Button>
+        <Button className="mb-10 btn-danger">Leave Group</Button>
       </AlertDialogTrigger>
       <AlertDialogContent className="bg-white border-stone-300 z-[9999]">
         <AlertDialogHeader>

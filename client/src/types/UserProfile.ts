@@ -3,6 +3,8 @@ export interface UserProfile {
   fname: string;
   lname: string;
   email: string;
-  birthday: Date;
+  address: string;
+  birthday: string;
   phone: string;
+  created_at: string;
 }

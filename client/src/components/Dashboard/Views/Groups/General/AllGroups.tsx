@@ -2,6 +2,8 @@ import React from "react";
 import { useViewAllGroups } from "@/hooks/groups/useViewAllGroups";
 import { Groups } from "@/types/Group";
 import { format } from "date-fns";
+import { Button } from "@/components/ui/button";
+import toast from "react-hot-toast";
 import {
   Card,
   CardContent,
@@ -10,27 +12,58 @@ import {
   CardTitle,
   CardFooter,
 } from "@/components/ui/card";
+import { useJoinGroup } from "@/hooks/groups/useJoinGroup";
 const AllGroups = () => {
   const { groups, loading, error } = useViewAllGroups();
-
+  const { join: joinGroup, loading: joinLoading } = useJoinGroup();
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error</p>;
+  const roleMap = {
+    1: "admin",
+    2: "Tier 1",
+    4: "Tier 2",
+    5: "Tier 3",
+    6: "Tier 4",
+  };
 
+  const requestToJoin = async (groupId: number, email: string) => {
+    const result = await joinGroup(groupId, email);
+    if (result.success) {
+      toast.success("Successfully requested to join group");
+    } else {
+      toast.error(`Error joining the group: ${result.error}`);
+    }
+  };
   return (
-    <div className="grid grid-cols-4">
+    <div className="grid grid-cols-4 gap-x-10">
       {groups?.map((group) => {
         const formattedDate = format(new Date(group.created_at), "yyyy-MM-dd");
         return (
           <Card key={group.name} className="border-stone-300">
             <CardHeader>
-              <CardTitle>{group.name}</CardTitle>
+              <CardTitle>Group Name: {group.name}</CardTitle>
               <CardDescription>
-                Group leader: {group.users.fname} {group.users.lname}
+                <strong>Group leader: </strong>
+                {group.users.fname} {group.users.lname}
               </CardDescription>
-              <CardDescription>Level: {group.users.role_id}</CardDescription>
+              <CardDescription className="text-stone-500">
+                <strong>{roleMap[group.users.role_id]}</strong>
+              </CardDescription>
             </CardHeader>
             <CardContent>{group.description}</CardContent>
-            <CardFooter>Since: {formattedDate}</CardFooter>
+            <CardFooter className="flex justify-center space-x-5">
+              <div>
+                <Button
+                  onClick={() =>
+                    group.id && requestToJoin(group.id, group.users.email)
+                  }
+                  className="btn-primary"
+                >
+                  Join Group
+                </Button>
+              </div>
+              <div>Since: {formattedDate}</div>
+            </CardFooter>
           </Card>
         );
       })}

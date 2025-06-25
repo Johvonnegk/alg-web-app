@@ -2,7 +2,7 @@ import { useEffect, useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useUserProfile } from "../../hooks/useUserProfile";
 import { useAuth } from "../../context/AuthContext";
-import Overview from "../../components/Dashboard/Views/Overview";
+import Overview from "../../components/Dashboard/Views/Overview/Overview";
 import Groups from "../../components/Dashboard/Views/Groups/Groups";
 import Growth from "../../components/Dashboard/Views/Growth/Growth";
 import DashboardContainer from "../../components/Dashboard/DashboardContainer";
@@ -35,13 +35,13 @@ const Dashboard = () => {
     if (!profile) return null;
     switch (view) {
       case "overview":
-        return <Overview />;
+        return <Overview profile={profile} />;
       case "groups":
-        return <Groups role={profile.role} />;
+        return <Groups role={profile.role_id} />;
       case "growth":
         return <Growth />;
       default:
-        return <Overview />;
+        return <Overview profile={profile} />;
     }
   }, [view, profile]);
 

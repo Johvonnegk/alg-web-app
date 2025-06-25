@@ -7,4 +7,5 @@ export interface Gifts {
   teaching: number;
   prophecy: number;
   email?: string;
+  created_at?: string;
 }

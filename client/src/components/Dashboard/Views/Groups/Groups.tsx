@@ -9,7 +9,7 @@ import { useViewManagedGroups } from "../../../../hooks/groups/useViewManagedGro
 import AllGroups from "./General/AllGroups";
 import toast from "react-hot-toast";
 
-const Groups = () => {
+const Groups = ({ role }) => {
   const memberMap = ["Leader", "Apprentice", "Assistant", "General"];
   var otherGroups = false;
   const { ownerships, loading: ownLoading, error: ownError } = useOwnership();

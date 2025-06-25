@@ -8,6 +8,14 @@
   --color-accent: #006162;
 }
 
+.btn-primary{
+  @apply bg-accent text-white hover:bg-stone-200 hover:text-black
+}
+
+.btn-danger{
+  @apply bg-red-500 text-white font-semibold hover:bg-red-700
+}
+
 [aria-label*="today"],
 [data-day][class*="today"] {
   background-color: transparent !important;
@@ -16,6 +24,7 @@
 
 button {
   font-weight: 600;
+  cursor: pointer;
 }
 button:hover {
   cursor: pointer;

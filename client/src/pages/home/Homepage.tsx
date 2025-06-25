@@ -3,7 +3,7 @@ import React from "react";
 const Homepage = () => {
   return (
     <>
-      <div className="homepag-container flex flex-col top-0 w-8/10 justify-between gap-y-30">
+      {/* <div className="homepag-container flex flex-col top-0 w-8/10 justify-between gap-y-30">
         <div className="welcome-section">
           <h1 className="">Welcome to the ALG discipleship portal</h1>
           <p>
@@ -33,7 +33,7 @@ const Homepage = () => {
             nisi impedit harum?
           </p>
         </div>
-      </div>
+      </div> */}
     </>
   );
 };

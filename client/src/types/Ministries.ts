@@ -7,4 +7,5 @@ export interface Ministries {
   followUp: number;
   impressions: number;
   email?: string;
+  created_at?: string;
 }

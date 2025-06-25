@@ -235,10 +235,7 @@ const GroupManager = ({ group, memberMap }: GroupManagerProps) => {
             <RemoveMemberConfirmDialog
               onConfirm={() => removeGroupMembers()}
               trigger={
-                <Button
-                  variant="destructive"
-                  className="bg-red-500 text-white font-semibold hover:bg-red-700"
-                >
+                <Button variant="destructive" className="btn-danger">
                   Remove
                 </Button>
               }
@@ -293,10 +290,7 @@ const GroupManager = ({ group, memberMap }: GroupManagerProps) => {
               />
             </div>
             <div className="flex items-end">
-              <Button
-                type="submit"
-                className="border border-stone-300 hover:bg-accent hover:text-white"
-              >
+              <Button type="submit" className="btn-primary">
                 Transfer group ownership
               </Button>
             </div>
@@ -340,10 +334,7 @@ const GroupManager = ({ group, memberMap }: GroupManagerProps) => {
                       )}
                     />
                   </div>
-                  <Button
-                    type="submit"
-                    className="w-full border border-stone-300 hover:bg-accent hover:text-white"
-                  >
+                  <Button type="submit" className="w-full btn-primary">
                     Invite
                   </Button>
                 </div>

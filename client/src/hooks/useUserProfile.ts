@@ -35,7 +35,6 @@ export const useUserProfile = (): UseUserProfileReturn => {
           .select("*")
           .eq("user_id", user.id)
           .single();
-
         if (profileError) {
           setError(profileError.message);
         } else {

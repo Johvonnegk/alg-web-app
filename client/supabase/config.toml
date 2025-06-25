@@ -186,3 +186,36 @@ entrypoint = "./functions/view-all-groups/index.ts"
 # Specifies static files to be bundled with the function. Supports glob patterns.
 # For example, if you want to serve static HTML pages in your function:
 # static_files = [ "./functions/view-all-groups/*.html" ]
+
+[functions.get-user-ministry]
+enabled = true
+verify_jwt = true
+import_map = "./functions/get-user-ministry/deno.json"
+# Uncomment to specify a custom file path to the entrypoint.
+# Supported file extensions are: .ts, .js, .mjs, .jsx, .tsx
+entrypoint = "./functions/get-user-ministry/index.ts"
+# Specifies static files to be bundled with the function. Supports glob patterns.
+# For example, if you want to serve static HTML pages in your function:
+# static_files = [ "./functions/get-user-ministry/*.html" ]
+
+[functions.get-user-gifts]
+enabled = true
+verify_jwt = true
+import_map = "./functions/get-user-gifts/deno.json"
+# Uncomment to specify a custom file path to the entrypoint.
+# Supported file extensions are: .ts, .js, .mjs, .jsx, .tsx
+entrypoint = "./functions/get-user-gifts/index.ts"
+# Specifies static files to be bundled with the function. Supports glob patterns.
+# For example, if you want to serve static HTML pages in your function:
+# static_files = [ "./functions/get-user-gifts/*.html" ]
+
+[functions.request-to-join-group]
+enabled = true
+verify_jwt = true
+import_map = "./functions/request-to-join-group/deno.json"
+# Uncomment to specify a custom file path to the entrypoint.
+# Supported file extensions are: .ts, .js, .mjs, .jsx, .tsx
+entrypoint = "./functions/request-to-join-group/index.ts"
+# Specifies static files to be bundled with the function. Supports glob patterns.
+# For example, if you want to serve static HTML pages in your function:
+# static_files = [ "./functions/request-to-join-group/*.html" ]

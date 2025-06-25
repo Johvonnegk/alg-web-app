@@ -21,7 +21,7 @@ import {
 } from "./FormSchemas";
 import { Gifts } from "@/types/Gifts";
 import { Ministries } from "@/types/Ministries";
-import { giftsDescriptions, ministriesDesc } from "./GifttDescriptions";
+import { giftsDescriptions, ministriesDesc } from "./GiftDescriptions";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/components/ui/input";
@@ -36,7 +36,6 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-  FormDescription,
 } from "@/components/ui/form";
 const Growth = () => {
   const [helperGifts, setHelperGifts] = useState(true);
@@ -207,7 +206,7 @@ const Growth = () => {
                     <div className="w-full flex justify-center">
                       <Button
                         type="submit"
-                        className="bg-accent w-1/4 text-white rounded-lg px-2 py-0.5 hover:cursor-pointer"
+                        className="btn-primary w-1/4 rounded-lg px-2 py-0.5"
                       >
                         Submit
                       </Button>
@@ -232,7 +231,7 @@ const Growth = () => {
               </CardContent>
               <CardFooter>
                 <a
-                  className="font-semibold bg-accent px-2 py-1.5 rounded-lg hover:bg-stone-300 text-white"
+                  className="font-semibold btn-primary px-2 py-1.5 rounded-lg"
                   href="https://app.agolix.com/assessment/9922"
                 >
                   Assessment here
@@ -351,7 +350,7 @@ const Growth = () => {
                     <div className="w-full flex justify-center">
                       <Button
                         type="submit"
-                        className="w-1/4 bg-accent text-white rounded-lg px-2 py-0.5 hover:cursor-pointer"
+                        className="w-1/4 btn-primary rounded-lg px-2 py-0.5"
                       >
                         Submit
                       </Button>
@@ -379,7 +378,7 @@ const Growth = () => {
               </CardContent>
               <CardFooter>
                 <a
-                  className="font-semibold bg-accent px-2 py-1.5 rounded-lg hover:bg-stone-300 text-white"
+                  className="font-semibold btn-primary px-2 py-1.5 rounded-lg"
                   href="https://app.agolix.com/assessment/9922"
                 >
                   Assessment here

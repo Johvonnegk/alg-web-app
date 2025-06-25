@@ -19,7 +19,7 @@ serve(async (req) => {
     const { data: groups, error: groupError } = await supabase
       .from("groups")
       .select(
-        "name, description, users!owner_id(fname, lname, role_id, email), created_at"
+        "id, name, description, users!owner_id(fname, lname, role_id, email), created_at"
       );
 
     if (groupError) {

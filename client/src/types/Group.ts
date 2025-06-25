@@ -5,8 +5,9 @@ export interface GroupMember {
 }
 
 export interface Groups {
+  id?: number;
   name: string;
   description: string;
   created_at: string;
-  users: { fname: string; lname: string; role_id: number };
+  users: { fname: string; lname: string; role_id: number; email?: string };
 }

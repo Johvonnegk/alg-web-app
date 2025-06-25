@@ -56,7 +56,7 @@ const GroupInvitations = () => {
         <TableHeader className="rounded-lg">
           <TableRow className="border-stone-300 bg-stone-100">
             <TableHead className="px-4 w-2/10 rounded-tl-sm font-semibold">
-              Inviter
+              Requester
             </TableHead>
             <TableHead className="w-2/10 font-semibold">Group</TableHead>
             <TableHead className="w-1/10 font-semibold">Status</TableHead>
