@@ -19,34 +19,34 @@ serve(async (req) => {
     const id = await getUserId(req);
     if (!id) return errorResponse("Unauthorized", 401);
     const userId = await transformUserId(id);
-    const { data: recipient, error: recError } = await supabase
+    const { data: host, error: hostError } = await supabase
       .from("users")
       .select("id")
       .eq("email", email)
       .maybeSingle();
 
-    if (!recipient || recError) {
-      return errorResponse("Recipient does not exist", 400);
+    if (!host || hostError) {
+      return errorResponse("Host group does not exist", 400);
     }
-    const recipient_id = recipient?.id;
+    const hostId = host?.id;
 
     const { data: existingMember, error: existingError } = await supabase
       .from("group_members")
       .select("user_id")
       .eq("group_id", group_id)
-      .eq("user_id", recipient_id)
+      .eq("user_id", userId)
       .maybeSingle();
 
     if (existingError)
       return errorResponse("Error checking existing member", 400);
     else if (existingMember)
-      return errorResponse("User is already in your group.", 400);
+      return errorResponse("You are already in this group.", 400);
 
     const { data: existingInvite, error: checkError } = await supabase
       .from("group_invites")
       .select("id")
       .eq("sender_id", userId)
-      .eq("recipient_id", recipient_id)
+      .eq("recipient_id", hostId)
       .eq("group_id", group_id)
       .maybeSingle();
 
@@ -61,7 +61,7 @@ serve(async (req) => {
         .update([
           {
             message,
-            type: "invite",
+            type: "join_request",
             status: "pending",
             updated_at: new Date().toISOString(),
             archive: false,
@@ -82,9 +82,9 @@ serve(async (req) => {
         .insert([
           {
             sender_id: userId,
-            recipient_id,
+            recipient_id: hostId,
             group_id,
-            type: "invite",
+            type: "join_request",
             message,
           },
         ])
@@ -92,7 +92,7 @@ serve(async (req) => {
         .maybeSingle();
 
       if (invError) {
-        return errorResponse(`Error sending invite: ${invError}`, 400);
+        return errorResponse(`Error sending invite: ${invError.message}`, 400);
       }
 
       inviteId = invite?.id;

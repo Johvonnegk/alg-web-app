@@ -4,9 +4,9 @@ const supabaseUrl = Deno.env.get("_SUPABASE_URL") ?? "";
 const supabaseKey = Deno.env.get("_SUPABASE_SERVICE_ROLE_KEY") ?? "";
 export const supabase = createClient(supabaseUrl, supabaseKey);
 export const corsHeaders = {
-            "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "*",
-          }
+  "Content-Type": "application/json",
+  "Access-Control-Allow-Origin": "*",
+};
 
 export function handleOptions(req: Request): Response | null {
   if (req.method === "OPTIONS") {
@@ -15,11 +15,12 @@ export function handleOptions(req: Request): Response | null {
       headers: {
         "Access-Control-Allow-Origin": "*", // or restrict to your domain
         "Access-Control-Allow-Methods": "POST, OPTIONS",
-        "Access-Control-Allow-Headers": "Content-Type, Authorization, apikey, X-Client-Info, X-Supabase-Api-Version",
+        "Access-Control-Allow-Headers":
+          "Content-Type, Authorization, apikey, X-Client-Info, X-Supabase-Api-Version",
       },
     });
   }
-  return null
+  return null;
 }
 
 export function errorResponse(
@@ -37,43 +38,46 @@ export function errorResponse(
   });
 }
 
-export async function joinGroup(group_id: string, user_id: string){
+export async function joinGroup(group_id: number, user_id: string) {
   if (!group_id || !user_id) {
-      console.error("invalid group id")
-      return errorResponse("Missing or invalid group_id/user_id")
-    }
+    console.error("invalid group or user id");
+    return false;
+  }
   const { data: _, error: joinError } = await supabase
     .from("group_members")
-    .insert([{user_id, group_id, role_id: 4}])
+    .insert([{ user_id, group_id, role_id: 4 }]);
 
-    if (joinError) return false
+  if (joinError) return false;
 
-      return true
+  return true;
 }
 
-export async function transformUserId(user_id: string){
-  if (!user_id){
-    throw new Error("No user id provided")
+export async function transformUserId(user_id: string) {
+  if (!user_id) {
+    throw new Error("No user id provided");
   }
-  const {data: user, error: getUserErr} = await supabase
+  const { data: user, error: getUserErr } = await supabase
     .from("users")
     .select("id")
     .eq("user_id", user_id)
-    .single()
+    .single();
 
-  if (getUserErr || !user){
-    throw new Error("User not found")
+  if (getUserErr || !user) {
+    throw new Error("User not found");
   }
-  return user.id
+  return user.id;
 }
 
-export async function getUserId(req: Request): Promise<string | null>{
-  const authHeader = req.headers.get("Authorization")
+export async function getUserId(req: Request): Promise<string | null> {
+  const authHeader = req.headers.get("Authorization");
   const jwt = authHeader?.replace("Bearer ", "");
-  if (!jwt) return null
-  const {data: { user }, error} = await supabase.auth.getUser(jwt)
+  if (!jwt) return null;
+  const {
+    data: { user },
+    error,
+  } = await supabase.auth.getUser(jwt);
   if (error || !user) {
-    return null
+    return null;
   }
-  return user.id
+  return user.id;
 }

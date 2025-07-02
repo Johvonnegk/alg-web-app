@@ -33,6 +33,7 @@ serve(async (req) => {
           sender:sender_id(fname, lname), 
           recipient:recipient_id(fname, lname), 
           groups(name),
+          type,
           created_at,
           updated_at
         `

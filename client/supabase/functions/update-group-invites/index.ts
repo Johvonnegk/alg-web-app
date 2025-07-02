@@ -5,55 +5,76 @@
 // Setup type definitions for built-in Supabase Runtime APIs
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { serve } from "https://deno.land/std@0.177.0/http/server.ts";
-import { joinGroup, errorResponse, supabase, corsHeaders, handleOptions } from "../utils/helper.ts"
+import {
+  joinGroup,
+  errorResponse,
+  supabase,
+  corsHeaders,
+  handleOptions,
+} from "../utils/helper.ts";
 
 serve(async (req) => {
-  const optionRes = handleOptions(req)
-  if (optionRes) return optionRes
+  const optionRes = handleOptions(req);
+  if (optionRes) return optionRes;
 
-  try{
+  try {
     const { invite_id, accepted } = await req.json();
 
     if (!invite_id || typeof accepted !== "boolean") {
-          return errorResponse("Missing or invalid invite_id/accepted", 400)
-        }
-
-    const status = accepted ? "accepted" : "declined" 
-    const { data: invite, error: invitesError } = await supabase
-      .from("group_invites")
-      .update({updated_at: new Date().toISOString(), status})
-      .eq("id", invite_id)
-      .eq("status", "pending")
-      .select("group_id, recipient_id")
-      .maybeSingle()
-
-    if (invitesError) return errorResponse(invitesError? invitesError.message: `Error updating invites: ${invitesError}`, 500)
-    
-    if (accepted && invite){
-      const inviteRes = await joinGroup(invite.group_id, invite.recipient_id);
-      if (!inviteRes) {
-        return errorResponse("There was an error joining the group", 400)
-      }
-    } else if (!invite){
-      return new Response(
-      JSON.stringify({
-        message: "Could not find an invite to update.",
-        success: false,
-      }), {status: 200, headers: corsHeaders}
-    )
+      return errorResponse("Missing or invalid invite_id/accepted", 400);
     }
 
-        
+    const status = accepted ? "accepted" : "declined";
+    const { data: invite, error: invitesError } = await supabase
+      .from("group_invites")
+      .update({ updated_at: new Date().toISOString(), status })
+      .eq("id", invite_id)
+      .eq("status", "pending")
+      .select("group_id, sender_id, recipient_id, type")
+      .maybeSingle();
+
+    if (invitesError)
+      return errorResponse(
+        invitesError
+          ? invitesError.message
+          : `Error updating invites: ${invitesError}`,
+        500
+      );
+
+    let newGroupMemberId;
+    if (invite.type === "invite") newGroupMemberId = invite.recipient_id;
+    else if (invite.type === "join_request") {
+      newGroupMemberId = invite.sender_id;
+    }
+
+    if (accepted && invite) {
+      const inviteRes = await joinGroup(invite.group_id, newGroupMemberId);
+      if (!inviteRes) {
+        return errorResponse("There was an error joining the group", 400);
+      }
+    } else if (!invite) {
+      return new Response(
+        JSON.stringify({
+          message: "Could not find an invite to update.",
+          success: false,
+        }),
+        { status: 200, headers: corsHeaders }
+      );
+    }
+
     return new Response(
       JSON.stringify({
-        message: `Successfully ${status} invite ${accepted ? "and joined the group." : "."}`,
-        success: true
-      }), {status: 200, headers: corsHeaders}
-    )
+        message: `Successfully ${status} invite ${
+          accepted ? "and joined the group." : "."
+        }`,
+        success: true,
+      }),
+      { status: 200, headers: corsHeaders }
+    );
   } catch (e) {
     return errorResponse(`${e}`, 500);
   }
-})
+});
 
 /* To invoke locally:
 

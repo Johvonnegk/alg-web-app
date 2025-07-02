@@ -18,7 +18,7 @@ const AllGroups = () => {
   const { join: joinGroup, loading: joinLoading } = useJoinGroup();
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error</p>;
-  const roleMap = {
+  const roleMap: { [key: number]: string } = {
     1: "admin",
     2: "Tier 1",
     4: "Tier 2",
@@ -55,7 +55,9 @@ const AllGroups = () => {
               <div>
                 <Button
                   onClick={() =>
-                    group.id && requestToJoin(group.id, group.users.email)
+                    group.id &&
+                    group.users.email &&
+                    requestToJoin(group.id, group.users.email)
                   }
                   className="btn-primary"
                 >

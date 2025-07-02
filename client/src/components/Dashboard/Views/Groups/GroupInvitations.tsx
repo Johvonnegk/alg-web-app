@@ -55,15 +55,16 @@ const GroupInvitations = () => {
         <TableCaption className="">Manage your group invites</TableCaption>
         <TableHeader className="rounded-lg">
           <TableRow className="border-stone-300 bg-stone-100">
-            <TableHead className="px-4 w-2/10 rounded-tl-sm font-semibold">
+            <TableHead className="px-4 rounded-tl-sm font-semibold">
               Requester
             </TableHead>
-            <TableHead className="w-2/10 font-semibold">Group</TableHead>
-            <TableHead className="w-1/10 font-semibold">Status</TableHead>
-            <TableHead className="w-3/10 text-center font-semibold">
+            <TableHead className="font-semibold">Invite Type</TableHead>
+            <TableHead className="font-semibold">Group</TableHead>
+            <TableHead className="font-semibold">Status</TableHead>
+            <TableHead className="text-center font-semibold">
               Accept/Decline
             </TableHead>
-            <TableHead className="w-2/10 font-semibold">Archive</TableHead>
+            <TableHead className="font-semibold">Archive</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -77,6 +78,13 @@ const GroupInvitations = () => {
                 >
                   <TableCell className="px-4 rounded-bl-sm">
                     {invite.sender.fname} {invite.sender.lname}
+                  </TableCell>
+                  <TableCell>
+                    {invite.type === "invite"
+                      ? "Invited you to join their group"
+                      : invite.type === "join_request"
+                      ? "Requested to join your group"
+                      : ""}
                   </TableCell>
                   <TableCell>{invite.groups.name}</TableCell>
                   <TableCell
@@ -120,7 +128,7 @@ const GroupInvitations = () => {
             <TableRow className="">
               <TableCell
                 className="font-semibold text-xl text-center bg-stone-200 rounded-br-sm rounded-bl-sm"
-                colSpan={5}
+                colSpan={6}
               >
                 You have no group invites...
               </TableCell>

@@ -1,6 +1,7 @@
 export interface Invite {
   id: number;
   status: string;
+  type: string;
   sender: {
     fname: string;
     lname: string;
