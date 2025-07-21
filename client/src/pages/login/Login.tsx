@@ -69,14 +69,16 @@ const Login = () => {
         <Card className="w-full max-w-sm border-0">
           <CardHeader>
             <CardTitle className="text-lg">Login to your account</CardTitle>
-            <CardDescription>
-              Don't have an account?{" "}
-              <Link
-                className="text-accent font-semibold underline"
-                to="/signup"
-              >
-                Sign-up here
-              </Link>
+            <CardDescription className="flex flex-col ">
+              <span>
+                Don't have an account?{" "}
+                <Link
+                  className="text-accent font-semibold underline"
+                  to="/signup"
+                >
+                  Sign-up here
+                </Link>
+              </span>
             </CardDescription>
             <CardDescription className="text-stone-400">
               *Enter your account information below to login
@@ -138,6 +140,15 @@ const Login = () => {
             </Form>
           </CardContent>
           <CardFooter className="flex-col gap-2">
+            <span className="text-sm">
+              Forgot your password?{" "}
+              <Link
+                className="text-accent font-semibold underline"
+                to="/recovery"
+              >
+                Reset it here
+              </Link>
+            </span>
             {error ? <p className="text-sm text-red-500">{error}</p> : ""}
           </CardFooter>
         </Card>

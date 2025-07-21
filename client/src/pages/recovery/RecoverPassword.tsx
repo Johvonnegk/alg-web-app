@@ -54,7 +54,7 @@ const Recovery = () => {
       const result = await updatePassword(values.password);
       if (result) {
         toast.success("Successfully updated password");
-        navigate("/recovery-confirmation");
+        navigate("/login");
       } else {
         toast.error("Failed to update password");
       }
