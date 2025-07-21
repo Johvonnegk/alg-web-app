@@ -9,8 +9,8 @@ import {
 } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
-  differenceInCalendarDays,
-  differenceInCalendarMonths,
+  differenceInDays,
+  differenceInMonths,
   differenceInHours,
   differenceInYears,
   format,
@@ -30,59 +30,53 @@ const Overview: React.FC<OverviewProps> = ({ profile }) => {
   const { gifts, loading: giftsLoading, error: giftsError } = useGetGifts();
   const formattedBirthDay = format(new Date(profile.birthday), "yyyy-MM-dd");
   const age = differenceInYears(new Date(), new Date(profile.birthday));
+  const now = new Date();
+  const createdAt = new Date(profile.created_at);
   let timeUnit;
   let memberSince = differenceInYears(new Date(), new Date(profile.created_at));
   timeUnit = "year";
-  if (memberSince < 1) {
-    memberSince = differenceInCalendarMonths(
-      new Date(),
-      new Date(profile.created_at)
-    );
-    timeUnit = "month";
-    if (memberSince < 1) {
-      memberSince = differenceInCalendarDays(
-        new Date(),
-        new Date(profile.created_at)
-      );
-      timeUnit = "day";
-      if (memberSince < 1) {
-        memberSince = differenceInHours(
-          new Date(),
-          new Date(profile.created_at)
-        );
-        timeUnit = "hour";
-      }
-    }
+  if ((memberSince = differenceInYears(now, createdAt)) >= 1) {
+    timeUnit = memberSince === 1 ? "year" : "years";
+  } else if ((memberSince = differenceInMonths(now, createdAt)) >= 1) {
+    timeUnit = memberSince === 1 ? "month" : "months";
+  } else if ((memberSince = differenceInDays(now, createdAt)) >= 1) {
+    timeUnit = memberSince === 1 ? "day" : "days";
+  } else {
+    memberSince = differenceInHours(now, createdAt);
+    timeUnit = memberSince === 1 ? "hour" : "hours";
   }
 
   return (
-    <div className="px-14 w-full grid grid-cols-2 gap-x-10">
-      <Card>
-        <CardHeader>
-          <CardTitle>
-            {profile.fname} {profile.lname}'s Profile
-          </CardTitle>
-          <CardDescription>Overview:</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <CardDescription>Your information</CardDescription>
-          <ul>
-            <li>Email: {profile.email}</li>
-            <li>Profile: {profile.phone}</li>
-            <li>Address: {profile.address}</li>
-            <li>Birthday: {formattedBirthDay}</li>
-            <li>Age: {age}</li>
-            <li>
-              Joined: {memberSince} {timeUnit}(s) ago
-            </li>
-          </ul>
-        </CardContent>
-        <CardFooter>
-          <Button className="hover:bg-accent hover:text-white">
-            Edit Profile
-          </Button>
-        </CardFooter>
-      </Card>
+    <div className="px-14 w-full grid grid-cols-2 gap-y-10 gap-x-10">
+      <div className="col-span-2 flex justify-center">
+        <Card className="w-1/2">
+          <CardHeader>
+            <CardTitle>
+              {profile.fname} {profile.lname}'s Profile
+            </CardTitle>
+            <CardDescription>Overview:</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <CardDescription>Your information</CardDescription>
+            <ul>
+              <li key="email">Email: {profile.email}</li>
+              <li key="phone">Profile: {profile.phone}</li>
+              <li key="address">Address: {profile.address}</li>
+              <li key="birthday">Birthday: {formattedBirthDay}</li>
+              <li key="age">Age: {age}</li>
+              <li key="join date">
+                Joined: {memberSince} {timeUnit}(s) ago
+              </li>
+            </ul>
+          </CardContent>
+          <CardFooter>
+            <Button className="hover:bg-accent hover:text-white">
+              Edit Profile
+            </Button>
+          </CardFooter>
+        </Card>
+      </div>
+
       {minLoading ? (
         <div className="flex flex-col space-y-3">
           <Skeleton className="h-[125px] w-[250px] rounded-xl" />
@@ -100,8 +94,8 @@ const Overview: React.FC<OverviewProps> = ({ profile }) => {
               <CardDescription>View your scores:</CardDescription>
             </CardHeader>
             <CardContent>
-              {ministries.map((ministry) => (
-                <ul>
+              {ministries.map((ministry, index) => (
+                <ul key={`ministry-${index}`}>
                   <li key="outreach">Outreach: {ministry.outreach}</li>
                   <li key="techArts">Tech Arts: {ministry.techArts}</li>
                   <li key="worship">Worship: {ministry.worship}</li>
@@ -141,8 +135,8 @@ const Overview: React.FC<OverviewProps> = ({ profile }) => {
               <CardDescription>View your scores:</CardDescription>
             </CardHeader>
             <CardContent>
-              {gifts.map((gift) => (
-                <ul>
+              {gifts.map((gift, index) => (
+                <ul key={`gifts-${index}`}>
                   <li key="serving">Serving: {gift.serving}</li>
                   <li key="administrator">
                     Administrator: {gift.administrator}

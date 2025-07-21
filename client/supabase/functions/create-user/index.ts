@@ -23,7 +23,16 @@ serve(async (req) => {
     const { data: user, error } = await supabase
       .from("users")
       .insert([
-        { user_id, fname, lname, email, phone, address, birthday, role_id: 6 },
+        {
+          user_id,
+          fname,
+          lname,
+          email,
+          phone,
+          address,
+          birthday,
+          role_id: 6,
+        },
       ])
       .select();
 

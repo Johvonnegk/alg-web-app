@@ -46,7 +46,7 @@ serve(async (req) => {
     const groupId = group?.group_id;
     const { data: groupMembers, error: groupError } = await supabase
       .from("group_members")
-      .select("role_id, users(fname, lname, email), groups(name)")
+      .select("role_id, users(fname, lname, role_id, email), groups(name)")
       .eq("group_id", groupId);
 
     if (groupError) {

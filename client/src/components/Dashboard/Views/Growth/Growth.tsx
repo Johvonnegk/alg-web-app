@@ -222,7 +222,7 @@ const Growth = () => {
                 <CardDescription></CardDescription>
               </CardHeader>
               <CardContent>
-                <p>
+                <p key="Spiritual Growth Description">
                   Lorem ipsum dolor sit amet consectetur adipisicing elit.
                   Eligendi dignissimos facilis rerum accusamus earum. Labore ex
                   asperiores error laborum quo recusandae suscipit? Harum
@@ -369,7 +369,7 @@ const Growth = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <p>
+                <p key="Kingdom Description">
                   Lorem ipsum dolor sit amet consectetur adipisicing elit.
                   Eligendi dignissimos facilis rerum accusamus earum. Labore ex
                   asperiores error laborum quo recusandae suscipit? Harum

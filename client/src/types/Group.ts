@@ -1,6 +1,6 @@
 export interface GroupMember {
   role_id: number;
-  users: { fname: string; lname: string; email?: string };
+  users: { fname: string; lname: string; role_id?: number; email?: string };
   groups: { name: string; id?: number };
 }
 

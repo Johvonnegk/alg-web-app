@@ -32,6 +32,10 @@ interface AuthContextType {
   }) => Promise<{ success: boolean; error?: any; data?: any }>;
 
   signOut: () => void;
+
+  recoverPassword: (email: string) => Promise<Boolean>;
+
+  updatePassword: (email: string) => Promise<Boolean>;
 }
 
 // Create the context with initial undefined, and we will check it in the hook
@@ -54,6 +58,16 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
         console.error("There was a problem logging in: ", error);
         return { success: false, error: error.message };
       }
+
+      const userId = data.user?.id;
+      if (userId) {
+        await supabase.functions.invoke("user-confirmation", {
+          body: {
+            id: userId,
+          },
+        });
+      }
+
       return { success: true, data };
     } catch (error) {
       console.error("[ERROR] An error occurred while logging in: ", error);
@@ -77,6 +91,9 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
       {
         email,
         password,
+        options: {
+          emailRedirectTo: "http://localhost:5173/email-verified",
+        },
       }
     );
 
@@ -109,6 +126,29 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
     return { success: true, data: user };
   };
 
+  const recoverPassword = async (email: string) => {
+    console.log("recover password");
+    const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: "http://localhost:5173/recover-password",
+    });
+    if (error) {
+      return false;
+    } else {
+      return true;
+    }
+  };
+
+  const updatePassword = async (password: string) => {
+    const { data, error } = await supabase.auth.updateUser({
+      password: password,
+    });
+    if (error) {
+      return false;
+    } else {
+      return true;
+    }
+  };
+
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
@@ -139,6 +179,8 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
         signInUser,
         signUpNewUser,
         signOut,
+        recoverPassword,
+        updatePassword,
         email: session?.user?.email ?? null,
         userId: session?.user?.id ?? null,
       }}

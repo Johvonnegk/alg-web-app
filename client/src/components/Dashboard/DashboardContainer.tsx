@@ -5,9 +5,17 @@ import Overview from "./Views/Overview/Overview";
 import Groups from "./Views/Groups/Groups";
 import Growth from "./Views/Growth/Growth";
 import { UserProfile } from "@/types/UserProfile";
-const DashboardContainer = ({ profile, View }) => {
+interface DashboardContainerProps {
+  profile: UserProfile;
+  View: React.ReactNode;
+}
+
+const DashboardContainer: React.FC<DashboardContainerProps> = ({
+  profile,
+  View,
+}) => {
   return (
-    <div className="bg-white rounded-lg pb-4 shadow h-fit">
+    <div className="w-full bg-white rounded-lg pb-4 shadow h-fit">
       <TopBar name={profile.fname} />
       {View}
     </div>

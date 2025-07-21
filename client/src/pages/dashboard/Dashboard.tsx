@@ -5,8 +5,10 @@ import { useAuth } from "../../context/AuthContext";
 import Overview from "../../components/Dashboard/Views/Overview/Overview";
 import Groups from "../../components/Dashboard/Views/Groups/Groups";
 import Growth from "../../components/Dashboard/Views/Growth/Growth";
+import Admin from "../../components/Dashboard/Views/Admin/Admin";
 import DashboardContainer from "../../components/Dashboard/DashboardContainer";
-import Sidebar from "../../components/Sidebar/Sidebar";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { AppSidebar } from "@/components/Sidebar/AppSidebar";
 import { UserProfile } from "../../types/UserProfile";
 const Dashboard = () => {
   const { signOut } = useAuth();
@@ -37,9 +39,11 @@ const Dashboard = () => {
       case "overview":
         return <Overview profile={profile} />;
       case "groups":
-        return <Groups role={profile.role_id} />;
+        return <Groups />;
       case "growth":
         return <Growth />;
+      case "admin":
+        if (profile.role_id >= 2) return <Admin />;
       default:
         return <Overview profile={profile} />;
     }
@@ -58,11 +62,19 @@ const Dashboard = () => {
     );
 
   return (
-    <main className="grid gap-4 p-4 grid-cols-[220px_1fr]">
-      <Sidebar profile={profile} onSelect={setView} selected={view} />
-      <DashboardContainer profile={profile} View={renderView} />
-      <button onClick={handleSignOut}> Sign Out</button>
-    </main>
+    <>
+      <SidebarProvider>
+        <AppSidebar profile={profile} onSelect={setView} selected={view} />
+        <main className="w-full px-10">
+          <DashboardContainer profile={profile} View={renderView} />
+        </main>
+      </SidebarProvider>
+      {/* <main className="grid gap-4 p-4 grid-cols-[220px_1fr]">
+        <Sidebar profile={profile} onSelect={setView} selected={view} />
+        <DashboardContainer profile={profile} View={renderView} />
+        <button onClick={handleSignOut}> Sign Out</button>
+      </main> */}
+    </>
   );
 };
 

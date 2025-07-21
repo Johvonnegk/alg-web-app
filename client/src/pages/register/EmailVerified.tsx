@@ -1,36 +1,27 @@
-// src/pages/EmailVerified.tsx
-
+import React from "react";
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { supabase } from "../../supabaseClient";
+import { MailCheck } from "lucide-react";
+import { Link } from "react-router-dom";
+import { supabase } from "@/supabaseClient";
 
-const EmailVerified = () => {
-  const navigate = useNavigate();
-
+const ConfirmSuccess = () => {
   useEffect(() => {
-    const handleRedirect = async () => {
-      const {
-        data: { session },
-        error,
-      } = await supabase.auth.getSession();
-
-      if (session) {
-        // Successful confirmation — redirect to dashboard
-        navigate("/dashboard");
-      } else {
-        console.error("Email not confirmed:", error);
-        // Optionally show a retry or error message
-      }
-    };
-
-    handleRedirect();
-  }, [navigate]);
-
+    supabase.auth.signOut();
+  }, []);
   return (
-    <div className="min-h-screen flex items-center justify-center">
-      <h2 className="text-xl font-semibold">Verifying email...</h2>
+    <div className="min-h-screen flex flex-col items-center justify-center text-center px-4">
+      <MailCheck className="h-16 w-16 text-accent mb-4" />
+      <h1 className="text-2xl font-semibold mb-2">
+        You've confirmed your account
+      </h1>
+      <p className="text-stone-600 max-w-md">
+        Successfully confirmed email, please{" "}
+        <Link className="text-accent font-semibold" to="/login">
+          login
+        </Link>
+      </p>
     </div>
   );
 };
 
-export default EmailVerified;
+export default ConfirmSuccess;

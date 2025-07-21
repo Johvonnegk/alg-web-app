@@ -1,5 +1,4 @@
 @import "tailwindcss";
-@import "tailwindcss/preflight"
 @import "tw-animate-css";
 
 @theme {
@@ -29,3 +28,5 @@ button {
 button:hover {
   cursor: pointer;
 }
+
+

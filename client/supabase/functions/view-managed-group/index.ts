@@ -5,58 +5,63 @@
 // Setup type definitions for built-in Supabase Runtime APIs
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { serve } from "https://deno.land/std@0.177.0/http/server.ts";
-import { errorResponse, transformUserId, getUserId, supabase, corsHeaders, handleOptions } from "../utils/helper.ts"
+import {
+  errorResponse,
+  transformUserId,
+  getUserId,
+  supabase,
+  corsHeaders,
+  handleOptions,
+} from "../utils/helper.ts";
 
-async function fetchGroupMembers(groupId: number){
-  const {data, error} = await supabase
-  .from("group_members")
-  .select("role_id, users(fname, lname, email), groups(name, id)")
-  .eq("group_id", groupId)
+async function fetchGroupMembers(groupId: number) {
+  const { data, error } = await supabase
+    .from("group_members")
+    .select("role_id, users(fname, lname, role_id, email), groups(name, id)")
+    .eq("group_id", groupId);
 
-  if (error){
-    console.error(error)
-    return []
+  if (error) {
+    console.error(error);
+    return [];
   }
-  return data
-
+  return data;
 }
 
 serve(async (req) => {
   // Handle preflight OPTIONS request for CORS
-  const optionRes = handleOptions(req)
-  if (optionRes) return optionRes
+  const optionRes = handleOptions(req);
+  if (optionRes) return optionRes;
 
   try {
-    const id = await getUserId(req)
-    if (!id) return errorResponse("Unauthorized", 401)
-    const userId = await transformUserId(id)
+    const id = await getUserId(req);
+    if (!id) return errorResponse("Unauthorized", 401);
+    const userId = await transformUserId(id);
     const { data: groups, error: groupIdError } = await supabase
       .from("group_members")
       .select("group_id, role_id")
       .eq("user_id", userId)
-      .in("role_id", [1, 2])
+      .in("role_id", [1, 2]);
 
     if (groupIdError || !groups) {
       console.error("Error fetching group:", groupIdError);
       return errorResponse(groupIdError?.message || "Unknown error", 403);
     }
-    const leaderGroupId = groups?.find(g => g.role_id === 1)
-    const coLeaderGroupId = groups?.find(g => g.role_id === 2)
-    const leaderMembers = leaderGroupId ? await fetchGroupMembers(leaderGroupId.group_id) : [];
-    const coLeaderMembers = coLeaderGroupId ? await fetchGroupMembers(coLeaderGroupId.group_id) : [];
-    return new Response(
-      JSON.stringify({leaderMembers, coLeaderMembers}),
-      {
-        status: 200,
-        headers: corsHeaders,
-      }
-    );
-
+    const leaderGroupId = groups?.find((g) => g.role_id === 1);
+    const coLeaderGroupId = groups?.find((g) => g.role_id === 2);
+    const leaderMembers = leaderGroupId
+      ? await fetchGroupMembers(leaderGroupId.group_id)
+      : [];
+    const coLeaderMembers = coLeaderGroupId
+      ? await fetchGroupMembers(coLeaderGroupId.group_id)
+      : [];
+    return new Response(JSON.stringify({ leaderMembers, coLeaderMembers }), {
+      status: 200,
+      headers: corsHeaders,
+    });
   } catch (e) {
     return errorResponse(`${e}`, 500);
   }
 });
-
 
 /* To invoke locally:
 

@@ -7,6 +7,7 @@ import { useTransferOwnership } from "@/hooks/groups/useTransferOwnership";
 import { useRemoveGroupMembers } from "@/hooks/groups/useRemoveGroupMembers";
 import { RemoveMemberConfirmDialog } from "../RemoveMemberConfirmDialog";
 import { useInviteToGroup } from "@/hooks/groups/useInviteToGroup";
+import { useManageGroupRoles } from "@/hooks/groups/useManageGroupRoles";
 import { GroupMember } from "../../../../../types/Group";
 import toast from "react-hot-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -41,7 +42,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { columns as baseColumns } from "./Table/columns";
+import { DataTable } from "./Table/data-table";
 import { useAuth } from "../../../../../context/AuthContext";
+import { memberMap } from "../Groups";
 
 const inviteFormSchema = z.object({
   email: z.string().email(),
@@ -53,20 +57,29 @@ const transferFormSchema = z.object({
 
 interface GroupManagerProps {
   group: GroupMember[];
-  memberMap: string[];
 }
 
-const GroupManager = ({ group, memberMap }: GroupManagerProps) => {
+const GroupManager = ({ group }: GroupManagerProps) => {
   const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
   const groupInfo = group[0];
   const groupName = groupInfo?.groups.name;
   const groupId = groupInfo?.groups.id;
   const { transferOwnership: transfer, loading: tansLoading } =
     useTransferOwnership();
+  const { handlePromotion: promote, loading: promoteLoading } =
+    useManageGroupRoles();
   const { removeMembers, loading: removeLoading } = useRemoveGroupMembers();
   const { leaveGroup: leave, loading: leaveLoding } = useLeaveGroup();
   const { inviteToGroup: invite, loading: invLoading } = useInviteToGroup();
   const { email: sessionEmail } = useAuth();
+  const roleId = (() => {
+    for (const member of group) {
+      if (member.users.email && member.users.email === sessionEmail) {
+        return member.role_id;
+      }
+    }
+    return Infinity;
+  })();
 
   const transferForm = useForm<z.infer<typeof transferFormSchema>>({
     resolver: zodResolver(transferFormSchema),
@@ -115,8 +128,22 @@ const GroupManager = ({ group, memberMap }: GroupManagerProps) => {
     }
   };
 
-  const handlePromotion = async (promotion: boolean, member: GroupMember) => {
-    console.log("Handle promotion: ", promotion, "Member: ", member);
+  const handlePromotion = async (promotion: boolean, email: string) => {
+    const id = groupId ?? 0;
+    const result = await promote(id, promotion, email);
+    if (result.success && promotion) {
+      toast.success("Successfully promoted user");
+      setTimeout(() => {
+        window.location.reload();
+      }, 800);
+    } else if (result.success && !promotion) {
+      toast.success("Successfully demoted user");
+      setTimeout(() => {
+        window.location.reload();
+      }, 800);
+    } else {
+      toast.error("Could not manage members, please try again.");
+    }
   };
 
   const transferOwnership = async (
@@ -147,90 +174,18 @@ const GroupManager = ({ group, memberMap }: GroupManagerProps) => {
       );
     }
   };
+
+  const columns = baseColumns({
+    sessionEmail: sessionEmail ?? "",
+    handlePromotion,
+    selectedUsers,
+    toggleUserSelection,
+  });
   return (
     <div className="group-management w-full grid grid-cols-2 gap-2">
       <div className="managed-members flex flex-col">
-        <form onSubmit={removeGroupMembers}>
-          <Table className="mb-10 bg-stone-100 rounded-sm overflow-hidden">
-            <TableCaption>
-              Manage Group Members for{" "}
-              <span className="font-semibold text-accent">{groupName}</span>
-            </TableCaption>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="w-1/10 font-semibold">Member</TableHead>
-                <TableHead className="w-2/10 font-semibold">Name</TableHead>
-                <TableHead className="w-1/10 font-semibold">Role</TableHead>
-                <TableHead className="w-2/10 font-semibold">Email</TableHead>
-                <TableHead className="w-3/10 text-center font-semibold">
-                  Manage Member
-                </TableHead>
-                <TableHead className="w-1/10 font-semibold">
-                  Remove Member
-                </TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {group?.map((member: GroupMember, index: number) => (
-                <TableRow
-                  key={index}
-                  className={`w-full ${
-                    index % 2 === 0 ? "bg-stone-200" : "bg-stone-100"
-                  }`}
-                >
-                  <TableCell>{index + 1}</TableCell>
-                  <TableCell>
-                    {member.users.fname} {member.users.lname}
-                  </TableCell>
-                  <TableCell>{memberMap[member.role_id - 1]}</TableCell>
-                  <TableCell>{member.users.email}</TableCell>
-                  {member.users.email === sessionEmail ? (
-                    <>
-                      <TableCell></TableCell>
-                      <TableCell></TableCell>
-                    </>
-                  ) : (
-                    <>
-                      <TableCell className="flex justify-around">
-                        <div>
-                          <Button
-                            onClick={() => handlePromotion(true, member)}
-                            className="hover:cursor-pointer bg-transparent"
-                          >
-                            <FaArrowAltCircleUp className="size-5 text-green-500" />
-                          </Button>
-                        </div>
-
-                        <div>
-                          <Button
-                            onClick={() => handlePromotion(false, member)}
-                            className="hover:cursor-pointer bg-transparent"
-                          >
-                            <FaArrowAltCircleDown className="size-5 text-red-600" />
-                          </Button>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex justify-center items-center h-full">
-                          <Checkbox
-                            checked={selectedUsers.includes(
-                              member.users.email ?? ""
-                            )}
-                            onCheckedChange={() =>
-                              toggleUserSelection(member.users.email ?? "")
-                            }
-                            className="w-5 h-5 border data-[state=checked]:text-green-500 border-gray-400 rounded"
-                          >
-                            <span className="size-5">✔</span>
-                          </Checkbox>
-                        </div>
-                      </TableCell>
-                    </>
-                  )}
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+        <form className="mb-5" onSubmit={removeGroupMembers}>
+          <DataTable columns={columns} data={group} />
           {selectedUsers.length > 0 && (
             <RemoveMemberConfirmDialog
               onConfirm={() => removeGroupMembers()}

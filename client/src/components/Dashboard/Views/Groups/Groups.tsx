@@ -4,13 +4,20 @@ import CreateGroup from "./CreateGroup";
 import ManageGroup from "./Manager/ManageGroup";
 import GeneralView from "./General/GeneralView";
 import { useCreateAccess } from "../../../../hooks/groups/useCreateAccess";
-import GroupInvitations from "./GroupInvitations";
+import GroupInvitations from "./Invitations/GroupInvitations";
 import { useViewManagedGroups } from "../../../../hooks/groups/useViewManagedGroups";
 import AllGroups from "./General/AllGroups";
 import toast from "react-hot-toast";
-
-const Groups = ({ role }) => {
-  const memberMap = ["Leader", "Apprentice", "Assistant", "General"];
+export const roleMap = {
+  0: "N/A",
+  1: "Admin",
+  2: "Tier 1",
+  4: "Tier 2",
+  5: "Tier 3",
+  6: "Tier 4",
+};
+export const memberMap = ["Leader", "Apprentice", "Assistant", "General"];
+const Groups = () => {
   var otherGroups = false;
   const { ownerships, loading: ownLoading, error: ownError } = useOwnership();
   const {
@@ -74,7 +81,7 @@ const Groups = ({ role }) => {
       <hr className="mb-20 text-stone-300 w-7/8" />
       <div className="groups-contianer grid grid-cols-2 gap-x-20 gap-y-15">
         <div className="view-group">
-          <GeneralView memberMap={memberMap} otherGroups={otherGroups} />
+          <GeneralView otherGroups={otherGroups} />
         </div>
         <div>
           <GroupInvitations />
@@ -84,7 +91,6 @@ const Groups = ({ role }) => {
             <ManageGroup
               leaderGroup={leaderGroup}
               coLeaderGroup={coLeaderGroup}
-              memberMap={memberMap}
             />
           ) : null}
         </div>

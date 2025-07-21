@@ -11,11 +11,13 @@ import {
   TableRow,
 } from "@/components/ui/table";
 interface GeneralViewProps {
-  memberMap: string[];
   otherGroups?: boolean;
 }
+import { columns } from "./Table/columns";
+import { DataTable } from "./Table/data-table";
+import { roleMap, memberMap } from "../Groups";
 
-const GeneralView = ({ memberMap, otherGroups }: GeneralViewProps) => {
+const GeneralView = ({ otherGroups }: GeneralViewProps) => {
   const { group, loading, error } = useViewGeneralGroups();
   if (loading) return <p>Loading...</p>;
   if (error) return <p className="text-red-600">Error: {error}</p>;
@@ -24,39 +26,7 @@ const GeneralView = ({ memberMap, otherGroups }: GeneralViewProps) => {
   return (
     <div className="view-group w-full flex justify-center">
       {group ? (
-        <Table className="mx-auto border-collapse overflow-hidden rounded-sm">
-          <TableCaption>
-            Members in{" "}
-            <span className="text-accent font-semibold">{groupName}</span>
-          </TableCaption>
-          <TableHeader>
-            <TableRow className=" border-stone-300 font-semibol bg-stone-100">
-              <TableHead className="px-4 font-semibold">Member</TableHead>
-              <TableHead className="font-semibold">Name</TableHead>
-              <TableHead className="font-semibold">Role</TableHead>
-              <TableHead className="text-center font-semibold">Email</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {group?.map((member: GroupMember, index: number) => (
-              <TableRow
-                key={index}
-                className={`w-full border-stone-300 ${
-                  index % 2 === 0 ? "bg-stone-200" : "bg-stone-100"
-                }`}
-              >
-                <TableCell className="px-4">{index + 1}</TableCell>
-                <TableCell>
-                  {member.users.fname} {member.users.lname}
-                </TableCell>
-                <TableCell>{memberMap[member.role_id - 1]}</TableCell>
-                <TableCell className="text-center">
-                  {member.users.email ?? ""}
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+        <DataTable columns={columns} data={group} />
       ) : (
         <p className="text-stone-500">
           You are not in any {otherGroups ? "other " : ""}groups

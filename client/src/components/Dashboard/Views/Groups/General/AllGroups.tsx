@@ -13,18 +13,13 @@ import {
   CardFooter,
 } from "@/components/ui/card";
 import { useJoinGroup } from "@/hooks/groups/useJoinGroup";
+import { roleMap } from "../Groups";
+
 const AllGroups = () => {
   const { groups, loading, error } = useViewAllGroups();
   const { join: joinGroup, loading: joinLoading } = useJoinGroup();
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error</p>;
-  const roleMap: { [key: number]: string } = {
-    1: "admin",
-    2: "Tier 1",
-    4: "Tier 2",
-    5: "Tier 3",
-    6: "Tier 4",
-  };
 
   const requestToJoin = async (groupId: number, email: string) => {
     const result = await joinGroup(groupId, email);
