@@ -92,9 +92,7 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
         email,
         password,
         options: {
-          emailRedirectTo: `http://https://${
-            import.meta.env.VITE_SITE_URL
-          }/email-verified`,
+          emailRedirectTo: `${import.meta.env.VITE_SITE_URL}/email-verified`,
         },
       }
     );
@@ -128,11 +126,8 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
   };
 
   const recoverPassword = async (email: string) => {
-    console.log("recover password");
     const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `http://https://${
-        import.meta.env.VITE_SITE_URL
-      }/recover-password`,
+      redirectTo: `${import.meta.env.VITE_SITE_URL}/recover-password`,
     });
     if (error) {
       return false;
