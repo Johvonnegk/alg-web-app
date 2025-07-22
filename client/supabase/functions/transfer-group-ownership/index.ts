@@ -30,7 +30,7 @@ serve(async (req) => {
 
     const newOwnerId = newOwnerUser.id;
 
-    if (![1, 2, 4, 5].includes(newOwnerUser.role_id))
+    if (newOwnerUser.role_id >= 5)
       return errorResponse("User cannot manage a group", 400);
 
     const { data: newOwner, error: newOwnerError } = await supabase
