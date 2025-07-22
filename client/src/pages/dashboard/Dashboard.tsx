@@ -43,7 +43,7 @@ const Dashboard = () => {
       case "growth":
         return <Growth />;
       case "admin":
-        if (profile.role_id >= 2) return <Admin />;
+        if (profile.role_id <= 2) return <Admin />;
       default:
         return <Overview profile={profile} />;
     }

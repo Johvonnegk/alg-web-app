@@ -51,7 +51,7 @@ export const columns: ColumnDef<GroupMember>[] = [
     header: "Level",
     cell: ({ row }) =>
       row.original.users.role_id !== undefined
-        ? `${roleMap[row.original.users.role_id as keyof typeof roleMap]}`
+        ? `${roleMap[row.original.users.role_id]}`
         : "",
   },
   {

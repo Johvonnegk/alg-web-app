@@ -48,7 +48,10 @@ const Login = () => {
   const handleLogIn = async (values: z.infer<typeof formSchema>) => {
     setLoading(true);
     try {
-      const result = await signInUser(values.email, values.password);
+      const result = await signInUser(
+        values.email.trim().toLowerCase(),
+        values.password
+      );
       if (result?.success) {
         navigate("/dashboard");
         toast.success("Login success");

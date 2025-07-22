@@ -7,4 +7,5 @@ export interface UserProfile {
   birthday: string;
   phone: string;
   created_at: string;
+  confirmed?: string;
 }

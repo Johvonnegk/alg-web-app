@@ -1,6 +1,5 @@
 import React from "react";
 import { useViewAllGroups } from "@/hooks/groups/useViewAllGroups";
-import { Groups } from "@/types/Group";
 import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
 import toast from "react-hot-toast";

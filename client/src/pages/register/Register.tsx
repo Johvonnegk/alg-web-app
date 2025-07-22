@@ -42,12 +42,18 @@ const formSchema = z
     fname: z
       .string()
       .min(2, { message: "First name must be at least 2 characters." })
-      .max(50, { message: "First name max of 50 characters." }),
+      .max(50, { message: "First name max of 50 characters." })
+      .transform((val) => val.trim()),
     lname: z
       .string()
       .min(2, { message: "Last name must be at least 2 characters." })
-      .max(50, { message: "First name max of 50 characters." }),
-    email: z.string().email(),
+      .max(50, { message: "First name max of 50 characters." })
+      .transform((val) => val.trim()),
+
+    email: z
+      .string()
+      .email()
+      .transform((val) => val.trim().toLowerCase()),
     password: z
       .string()
       .min(8, { message: "Password must be at least 8 characters." })

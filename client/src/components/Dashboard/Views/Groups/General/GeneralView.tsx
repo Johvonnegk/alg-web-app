@@ -1,21 +1,10 @@
 import React from "react";
 import { useViewGeneralGroups } from "../../../../../hooks/groups/useViewGeneralGroup";
-import { GroupMember } from "../../../../../types/Group";
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 interface GeneralViewProps {
   otherGroups?: boolean;
 }
 import { columns } from "./Table/columns";
 import { DataTable } from "./Table/data-table";
-import { roleMap, memberMap } from "../Groups";
 
 const GeneralView = ({ otherGroups }: GeneralViewProps) => {
   const { group, loading, error } = useViewGeneralGroups();

@@ -7,15 +7,7 @@ import { useCreateAccess } from "../../../../hooks/groups/useCreateAccess";
 import GroupInvitations from "./Invitations/GroupInvitations";
 import { useViewManagedGroups } from "../../../../hooks/groups/useViewManagedGroups";
 import AllGroups from "./General/AllGroups";
-import toast from "react-hot-toast";
-export const roleMap = {
-  0: "N/A",
-  1: "Admin",
-  2: "Tier 1",
-  4: "Tier 2",
-  5: "Tier 3",
-  6: "Tier 4",
-};
+export const roleMap = ["N/A", "Admin", "Tier 1", "Tier 2", "Tier 3", "Tier 4"];
 export const memberMap = ["Leader", "Apprentice", "Assistant", "General"];
 const Groups = () => {
   var otherGroups = false;

@@ -2,12 +2,12 @@ import { useEffect, useState } from "react";
 import { supabase } from "../supabaseClient";
 
 interface UseUserRoleReturn {
-  role: number | null,
-  loading: boolean,
-  error: string,
+  role: number | null;
+  loading: boolean;
+  error: string;
 }
 
-export const useUserRole = ():UseUserRoleReturn => {
+export const useUserRole = (): UseUserRoleReturn => {
   const [role, setRole] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -17,25 +17,9 @@ export const useUserRole = ():UseUserRoleReturn => {
       try {
         setLoading(true);
 
-        // Get current auth user
-        const {
-          data: { user },
-          error: userError,
-        } = await supabase.auth.getUser();
-
-        if (userError || !user) {
-          setError(userError?.message || "No authenticated user found");
-          return;
-        }
-
         // Fetch user profile from 'users' table using ID
         const { data, error: roleError } = await supabase.functions.invoke(
-          "get-user-role",
-          {
-            body: {
-              user_id: user?.id,
-            },
-          }
+          "get-user-role"
         );
 
         if (roleError || !data) {

@@ -12,8 +12,6 @@ import { GroupMember } from "../../../../../types/Group";
 import toast from "react-hot-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
-import { FaArrowAltCircleUp } from "react-icons/fa";
-import { FaArrowAltCircleDown } from "react-icons/fa";
 import { Input } from "@/components/ui/input";
 import { LeaveGroupDialog } from "../LeaveGroupDialog";
 import { z } from "zod";
@@ -33,19 +31,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import { columns as baseColumns } from "./Table/columns";
 import { DataTable } from "./Table/data-table";
 import { useAuth } from "../../../../../context/AuthContext";
-import { memberMap } from "../Groups";
 
 const inviteFormSchema = z.object({
   email: z.string().email(),
