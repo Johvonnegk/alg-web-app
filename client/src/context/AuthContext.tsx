@@ -92,12 +92,12 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
         email,
         password,
         options: {
-          emailRedirectTo:
-            "http://https://alg-web-app.vercel.app/email-verified",
+          emailRedirectTo: `http://https://${
+            import.meta.env.VITE_SITE_URL
+          }/email-verified`,
         },
       }
     );
-
     if (signUpError) {
       return { success: false, error: signUpError };
     }
