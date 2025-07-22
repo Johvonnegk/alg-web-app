@@ -31,7 +31,7 @@ serve(async (req) => {
           phone,
           address,
           birthday,
-          role_id: 6,
+          role_id: 5,
         },
       ])
       .select();

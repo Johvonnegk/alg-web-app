@@ -92,7 +92,8 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
         email,
         password,
         options: {
-          emailRedirectTo: "http://localhost:5173/email-verified",
+          emailRedirectTo:
+            "http://https://alg-web-app.vercel.app/email-verified",
         },
       }
     );
