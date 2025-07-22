@@ -86,7 +86,6 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
   }) => {
     const { fname, lname, email, phone, password, address, birthday } =
       signupInfo;
-
     const { data: signUpData, error: signUpError } = await supabase.auth.signUp(
       {
         email,
