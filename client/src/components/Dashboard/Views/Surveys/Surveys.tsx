@@ -216,7 +216,7 @@ const Surveys = () => {
               </form>
             </Form>
 
-            <Card className="border-accent shadow-lg h-fit place-self-center">
+            <Card className="gifts-description border-accent shadow-lg h-fit place-self-center">
               <CardHeader>
                 <CardTitle>What is spritual growth?</CardTitle>
                 <CardDescription></CardDescription>
@@ -251,7 +251,7 @@ const Surveys = () => {
             </ul>
           </div>
 
-          <div className="grid grid-rows-2 gap-y-2">
+          <div className="ministries-container grid grid-rows-2 gap-y-2">
             <Form {...ministriesForm}>
               <form onSubmit={ministriesForm.handleSubmit(submitMinistries)}>
                 <Card className="border-accent shadow-lg">
@@ -408,6 +408,11 @@ const Surveys = () => {
                 </li>
               ))}
             </ul>
+          </div>
+          <div className="discipleship-form">
+            <Form>
+              <form action=""></form>
+            </Form>
           </div>
         </div>
       </div>

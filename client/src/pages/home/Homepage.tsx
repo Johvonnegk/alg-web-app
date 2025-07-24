@@ -1,8 +1,9 @@
 import React from "react";
-
+import { MdOutlineConstruction } from "react-icons/md";
+import { LuConstruction } from "react-icons/lu";
 const Homepage = () => {
   return (
-    <>
+    <div className="flex flex-col items-center justify-center min-h-screen text-accent">
       {/* <div className="homepag-container flex flex-col top-0 w-8/10 justify-between gap-y-30">
         <div className="welcome-section">
           <h1 className="">Welcome to the ALG discipleship portal</h1>
@@ -34,7 +35,10 @@ const Homepage = () => {
           </p>
         </div>
       </div> */}
-    </>
+      <MdOutlineConstruction size={50} />
+      <LuConstruction size={50} />
+      <div className="text-2xl">This page is under construction</div>
+    </div>
   );
 };
 

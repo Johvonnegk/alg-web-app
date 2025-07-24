@@ -20,7 +20,7 @@ const iconSize = `!w-5.5 !h-5.5`;
 const items = [
   {
     title: "Home",
-    value: "home",
+    value: "overview",
     icon: <FaHome className={iconSize} />,
   },
   {

@@ -119,7 +119,6 @@ export const ministriesFormSchema = z.object({
     ),
 });
 export type MinistriesFormInput = z.input<typeof ministriesFormSchema>;
-
 export const gifts = {
   serving: { display: "Serving", name: "serving" },
   administrator: { display: "Administrator", name: "administrator" },
@@ -139,3 +138,11 @@ export const ministries = {
   followUp: { display: "Follow-Ups", name: "followUp" },
   impressions: { display: "First Impressions", name: "impressions" },
 };
+
+export const discipleshipFormSchema = z.object({
+  stage: z.enum(["babe", "child", "youth", "wall", "parent", "grandParent"], {
+    required_error: "Stage is required",
+    invalid_type_error: "Invalid stage selected",
+  }),
+});
+export type DiscipleshipFormInput = z.input<typeof discipleshipFormSchema>;

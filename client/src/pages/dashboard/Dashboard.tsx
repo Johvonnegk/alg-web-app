@@ -4,8 +4,9 @@ import { useUserProfile } from "../../hooks/useUserProfile";
 import { useAuth } from "../../context/AuthContext";
 import Overview from "../../components/Dashboard/Views/Overview/Overview";
 import Groups from "../../components/Dashboard/Views/Groups/Groups";
-import Growth from "../../components/Dashboard/Views/Growth/Surveys";
+import Growth from "../../components/Dashboard/Views/Surveys/Surveys";
 import Admin from "../../components/Dashboard/Views/Admin/Admin";
+import Dashboard404 from "../../components/Dashboard/Views/404/Dashboard404";
 import DashboardContainer from "../../components/Dashboard/DashboardContainer";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/Sidebar/AppSidebar";
@@ -45,7 +46,7 @@ const Dashboard = () => {
       case "admin":
         if (profile.role_id <= 2) return <Admin />;
       default:
-        return <Overview profile={profile} />;
+        return <Dashboard404 />;
     }
   }, [view, profile]);
 

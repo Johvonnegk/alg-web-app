@@ -3,7 +3,7 @@ import { useState } from "react";
 import TopBar from "./TopBar";
 import Overview from "./Views/Overview/Overview";
 import Groups from "./Views/Groups/Groups";
-import Growth from "./Views/Growth/Surveys";
+import Growth from "./Views/Surveys/Surveys";
 import { UserProfile } from "@/types/UserProfile";
 interface DashboardContainerProps {
   profile: UserProfile;
