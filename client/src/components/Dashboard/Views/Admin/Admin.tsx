@@ -6,10 +6,12 @@ import { useGetUsers } from "@/hooks/admin/useGetUsers";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useAuth } from "@/context/AuthContext";
 import { useManageAdminRoles } from "@/hooks/admin/useManageAdminRoles";
+import { useDeleteUser } from "@/hooks/admin/useDeleteUser";
 const Admin = () => {
   const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
   const { email: sessionEmail } = useAuth();
   const { role, loading: roleLoading, error: roleError } = useUserRole();
+  const { handleDelete: remove, loading: removeLoading } = useDeleteUser();
   const { handlePromotion: promote, loading: promoteLoading } =
     useManageAdminRoles();
   const handlePromotion = async (promotion: boolean, email: string) => {
@@ -36,11 +38,24 @@ const Admin = () => {
         : [...prev, userId]
     );
   };
+
+  const handleDelete = async (email: string) => {
+    const result = await remove(email);
+    if (result.success) {
+      toast.success("Successfully deleted user");
+      setTimeout(() => {
+        window.location.reload();
+      }, 800);
+    } else {
+      toast.error("An error occured while deleting the user");
+    }
+  };
   const { users: userList, loading, error } = useGetUsers();
   const columns = baseColumns({
     sessionEmail: sessionEmail ?? "",
     userRole: role ?? 5,
     handlePromotion,
+    handleDelete,
     selectedUsers,
     toggleUserSelection,
   });

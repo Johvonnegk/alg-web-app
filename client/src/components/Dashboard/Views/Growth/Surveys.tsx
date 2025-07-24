@@ -27,8 +27,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { useSubmitGifts } from "@/hooks/growth/useSubmitGifts";
-import { useSubmitMinistry } from "@/hooks/growth/useSubmitMinistry";
+import { useSubmitGifts } from "@/hooks/surveys/useSubmitGifts";
+import { useSubmitMinistry } from "@/hooks/surveys/useSubmitMinistry";
 import {
   Form,
   FormControl,
@@ -37,7 +37,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-const Growth = () => {
+const Surveys = () => {
   const [helperGifts, setHelperGifts] = useState(true);
   const [helperMins, setHelperMinistries] = useState(true);
   const [error, setError] = useState("");
@@ -111,7 +111,7 @@ const Growth = () => {
     <>
       <div className="px-14">
         <h1 className="text-2xl mb-2 font-semibold border-stone-300">
-          Group Settings
+          Spritual Surveys
         </h1>
         <hr className="mb-20 text-stone-300 w-7/8" />
         <div className="gifts-container w-full grid grid-cols-2 gap-20 mb-20 ">
@@ -415,4 +415,4 @@ const Growth = () => {
   );
 };
 
-export default Growth;
+export default Surveys;

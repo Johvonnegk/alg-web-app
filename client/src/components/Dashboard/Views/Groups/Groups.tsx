@@ -49,6 +49,8 @@ const Groups = () => {
   };
 
   const setCreateAccess = () => {
+    console.log("ALLOWED: ", allowed);
+    console.log("OWNERSHIPS: ", ownerships);
     if (allowed) {
       if (!ownerships) {
         return true;
@@ -65,6 +67,7 @@ const Groups = () => {
 
   const manageAccess = setManageAccess();
   const createAccess = setCreateAccess();
+  console.log("CREATE ACCESS: ", createAccess);
   return (
     <div className="px-14">
       <h1 className="text-2xl mb-2 font-semibold border-stone-300">

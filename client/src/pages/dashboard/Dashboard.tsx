@@ -4,7 +4,7 @@ import { useUserProfile } from "../../hooks/useUserProfile";
 import { useAuth } from "../../context/AuthContext";
 import Overview from "../../components/Dashboard/Views/Overview/Overview";
 import Groups from "../../components/Dashboard/Views/Groups/Groups";
-import Growth from "../../components/Dashboard/Views/Growth/Growth";
+import Growth from "../../components/Dashboard/Views/Growth/Surveys";
 import Admin from "../../components/Dashboard/Views/Admin/Admin";
 import DashboardContainer from "../../components/Dashboard/DashboardContainer";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
@@ -40,7 +40,7 @@ const Dashboard = () => {
         return <Overview profile={profile} />;
       case "groups":
         return <Groups />;
-      case "growth":
+      case "surveys":
         return <Growth />;
       case "admin":
         if (profile.role_id <= 2) return <Admin />;

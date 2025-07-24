@@ -31,7 +31,7 @@ serve(async (req) => {
 
     if (roleError || !role) return errorResponse(`${roleError?.message}`, 400);
     let allowed;
-    role.role_id > 5 ? (allowed = true) : (allowed = false);
+    role.role_id < 5 ? (allowed = true) : (allowed = false);
     return new Response(
       JSON.stringify({
         message: "Fetched create access",

@@ -19,8 +19,8 @@ import { useUserProfile } from "@/hooks/useUserProfile";
 import { Button } from "@/components/ui/button";
 import { UserProfile } from "@/types/UserProfile";
 import { Mail, MapPin } from "lucide-react";
-import { useGetMinistry } from "@/hooks/growth/useGetMinisty";
-import { useGetGifts } from "@/hooks/growth/useGetGifts";
+import { useGetMinistry } from "@/hooks/surveys/useGetMinisty";
+import { useGetGifts } from "@/hooks/surveys/useGetGifts";
 interface OverviewProps {
   profile: UserProfile; // Replace 'any' with the actual type of profile if known
 }

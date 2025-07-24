@@ -13,28 +13,35 @@ import {
 import { Button } from "../ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { FaHome, FaLeaf } from "react-icons/fa";
+import { RiSurveyFill } from "react-icons/ri";
 import { MdGroup, MdAdminPanelSettings } from "react-icons/md";
 import { useAuth } from "@/context/AuthContext";
+const iconSize = `!w-5.5 !h-5.5`;
 const items = [
   {
     title: "Home",
     value: "home",
-    icon: <FaHome />,
+    icon: <FaHome className={iconSize} />,
   },
   {
     title: "Groups",
     value: "groups",
-    icon: <MdGroup />,
+    icon: <MdGroup className={iconSize} />,
   },
   {
-    title: "Growth",
+    title: "Surveys",
+    value: "surveys",
+    icon: <RiSurveyFill className={iconSize} />,
+  },
+  {
+    title: "Growth Tracks",
     value: "growth",
-    icon: <FaLeaf />,
+    icon: <FaLeaf className={iconSize} />,
   },
   {
     title: "Admin",
     value: "admin",
-    icon: <MdAdminPanelSettings />,
+    icon: <MdAdminPanelSettings className={iconSize} />,
   },
 ];
 
@@ -72,7 +79,7 @@ export function AppSidebar({ profile, onSelect, selected }) {
                 return (
                   <SidebarMenuItem key={title}>
                     <SidebarMenuButton
-                      className={`rounded-lg transition-[box-shadow,_background-color,_color] ${
+                      className={`rounded-lg text-lg transition-[box-shadow,_background-color,_color] ${
                         selected === value
                           ? "text-accent border-0 bg-white shadow"
                           : "text-stone-500"
@@ -89,7 +96,7 @@ export function AppSidebar({ profile, onSelect, selected }) {
                 return (
                   <SidebarMenuItem key={title}>
                     <SidebarMenuButton
-                      className={`rounded-lg transition-[box-shadow,_background-color,_color] ${
+                      className={`rounded-lg text-lg transition-[box-shadow,_background-color,_color] ${
                         selected === value
                           ? "text-accent border-0 bg-white shadow"
                           : "text-stone-500"
