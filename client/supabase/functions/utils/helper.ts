@@ -81,3 +81,97 @@ export async function getUserId(req: Request): Promise<string | null> {
   }
   return user.id;
 }
+
+export async function checkViewingAuthorization(
+  authorization: string,
+  userId: string,
+  targetId: string
+): Promise<
+  { success: boolean } | { error: { message: string; code: number } }
+> {
+  const CO_LEADER_ROLE_ID = 2;
+  if (userId === targetId) return { success: true };
+  if (authorization === "admin" && targetId) {
+    const { data: user, error: adminError } = await supabase
+      .from("users")
+      .select("role_id")
+      .eq("id", userId)
+      .maybeSingle();
+
+    if (adminError)
+      return { error: { message: "An unexpected error occured", code: 400 } };
+    if (user && user.role_id !== 1)
+      return { error: { message: "Unauthorized", code: 401 } };
+
+    return { success: true };
+  } else if (authorization === "group_leader" && targetId) {
+    // Step 1: Find the group that targetId belongs to
+    const { data: targetMember, error: targetError } = await supabase
+      .from("group_members")
+      .select("group_id")
+      .eq("user_id", targetId)
+      .neq("role_id", 1)
+      .maybeSingle();
+
+    if (targetError || !targetMember)
+      return {
+        error: { message: "Target user not found or not viewable", code: 404 },
+      };
+
+    const targetGroupId = targetMember.group_id;
+
+    // Step 2: Check if userId is either the group owner OR a co-leader in the same group
+    const { data: group, error: groupError } = await supabase
+      .from("groups")
+      .select("id, owner_id")
+      .eq("id", targetGroupId)
+      .maybeSingle();
+
+    if (groupError || !group)
+      return { error: { message: "Group not found", code: 404 } };
+
+    const isOwner = group.owner_id === userId;
+
+    if (isOwner) return { success: true };
+
+    // Step 3: Check if userId is a co-leader (role_id === 2) in the same group
+    const { data: coLeader, error: coError } = await supabase
+      .from("group_members")
+      .select("id")
+      .eq("group_id", targetGroupId)
+      .eq("user_id", userId)
+      .eq("role_id", CO_LEADER_ROLE_ID)
+      .maybeSingle();
+
+    if (coError)
+      return {
+        error: { message: "Error checking co-leader status", code: 400 },
+      };
+
+    if (!coLeader)
+      return {
+        error: {
+          message: "Unauthorized (not a leader of this group)",
+          code: 403,
+        },
+      };
+
+    return { success: true };
+  } else {
+    return { error: { message: "Bad request", code: 403 } };
+  }
+}
+
+export async function transformUserEmailtoId(
+  email: string
+): Promise<string | null> {
+  const { data: user, error: userError } = await supabase
+    .from("users")
+    .select("id")
+    .eq("email", email)
+    .maybeSingle();
+
+  if (userError || !user) return null;
+
+  return user.id;
+}

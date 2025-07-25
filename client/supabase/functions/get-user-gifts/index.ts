@@ -7,30 +7,44 @@ import {
   supabase,
   corsHeaders,
   handleOptions,
+  checkViewingAuthorization,
+  transformUserEmailtoId,
 } from "../utils/helper.ts";
 
 serve(async (req) => {
   const optionRes = handleOptions(req);
   if (optionRes) return optionRes;
-  const { limit } = await req.json();
+  const { authorization, email } = await req.json();
   const id = await getUserId(req);
   if (!id) return errorResponse("Unauthorized", 401);
   const userId = await transformUserId(id);
+  let targetId;
+  if (email) {
+    targetId = await transformUserEmailtoId(email);
+  } else {
+    targetId = userId;
+  }
+  const result = await checkViewingAuthorization(
+    authorization,
+    userId,
+    targetId
+  );
+  if ("error" in result)
+    return errorResponse(result.error.message, result.error.code);
 
   const { data, error } = await supabase
     .from("gifts")
     .select(
       "id, serving, administrator, encouragement, giving, mercy, teaching, prophecy, created_at"
     )
-    .eq("user_id", userId)
-    .order("created_at", { ascending: false })
-    .limit(limit || 5);
+    .eq("user_id", targetId)
+    .order("created_at", { ascending: false });
 
   if (error || !data) return errorResponse("Could not get gifts data", 400);
 
   return new Response(
     JSON.stringify({
-      message: "Fetched roles successfully",
+      message: "Fetched gifts successfully",
       gifts: data,
     }),
     {

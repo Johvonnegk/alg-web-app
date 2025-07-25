@@ -15,12 +15,15 @@ import {
   differenceInYears,
   format,
 } from "date-fns";
-import { useUserProfile } from "@/hooks/useUserProfile";
+import { columns as giftColumns } from "./Tables/GiftsTable/columns";
+import { columns as minColumns } from "./Tables/MinistriesTable/columns";
+import { columns as discColumns } from "./Tables/DiscipleshipTable/columns";
+import { DataTable } from "./Tables/data-table";
 import { Button } from "@/components/ui/button";
 import { UserProfile } from "@/types/UserProfile";
-import { Mail, MapPin } from "lucide-react";
 import { useGetMinistry } from "@/hooks/surveys/useGetMinisty";
 import { useGetGifts } from "@/hooks/surveys/useGetGifts";
+import { useGetDiscipleship } from "@/hooks/surveys/useGetDiscipleship";
 interface OverviewProps {
   profile: UserProfile; // Replace 'any' with the actual type of profile if known
 }
@@ -28,6 +31,11 @@ interface OverviewProps {
 const Overview: React.FC<OverviewProps> = ({ profile }) => {
   const { ministries, loading: minLoading, error: minError } = useGetMinistry();
   const { gifts, loading: giftsLoading, error: giftsError } = useGetGifts();
+  const {
+    discipleship,
+    loading: discipleshipLoading,
+    error: discipleshipError,
+  } = useGetDiscipleship();
   const formattedBirthDay = format(new Date(profile.birthday), "yyyy-MM-dd");
   const age = differenceInYears(new Date(), new Date(profile.birthday));
   const now = new Date();
@@ -45,7 +53,7 @@ const Overview: React.FC<OverviewProps> = ({ profile }) => {
     memberSince = differenceInHours(now, createdAt);
     timeUnit = memberSince === 1 ? "hour" : "hours";
   }
-
+  console.log("Discipleship: ", discipleship);
   return (
     <div className="px-14 w-full grid grid-cols-2 gap-y-10 gap-x-10">
       <div className="col-span-2 flex justify-center">
@@ -65,7 +73,7 @@ const Overview: React.FC<OverviewProps> = ({ profile }) => {
               <li key="birthday">Birthday: {formattedBirthDay}</li>
               <li key="age">Age: {age}</li>
               <li key="join date">
-                Joined: {memberSince} {timeUnit}(s) ago
+                Joined: {memberSince} {timeUnit} ago
               </li>
             </ul>
           </CardContent>
@@ -88,34 +96,14 @@ const Overview: React.FC<OverviewProps> = ({ profile }) => {
       ) : (
         ministries &&
         ministries.length > 0 && (
-          <Card>
-            <CardHeader>
-              <CardTitle>Ministry Score</CardTitle>
-              <CardDescription>View your scores:</CardDescription>
-            </CardHeader>
-            <CardContent>
-              {ministries.map((ministry, index) => (
-                <ul key={`ministry-${index}`}>
-                  <li key="outreach">Outreach: {ministry.outreach}</li>
-                  <li key="techArts">Tech Arts: {ministry.techArts}</li>
-                  <li key="worship">Worship: {ministry.worship}</li>
-                  <li key="smallGroups">
-                    Small Groups: {ministry.smallGroups}
-                  </li>
-                  <li key="youth">Children & Youth: {ministry.youth}</li>
-                  <li key="followUp">Follow Ups: {ministry.followUp}</li>
-                  <li key="impressions">Impressions: {ministry.impressions}</li>
-                  Date Added:{" "}
-                  {ministry.created_at
-                    ? format(
-                        new Date(ministry.created_at),
-                        "yyyy-MM-dd:hh-mm a"
-                      )
-                    : "N/A"}
-                </ul>
-              ))}
-            </CardContent>
-          </Card>
+          <div>
+            <h2 className="font-semibold text-2xl">Ministries Data</h2>
+            <DataTable
+              columns={minColumns}
+              data={ministries}
+              showDate={false}
+            />
+          </div>
         )
       )}
       {giftsLoading ? (
@@ -129,33 +117,33 @@ const Overview: React.FC<OverviewProps> = ({ profile }) => {
       ) : (
         gifts &&
         gifts.length > 0 && (
-          <Card>
-            <CardHeader>
-              <CardTitle>Gifts Score</CardTitle>
-              <CardDescription>View your scores:</CardDescription>
-            </CardHeader>
-            <CardContent>
-              {gifts.map((gift, index) => (
-                <ul key={`gifts-${index}`}>
-                  <li key="serving">Serving: {gift.serving}</li>
-                  <li key="administrator">
-                    Administrator: {gift.administrator}
-                  </li>
-                  <li key="encouragement">
-                    Encouragement: {gift.encouragement}
-                  </li>
-                  <li key="giving">Giving: {gift.giving}</li>
-                  <li key="Mercy">Mercy: {gift.mercy}</li>
-                  <li key="teaching">Teaching: {gift.teaching}</li>
-                  <li key="prophecy">Prophecy: {gift.prophecy}</li>
-                  Date Added:{" "}
-                  {gift.created_at
-                    ? format(new Date(gift.created_at), "yyyy-MM-dd ~ hh:mm a")
-                    : "N/A"}
-                </ul>
-              ))}
-            </CardContent>
-          </Card>
+          <div>
+            <h2 className="font-semibold text-2xl">Gifts Data</h2>
+            <DataTable columns={giftColumns} data={gifts} showDate={false} />
+          </div>
+        )
+      )}
+      {discipleshipLoading ? (
+        <div className="flex flex-col space-y-3">
+          <Skeleton className="h-[125px] w-[250px] rounded-xl" />
+          <div className="space-y-2">
+            <Skeleton className="h-4 w-[250px]" />
+            <Skeleton className="h-4 w-[200px]" />
+          </div>
+        </div>
+      ) : (
+        discipleship &&
+        discipleship.length > 0 && (
+          <div className="col-span-2  flex justify-center">
+            <div className="w-1/2">
+              <h2 className="font-semibold text-2xl">Discipleship Data</h2>
+              <DataTable
+                columns={discColumns}
+                data={discipleship}
+                showDate={true}
+              />
+            </div>
+          </div>
         )
       )}
     </div>

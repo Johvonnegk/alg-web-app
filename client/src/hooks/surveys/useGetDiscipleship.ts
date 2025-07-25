@@ -1,29 +1,29 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/supabaseClient";
-import { Gifts } from "@/types/Gifts";
-import { min } from "date-fns";
+import { Discipleship } from "@/types/Discipleship";
 
-interface UseGetGiftsReturn {
-  gifts: Gifts[] | null;
-  fetchGifts: (authorization: string, targetId: string) => Promise<void>;
+interface UseGetDiscipleshipReturn {
+  discipleship: Discipleship[] | null;
+  fetchDiscipleship: () => Promise<void>;
   loading: boolean;
   error: string;
 }
 
-export const useGetGifts = (
+export const useGetDiscipleship = (
   authorization?: string,
   email?: string
-): UseGetGiftsReturn => {
-  const [gifts, setGifts] = useState<Gifts[]>([]);
+): UseGetDiscipleshipReturn => {
+  const [discipleship, setDiscipleship] = useState<Discipleship[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
-  const fetchGifts = async () => {
+  const fetchDiscipleship = async () => {
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke(
-        "get-user-gifts",
+        "get-user-discipleship",
         { body: { authorization, email } }
       );
+
       if (error) {
         setError(error);
         return;
@@ -31,8 +31,8 @@ export const useGetGifts = (
         setError("Could not get gifts data");
         return;
       }
-      if (data.gifts && data.gifts.length > 0) {
-        setGifts(data.gifts);
+      if (data.discipleship && data.discipleship.length > 0) {
+        setDiscipleship(data.discipleship);
       }
     } finally {
       setLoading(false);
@@ -40,8 +40,8 @@ export const useGetGifts = (
   };
 
   useEffect(() => {
-    fetchGifts();
+    fetchDiscipleship();
   }, [authorization, email]);
 
-  return { gifts, fetchGifts, loading, error };
+  return { discipleship, fetchDiscipleship, loading, error };
 };

@@ -1,26 +1,31 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/supabaseClient";
 import { Ministries } from "@/types/Ministries";
-import { min } from "date-fns";
 
 interface UseGetMinistryReturn {
   ministries: Ministries[] | null;
-  fetchMinistry: (limit?: number) => Promise<void>;
+  fetchMinistry: () => Promise<void>;
   loading: boolean;
   error: string;
 }
 
-export const useGetMinistry = (): UseGetMinistryReturn => {
+export const useGetMinistry = (
+  authorization?: string,
+  email?: string
+): UseGetMinistryReturn => {
   const [ministries, setMin] = useState<Ministries[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
-  const fetchMinistry = async (limit?: number) => {
+  const fetchMinistry = async () => {
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke(
         "get-user-ministry",
         {
-          body: { limit: limit || 5 },
+          body: {
+            authorization,
+            email,
+          },
         }
       );
 
@@ -52,8 +57,8 @@ export const useGetMinistry = (): UseGetMinistryReturn => {
   };
 
   useEffect(() => {
-    fetchMinistry(5);
-  }, []);
+    fetchMinistry();
+  }, [authorization, email]);
 
   return { ministries, fetchMinistry, loading, error };
 };

@@ -139,7 +139,30 @@ export const ministries = {
   impressions: { display: "First Impressions", name: "impressions" },
 };
 
+export const discipleship = {
+  babe: { display: "Babe", name: "babe" },
+  child: { display: "Child", name: "child" },
+  youth: { display: "Youth", name: "youth" },
+  wall: { display: "The Wall", name: "wall" },
+  parent: { display: "Parent", name: "parent" },
+  grandParent: { display: "Grand Parent", name: "grandParent" },
+};
+
 export const discipleshipFormSchema = z.object({
+  email: z
+    .string()
+    .optional()
+    .nullable()
+    .refine(
+      (val) =>
+        val === null ||
+        val === undefined ||
+        val === "" ||
+        z.string().email().safeParse(val).success,
+      {
+        message: "Invalid email",
+      }
+    ),
   stage: z.enum(["babe", "child", "youth", "wall", "parent", "grandParent"], {
     required_error: "Stage is required",
     invalid_type_error: "Invalid stage selected",

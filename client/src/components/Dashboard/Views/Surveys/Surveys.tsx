@@ -3,6 +3,13 @@ import { Label } from "@/components/ui/label";
 import toast from "react-hot-toast";
 import { useForm } from "react-hook-form";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
   Card,
   CardContent,
   CardDescription,
@@ -18,9 +25,13 @@ import {
   ministries,
   MinistriesFormInput,
   ministriesFormSchema,
+  discipleship,
+  discipleshipFormSchema,
+  DiscipleshipFormInput,
 } from "./FormSchemas";
 import { Gifts } from "@/types/Gifts";
 import { Ministries } from "@/types/Ministries";
+import { Discipleship } from "@/types/Discipleship";
 import { giftsDescriptions, ministriesDesc } from "./GiftDescriptions";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -29,6 +40,7 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useSubmitGifts } from "@/hooks/surveys/useSubmitGifts";
 import { useSubmitMinistry } from "@/hooks/surveys/useSubmitMinistry";
+import { useSubmitDiscipleship } from "@/hooks/surveys/useSubmitDiscipleship";
 import {
   Form,
   FormControl,
@@ -40,10 +52,13 @@ import {
 const Surveys = () => {
   const [helperGifts, setHelperGifts] = useState(true);
   const [helperMins, setHelperMinistries] = useState(true);
+  const [helperDiscipleship, setHelperDiscipleship] = useState(true);
   const [error, setError] = useState("");
   const { submit: uploadGifts, loading: giftsLoading } = useSubmitGifts();
   const { submit: uploadMinistries, loading: ministriesLoading } =
     useSubmitMinistry();
+  const { submit: uploadDiscipleship, loading: discipleshipLoading } =
+    useSubmitDiscipleship();
 
   const giftsForm = useForm<GiftsFormInput>({
     resolver: zodResolver(giftsFormSchema),
@@ -71,6 +86,11 @@ const Surveys = () => {
       impressions: "",
       email: "",
     },
+  });
+
+  const discipleshipForm = useForm<DiscipleshipFormInput>({
+    resolver: zodResolver(discipleshipFormSchema),
+    defaultValues: { email: "" },
   });
   const submitGifts = async (values: Gifts) => {
     if (!helperMins && values.email === "") {
@@ -101,6 +121,22 @@ const Surveys = () => {
     if (result.success) {
       toast.success("Successfully uploaded ministry data");
       ministriesForm.reset();
+      return;
+    } else if (result.error) {
+      toast.error(result.error);
+    }
+  };
+
+  const submitDiscipleship = async (values: Discipleship) => {
+    if (!helperDiscipleship && values.email === "") {
+      toast.error("Please provide an email");
+      return;
+    }
+
+    const result = await uploadDiscipleship(values);
+    if (result.success) {
+      toast.success("Successfully uploaded discipleship data");
+      discipleshipForm.reset();
       return;
     } else if (result.error) {
       toast.error(result.error);
@@ -410,8 +446,100 @@ const Surveys = () => {
             </ul>
           </div>
           <div className="discipleship-form">
-            <Form>
-              <form action=""></form>
+            <Form {...discipleshipForm}>
+              <form
+                onSubmit={discipleshipForm.handleSubmit(submitDiscipleship)}
+              >
+                <Card className="border-accent shadow-lg w-full">
+                  <CardHeader>
+                    <CardTitle>Discipleship</CardTitle>
+                    <CardDescription>
+                      Enter your level in discipleship
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="grid grid-cols-2 w-full gap-x-5 gap-y-3">
+                    <FormField
+                      control={discipleshipForm.control}
+                      name="stage"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Discipleship Stage</FormLabel>
+                          <FormControl>
+                            <Select
+                              onValueChange={field.onChange}
+                              value={field.value}
+                            >
+                              <SelectTrigger>
+                                <SelectValue placeholder="Select stage..." />
+                              </SelectTrigger>
+                              <SelectContent className="bg-white">
+                                {Object.values(discipleship).map(
+                                  ({ name, display }) => (
+                                    <SelectItem
+                                      className="focus:text-white"
+                                      key={name}
+                                      value={name}
+                                    >
+                                      {display}
+                                    </SelectItem>
+                                  )
+                                )}
+                              </SelectContent>
+                            </Select>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    ></FormField>
+                    <div className="flex flex-col items-center gap-y-2 col-span-2">
+                      {!helperDiscipleship ? (
+                        <FormField
+                          key="email"
+                          name="email"
+                          control={discipleshipForm.control}
+                          render={({ field }) => (
+                            <FormItem className="w-1/2">
+                              <FormLabel>Email</FormLabel>
+                              <FormMessage className="text-sm text-red-500" />
+                              <FormControl>
+                                <Input
+                                  className="border-stone-300"
+                                  placeholder="mail@example.com"
+                                  {...field}
+                                />
+                              </FormControl>
+                            </FormItem>
+                          )}
+                        />
+                      ) : (
+                        <div></div>
+                      )}
+
+                      <div className="flex items-center gap-2">
+                        <Checkbox
+                          id="helper"
+                          onCheckedChange={() => {
+                            setHelperDiscipleship(!helperDiscipleship);
+                          }}
+                        />
+                        <Label htmlFor="helper">
+                          I am entering for someone else
+                        </Label>
+                      </div>
+                    </div>
+                  </CardContent>
+                  <CardFooter>
+                    <div className="w-full flex justify-center">
+                      <Button
+                        type="submit"
+                        className="btn-primary w-1/4 rounded-lg px-2 py-0.5"
+                      >
+                        Submit
+                      </Button>
+                    </div>
+                  </CardFooter>
+                </Card>
+              </form>
             </Form>
           </div>
         </div>
