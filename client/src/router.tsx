@@ -13,6 +13,7 @@ import RecoverPassword from "./pages/recovery/RecoverPassword";
 import { createBrowserRouter, Outlet } from "react-router-dom";
 import PrivateRoute from "./triggers/PrivateRoute";
 import Navbar from "./components/Navbar/Navbar";
+import MemberDetail from "./pages/memberDetail/MemberDetail";
 
 const Layout = () => {
   return (
@@ -36,6 +37,14 @@ export const router = createBrowserRouter([
         element: (
           <PrivateRoute>
             <Dashboard />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "/member-details/:userId",
+        element: (
+          <PrivateRoute>
+            <MemberDetail />
           </PrivateRoute>
         ),
       },

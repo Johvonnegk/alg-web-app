@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { FaArrowAltCircleUp, FaArrowAltCircleDown } from "react-icons/fa";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ArrowUp, ArrowDown, ArrowUpDown } from "lucide-react";
+import { Link } from "react-router-dom";
 
 interface ColumnParams {
   sessionEmail: string;
@@ -114,6 +115,21 @@ export const columns = ({
           </div>
         );
       }
+    },
+  },
+  {
+    id: "more",
+    accessorKey: "View More",
+    cell: ({ row }) => {
+      const member = row.original;
+      return (
+        <Link
+          className="underline text-accent hover:text-black"
+          to={`/member-details/${member.users.user_id}`}
+        >
+          View More
+        </Link>
+      );
     },
   },
 ];

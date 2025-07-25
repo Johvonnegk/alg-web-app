@@ -14,16 +14,12 @@ import {
 serve(async (req) => {
   const optionRes = handleOptions(req);
   if (optionRes) return optionRes;
-  const { authorization, email } = await req.json();
+  let { authorization, targetId } = await req.json();
   const id = await getUserId(req);
   if (!id) return errorResponse("Unauthorized", 401);
   const userId = await transformUserId(id);
-  let targetId;
-  if (email) {
-    targetId = await transformUserEmailtoId(email);
-  } else {
-    targetId = userId;
-  }
+  if (!targetId) targetId = userId;
+  else targetId = await transformUserId(targetId);
   const result = await checkViewingAuthorization(
     authorization,
     userId,

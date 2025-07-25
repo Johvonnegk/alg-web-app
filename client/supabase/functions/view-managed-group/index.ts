@@ -17,7 +17,9 @@ import {
 async function fetchGroupMembers(groupId: number) {
   const { data, error } = await supabase
     .from("group_members")
-    .select("role_id, users(fname, lname, role_id, email), groups(name, id)")
+    .select(
+      "role_id, users(fname, lname, role_id, user_id, email), groups(name, id)"
+    )
     .eq("group_id", groupId);
 
   if (error) {

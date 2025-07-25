@@ -12,7 +12,7 @@ interface UseGetGiftsReturn {
 
 export const useGetGifts = (
   authorization?: string,
-  email?: string
+  targetId?: string
 ): UseGetGiftsReturn => {
   const [gifts, setGifts] = useState<Gifts[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -22,7 +22,7 @@ export const useGetGifts = (
     try {
       const { data, error } = await supabase.functions.invoke(
         "get-user-gifts",
-        { body: { authorization, email } }
+        { body: { authorization, targetId } }
       );
       if (error) {
         setError(error);
@@ -41,7 +41,7 @@ export const useGetGifts = (
 
   useEffect(() => {
     fetchGifts();
-  }, [authorization, email]);
+  }, [authorization, targetId]);
 
   return { gifts, fetchGifts, loading, error };
 };

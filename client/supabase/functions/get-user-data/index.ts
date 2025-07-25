@@ -34,19 +34,19 @@ serve(async (req) => {
     return errorResponse(result.error.message, result.error.code);
 
   const { data, error } = await supabase
-    .from("ministry")
+    .from("users")
     .select(
-      "id, outreach, tech_arts, worship, small_groups, children_youth, follow_up, impressions, created_at"
+      "user_id, role_id, fname, lname, phone, address, email, birthday, created_at"
     )
-    .eq("user_id", targetId)
-    .order("created_at", { ascending: false });
+    .eq("id", targetId)
+    .maybeSingle();
 
-  if (error || !data) return errorResponse("Could not get ministry data", 400);
+  if (error || !data) return errorResponse("Could not get user data", 400);
 
   return new Response(
     JSON.stringify({
-      message: "Fetched gifts successfully",
-      ministries: data,
+      message: "Fetched user successfully",
+      user: data,
     }),
     {
       status: 200,

@@ -11,7 +11,7 @@ interface UseGetDiscipleshipReturn {
 
 export const useGetDiscipleship = (
   authorization?: string,
-  email?: string
+  targetId?: string
 ): UseGetDiscipleshipReturn => {
   const [discipleship, setDiscipleship] = useState<Discipleship[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -21,7 +21,7 @@ export const useGetDiscipleship = (
     try {
       const { data, error } = await supabase.functions.invoke(
         "get-user-discipleship",
-        { body: { authorization, email } }
+        { body: { authorization, targetId } }
       );
 
       if (error) {
@@ -41,7 +41,7 @@ export const useGetDiscipleship = (
 
   useEffect(() => {
     fetchDiscipleship();
-  }, [authorization, email]);
+  }, [authorization, targetId]);
 
   return { discipleship, fetchDiscipleship, loading, error };
 };

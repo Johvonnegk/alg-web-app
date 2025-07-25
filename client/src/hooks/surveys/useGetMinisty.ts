@@ -11,7 +11,7 @@ interface UseGetMinistryReturn {
 
 export const useGetMinistry = (
   authorization?: string,
-  email?: string
+  targetId?: string
 ): UseGetMinistryReturn => {
   const [ministries, setMin] = useState<Ministries[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -24,7 +24,7 @@ export const useGetMinistry = (
         {
           body: {
             authorization,
-            email,
+            targetId,
           },
         }
       );
@@ -58,7 +58,7 @@ export const useGetMinistry = (
 
   useEffect(() => {
     fetchMinistry();
-  }, [authorization, email]);
+  }, [authorization, targetId]);
 
   return { ministries, fetchMinistry, loading, error };
 };
