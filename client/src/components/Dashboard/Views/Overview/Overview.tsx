@@ -5,10 +5,12 @@ import { columns as minColumns } from "@/components/Tables/SurveyTables/Ministri
 import { columns as discColumns } from "@/components/Tables/SurveyTables/DiscipleshipTable/columns";
 import Profile from "@/components/Profile/Profile";
 import { DataTable } from "@/components/Tables/SurveyTables/data-table";
+import GrowthTable from "@/components/Tables/GrowthTracksTables/GrowthTable";
 import { UserProfile } from "@/types/UserProfile";
 import { useGetMinistry } from "@/hooks/surveys/useGetMinisty";
 import { useGetGifts } from "@/hooks/surveys/useGetGifts";
 import { useGetDiscipleship } from "@/hooks/surveys/useGetDiscipleship";
+import { useGetGrowth } from "@/hooks/growth/useGetGrowth";
 interface OverviewProps {
   profile: UserProfile; // Replace 'any' with the actual type of profile if known
 }
@@ -16,6 +18,7 @@ interface OverviewProps {
 const Overview: React.FC<OverviewProps> = ({ profile }) => {
   const { ministries, loading: minLoading, error: minError } = useGetMinistry();
   const { gifts, loading: giftsLoading, error: giftsError } = useGetGifts();
+  const { growth, loading: growthLoading, error: growthError } = useGetGrowth();
   const {
     discipleship,
     loading: discipleshipLoading,
@@ -77,7 +80,7 @@ const Overview: React.FC<OverviewProps> = ({ profile }) => {
       ) : (
         discipleship &&
         discipleship.length > 0 && (
-          <div className="col-span-2  flex justify-center">
+          <div className="flex justify-center">
             <div className="w-1/2">
               <h2 className="font-semibold text-2xl">Discipleship Data</h2>
               <DataTable
@@ -86,6 +89,23 @@ const Overview: React.FC<OverviewProps> = ({ profile }) => {
                 showDate={true}
               />
             </div>
+          </div>
+        )
+      )}
+      {growthLoading ? (
+        <div className="flex flex-col space-y-3">
+          <Skeleton className="h-[125px] w-[250px] rounded-xl" />
+          <div className="space-y-2">
+            <Skeleton className="h-4 w-[250px]" />
+            <Skeleton className="h-4 w-[200px]" />
+          </div>
+        </div>
+      ) : (
+        growth &&
+        growth.length > 0 && (
+          <div>
+            <h2 className="font-semibold text-2xl mb-4">Growth Tracks</h2>
+            <GrowthTable data={growth} />
           </div>
         )
       )}

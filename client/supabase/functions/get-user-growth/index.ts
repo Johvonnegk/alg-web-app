@@ -28,19 +28,17 @@ serve(async (req) => {
     return errorResponse(result.error.message, result.error.code);
 
   const { data, error } = await supabase
-    .from("gifts")
-    .select(
-      "id, serving, administrator, encouragement, giving, mercy, teaching, prophecy, created_at"
-    )
+    .from("growth_tracks")
+    .select("course_name, status, completed_at")
     .eq("user_id", targetId)
-    .order("created_at", { ascending: false });
+    .order("course_name", { ascending: true });
 
-  if (error || !data) return errorResponse("Could not get gifts data", 400);
+  if (error || !data) return errorResponse("Could not get growth data", 400);
 
   return new Response(
     JSON.stringify({
       message: "Fetched gifts successfully",
-      gifts: data,
+      growth: data,
     }),
     {
       status: 200,

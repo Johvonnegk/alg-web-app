@@ -11,7 +11,7 @@ import {
   corsHeaders,
   handleOptions,
 } from "../utils/helper.ts";
-
+const courses = ["101", "201", "301", "401"];
 serve(async (req) => {
   // Handle preflight OPTIONS request for CORS
   const optionRes = handleOptions(req);
@@ -31,12 +31,17 @@ serve(async (req) => {
           phone,
           address,
           birthday,
-          role_id: 6,
+          role_id: 5,
         },
       ])
-      .select();
+      .select("id, user_id, fname, lname")
+      .maybeSingle();
 
-    if (error && error.message.includes("duplicate key")) {
+    console.log("USER: ", user);
+    if (
+      (error && error.message.includes("duplicate key")) ||
+      (error && error.message.includes("users_user_id_fkey"))
+    ) {
       return new Response(
         JSON.stringify({
           success: false,
@@ -46,10 +51,21 @@ serve(async (req) => {
       );
     }
 
+    for (const course of courses) {
+      const { error: growthError } = await supabase
+        .from("growth_tracks")
+        .insert({
+          user_id: user?.id,
+          course_name: course,
+        });
+      if (growthError) console.error("Growth insert failed:", growthError);
+    }
+
+    const { id, ...userWithoutId } = user ?? {};
     return new Response(
       JSON.stringify({
-        message: `Created user ${user?.[0]?.fname} ${user?.[0]?.lname}`,
-        user,
+        message: `Created user ${user?.fname} ${user?.lname}`,
+        user: userWithoutId,
         error,
       }),
       {

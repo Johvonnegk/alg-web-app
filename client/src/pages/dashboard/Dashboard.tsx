@@ -4,7 +4,8 @@ import { useUserProfile } from "../../hooks/useUserProfile";
 import { useAuth } from "../../context/AuthContext";
 import Overview from "../../components/Dashboard/Views/Overview/Overview";
 import Groups from "../../components/Dashboard/Views/Groups/Groups";
-import Growth from "../../components/Dashboard/Views/Surveys/Surveys";
+import Surveys from "../../components/Dashboard/Views/Surveys/Surveys";
+import Growth from "../../components/Dashboard/Views/Growth/Growth";
 import Admin from "../../components/Dashboard/Views/Admin/Admin";
 import Dashboard404 from "../../components/Dashboard/Views/404/Dashboard404";
 import DashboardContainer from "../../components/Dashboard/DashboardContainer";
@@ -42,9 +43,11 @@ const Dashboard = () => {
       case "groups":
         return <Groups />;
       case "surveys":
-        return <Growth />;
+        return <Surveys />;
       case "admin":
-        if (profile.role_id <= 2) return <Admin />;
+        if (profile.role_id === 1) return <Admin />;
+      case "growth":
+        if (profile.role_id === 1) return <Growth />;
       default:
         return <Dashboard404 />;
     }

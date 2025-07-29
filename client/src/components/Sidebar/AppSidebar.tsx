@@ -75,7 +75,10 @@ export function AppSidebar({ profile, onSelect, selected }) {
         <SidebarGroupContent>
           <SidebarMenu>
             {items.map(({ title, value, icon }) => {
-              if (value === "admin" && profile.role_id === 1) {
+              if (
+                (value === "admin" && profile.role_id === 1) ||
+                (value === "growth" && profile.role_id === 1)
+              ) {
                 return (
                   <SidebarMenuItem key={title}>
                     <SidebarMenuButton
@@ -92,7 +95,7 @@ export function AppSidebar({ profile, onSelect, selected }) {
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 );
-              } else if (value !== "admin") {
+              } else if (value !== "admin" && value !== "growth") {
                 return (
                   <SidebarMenuItem key={title}>
                     <SidebarMenuButton

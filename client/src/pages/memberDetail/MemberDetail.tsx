@@ -7,7 +7,9 @@ import { useGetDiscipleship } from "@/hooks/surveys/useGetDiscipleship";
 import { columns as giftColumns } from "@/components/Tables/SurveyTables/GiftsTable/columns";
 import { columns as minColumns } from "@/components/Tables/SurveyTables/MinistriesTable/columns";
 import { columns as discColumns } from "@/components/Tables/SurveyTables/DiscipleshipTable/columns";
+import { useGetGrowth } from "@/hooks/growth/useGetGrowth";
 import { DataTable } from "@/components/Tables/SurveyTables/data-table";
+import GrowthTable from "@/components/Tables/GrowthTracksTables/GrowthTable";
 import { Skeleton } from "@/components/ui/skeleton";
 import Profile from "@/components/Profile/Profile";
 const MemberDetail = () => {
@@ -33,6 +35,7 @@ const MemberDetail = () => {
     loading: discipleshipLoading,
     error: discipleshipError,
   } = useGetDiscipleship("group_leader", userId);
+  const { growth, loading: growthLoading, error: growthError } = useGetGrowth();
   return (
     <div className="px-14 min-h-screen min-w-screen grid grid-cols-2 gap-y-10 gap-x-10">
       <div className="flex flex-col items-center col-span-2">
@@ -96,12 +99,12 @@ const MemberDetail = () => {
           )}
         </div>
       </div>
-      <div className="flex flex-col col-span-2 items-center">
+      <div className="flex flex-col items-center">
         <div className="flex flex-col w-full min-h-full col-span-2 space-y-3 items-center">
           <h2 className="w-1/2 font-semibold text-2xl">Discipleship Data</h2>
           {discipleshipLoading ? (
             <>
-              <Skeleton className="h-full w-1/2 rounded-xl" />
+              <Skeleton className="h-full w-full rounded-xl" />
               <div className="space-y-2">
                 <Skeleton className="h-4 w-[250px]" />
                 <Skeleton className="h-4 w-[200px]" />
@@ -109,12 +112,32 @@ const MemberDetail = () => {
             </>
           ) : (
             discipleship && (
-              <div className="w-1/2">
+              <div className="w-full">
                 <DataTable
                   columns={discColumns}
                   data={discipleship}
                   showDate={false}
                 />
+              </div>
+            )
+          )}
+        </div>
+      </div>
+      <div className="flex flex-col items-center">
+        <div className="flex flex-col w-full min-h-full col-span-2 space-y-3">
+          <h2 className="w-1/2 font-semibold text-2xl mb-4">Growth Tracks</h2>
+          {growthLoading ? (
+            <>
+              <Skeleton className="h-full w-full rounded-xl" />
+              <div className="space-y-2">
+                <Skeleton className="h-4 w-[250px]" />
+                <Skeleton className="h-4 w-[200px]" />
+              </div>
+            </>
+          ) : (
+            growth && (
+              <div>
+                <GrowthTable data={growth} />
               </div>
             )
           )}
