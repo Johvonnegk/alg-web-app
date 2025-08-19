@@ -25,7 +25,7 @@ export const DeleteUserConfirmDialog = ({
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button className="btn-danger">Delete</Button>
+        <Button className="shadow-md btn-danger">Delete</Button>
       </AlertDialogTrigger>
       <AlertDialogContent className="bg-white border-stone-300 z-[9999]">
         <AlertDialogHeader>
@@ -47,7 +47,7 @@ export const DeleteUserConfirmDialog = ({
         <Input
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
-          placeholder="Enter group name"
+          placeholder="Enter users email"
         />
         <AlertDialogDescription className="text-stone-600 font-semibold">
           **case sensitive**

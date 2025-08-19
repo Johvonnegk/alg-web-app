@@ -37,7 +37,7 @@ serve(async (req) => {
 
   return new Response(
     JSON.stringify({
-      message: "Fetched gifts successfully",
+      message: "Fetched growth successfully",
       growth: data,
     }),
     {

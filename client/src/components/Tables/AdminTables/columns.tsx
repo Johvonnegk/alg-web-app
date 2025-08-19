@@ -5,17 +5,16 @@ import { UserProfile } from "@/types/UserProfile";
 import { FaArrowAltCircleUp, FaArrowAltCircleDown } from "react-icons/fa";
 import { Button } from "@/components/ui/button";
 import { ArrowUp, ArrowDown, ArrowUpDown } from "lucide-react";
-import { roleMap } from "../../Groups/Groups";
+import { roleMap } from "../../Dashboard/Views/Groups/Groups";
 import { format } from "date-fns";
-import { DeleteUserConfirmDialog } from "../DeleteUserConfirmDialog";
+import { DeleteUserConfirmDialog } from "../../Dashboard/Views/Admin/DeleteUserConfirmDialog";
+import { RoleChanger } from "../../Dashboard/Views/Admin/RoleChanger";
 
 interface ColumnParams {
   userRole: number;
   sessionEmail: string;
-  handlePromotion: (promotion: boolean, email: string) => void;
+  handlePromotion: (newRole: string, email: string) => void;
   handleDelete: (email: string) => void;
-  selectedUsers: string[];
-  toggleUserSelection: (userId: string) => void;
 }
 
 export const columns = ({
@@ -23,8 +22,6 @@ export const columns = ({
   sessionEmail,
   handlePromotion,
   handleDelete,
-  selectedUsers,
-  toggleUserSelection,
 }: ColumnParams): ColumnDef<UserProfile>[] => [
   {
     id: "name",
@@ -83,33 +80,13 @@ export const columns = ({
       const member = row.original;
       const actions: React.JSX.Element[] = [];
       if (sessionEmail !== member.email && userRole < member.role_id) {
-        if (member.role_id > 1) {
-          actions.push(
-            <div key={`${member.email}-promote`}>
-              <Button
-                type="button"
-                onClick={() => handlePromotion(true, member.email ?? "")}
-                className="hover:cursor-pointer bg-transparent"
-              >
-                <FaArrowAltCircleUp className="size-5 text-green-500" />
-              </Button>
-            </div>
-          );
-        }
-        if (member.role_id < 6) {
-          actions.push(
-            <div key={`${member.email}-demote`}>
-              <Button
-                type="button"
-                onClick={() => handlePromotion(false, member.email ?? "")}
-                className="hover:cursor-pointer bg-transparent"
-              >
-                <FaArrowAltCircleDown className="size-5 text-red-600" />
-              </Button>
-            </div>
-          );
-        }
-        return <div className="flex justify-center">{actions}</div>;
+        return (
+          <RoleChanger
+            member={member}
+            email={member.email}
+            onChange={(newRole) => handlePromotion(newRole, member.email)}
+          />
+        );
       }
     },
   },
@@ -138,7 +115,7 @@ export const columns = ({
       const date = new Date(row.original.created_at);
       const formatted = format(date, "MMM do, yyyy '~' h:mm a");
       return (
-        <p className="font-semibold">
+        <p className="text-gray-600 font-semibold">
           Member since <br />
           {formatted}
         </p>

@@ -10,10 +10,7 @@ export const useManageAdminRoles = () => {
   const [loading, setLoading] = useState(false);
 
   const handlePromotion = useCallback(
-    async (
-      promotion: boolean,
-      email: string
-    ): Promise<ManageAdminRolesResponse> => {
+    async (role: string, email: string): Promise<ManageAdminRolesResponse> => {
       setLoading(true);
 
       try {
@@ -22,7 +19,7 @@ export const useManageAdminRoles = () => {
             "manage-system-roles-admin",
             {
               body: {
-                promotion,
+                role,
                 email,
               },
             }

@@ -15,6 +15,14 @@
   @apply bg-red-500 text-white font-semibold hover:bg-red-700
 }
 
+.primary-card{
+  @apply border-accent shadow-lg
+}
+
+.card-description{
+  @apply font-semibold text-stone-600
+}
+
 [aria-label*="today"],
 [data-day][class*="today"] {
   background-color: transparent !important;

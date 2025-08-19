@@ -41,7 +41,9 @@ export function DataTable<TData, TValue>({
     []
   );
   const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({});
+    React.useState<VisibilityState>({
+      confirmed: false,
+    });
   const table = useReactTable({
     data,
     columns,
@@ -71,14 +73,17 @@ export function DataTable<TData, TValue>({
               onChange={(event) =>
                 table.getColumn("name")?.setFilterValue(event.target.value)
               }
-              className="max-w-sm"
+              className="border-accent shadow-md max-w-sm"
             />
           </div>
         </div>
         <div>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" className="ml-auto">
+              <Button
+                variant="outline"
+                className="text-accent border-accent ml-auto shadow-md"
+              >
                 Columns
               </Button>
             </DropdownMenuTrigger>
@@ -104,11 +109,11 @@ export function DataTable<TData, TValue>({
           </DropdownMenu>
         </div>
       </div>
-      <div className="rounded-md border">
+      <div className="rounded-md border shadow-lg border-accent">
         <Table>
-          <TableHeader>
+          <TableHeader className="">
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
+              <TableRow className="border-gray-300" key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   return (
                     <TableHead className="text-center" key={header.id}>
@@ -128,7 +133,7 @@ export function DataTable<TData, TValue>({
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
-                  className="text-center"
+                  className="text-center border-gray-300"
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
                 >

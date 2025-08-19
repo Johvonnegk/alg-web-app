@@ -41,11 +41,12 @@ serve(async (req) => {
     const targetId = targetUser.id;
 
     for (const course of growth.courses) {
+      const date = course.status === "incomplete" ? null : new Date();
       const { data: _, error: growthError } = await supabase
         .from("growth_tracks")
         .update({
           status: course.status,
-          completed_at: new Date(),
+          completed_at: date,
         })
         .eq("user_id", targetId)
         .eq("course_name", course.course_name);

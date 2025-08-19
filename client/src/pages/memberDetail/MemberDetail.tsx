@@ -19,7 +19,6 @@ const MemberDetail = () => {
     loading: userLoading,
     error,
   } = useGetUserDetails("group_leader", userId);
-  // user = null;
   const {
     ministries,
     loading: minLoading,
@@ -35,7 +34,11 @@ const MemberDetail = () => {
     loading: discipleshipLoading,
     error: discipleshipError,
   } = useGetDiscipleship("group_leader", userId);
-  const { growth, loading: growthLoading, error: growthError } = useGetGrowth();
+  const {
+    growth,
+    loading: growthLoading,
+    error: growthError,
+  } = useGetGrowth("group_leader", userId);
   return (
     <div className="px-14 min-h-screen min-w-screen grid grid-cols-2 gap-y-10 gap-x-10">
       <div className="flex flex-col items-center col-span-2">

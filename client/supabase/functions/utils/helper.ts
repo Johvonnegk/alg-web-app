@@ -81,7 +81,46 @@ export async function getUserId(req: Request): Promise<string | null> {
   }
   return user.id;
 }
+export async function checkManyViewingAuthorization(
+  authorization: string,
+  userId: string,
+  groupId?: string
+): Promise<
+  { success: boolean } | { error: { message: string; code: number } }
+> {
+  if (authorization === "admin") {
+    const { data: user, error: adminError } = await supabase
+      .from("users")
+      .select("role_id")
+      .eq("id", userId)
+      .maybeSingle();
 
+    if (adminError)
+      return { error: { message: "An unexpected error occured", code: 400 } };
+    if (user && user.role_id !== 1)
+      return { error: { message: "Unauthorized", code: 401 } };
+
+    return { success: true };
+  } else if (groupId && authorization === "group_leader") {
+    const leadIds = [1, 2];
+    const { data: leader, error: leadErr } = await supabase
+      .from("group_members")
+      .select("role_id")
+      .eq("user_id", userId)
+      .eq("group_id", groupId)
+      .maybeSingle();
+
+    if (!leader || leadErr)
+      return { error: { message: "User is not in a group", code: 400 } };
+
+    if (!leadIds.includes(leader.role_id))
+      return { error: { message: "Unauthorized", code: 403 } };
+
+    return { success: true };
+  } else {
+    return { error: { message: "Bad request", code: 403 } };
+  }
+}
 export async function checkViewingAuthorization(
   authorization: string,
   userId: string,
