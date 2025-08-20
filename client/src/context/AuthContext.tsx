@@ -86,7 +86,6 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
   }) => {
     const { fname, lname, email, phone, password, address, birthday } =
       signupInfo;
-
     const { data: signUpData, error: signUpError } = await supabase.auth.signUp(
       {
         email,
@@ -96,7 +95,6 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
         },
       }
     );
-
     if (signUpError) {
       return { success: false, error: signUpError };
     }
@@ -127,7 +125,6 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
   };
 
   const recoverPassword = async (email: string) => {
-    console.log("recover password");
     const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
       redirectTo: `${import.meta.env.VITE_SITE_URL}/recover-password`,
     });
