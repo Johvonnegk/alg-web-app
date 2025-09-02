@@ -56,25 +56,7 @@ const TotalUsers: React.FC<Props> = ({
         </ResponsiveContainer>
       </div>
 
-      <div className="flex flex-wrap justify-center gap-3">
-        {["day", "week", "month", "quarter", "halfyear", "year"].map(
-          (option) => (
-            <Button
-              key={option}
-              variant={granularity === option ? "default" : "outline"}
-              onClick={() => setGranularity(option)}
-            >
-              {option}
-            </Button>
-          )
-        )}
-        <Button
-          variant={cumulative ? "default" : "outline"}
-          onClick={() => setCumulative(!cumulative)}
-        >
-          {cumulative ? "Cumulative" : "Non-Cumulative"}
-        </Button>
-      </div>
+      <div className="flex flex-wrap justify-center gap-3"></div>
     </div>
   );
 };

@@ -12,6 +12,19 @@ import UsersPerTier from "@/components/Charts/UsersPerTier";
 import TotalUsers from "@/components/Charts/TotalUsers";
 import GrowthTrackCompletion from "@/components/Charts/GrowthTrackCompletion";
 import { useGetUsersGrowth } from "@/hooks/growth/useGetUsersGrowth";
+import { Button } from "@/components/ui/button";
+import DateRangePicker, {
+  DateRange,
+} from "@/components/DateRangePicker/DateRangePicker";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectTrigger,
+  SelectContent,
+  SelectItem,
+  SelectValue,
+} from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
 import {
   Card,
   CardContent,
@@ -22,10 +35,20 @@ import {
 } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 
+const GRANULARITIES = [
+  "day",
+  "week",
+  "month",
+  "quarter",
+  "halfyear",
+  "year",
+] as const;
+
 const Admin = () => {
   const { email: sessionEmail } = useAuth();
   const [granularity, setGranularity] = useState("month");
   const [cumulative, setCumulative] = useState(true);
+  const [range, setRange] = React.useState<DateRange | undefined>();
   const { role, loading: roleLoading, error: roleError } = useUserRole();
   const { handleDelete: remove, loading: removeLoading } = useDeleteUser();
   const { handlePromotion: promote, loading: promoteLoading } =
@@ -40,7 +63,24 @@ const Admin = () => {
     fetchGrowth,
     loading: tgLoading,
     error: tgError,
-  } = useGetTotalGrowth(granularity, cumulative);
+  } = useGetTotalGrowth(
+    granularity,
+    cumulative,
+    range?.from ?? null,
+    range?.to ?? null
+  );
+
+  const endExclusive = range?.to
+    ? new Date(
+        range.to.getFullYear(),
+        range.to.getMonth(),
+        range.to.getDate() + 1
+      )
+    : null;
+
+  const apply = () => {
+    fetchGrowth(granularity, cumulative, range?.from ?? null, endExclusive);
+  };
   const handlePromotion = async (newRole: string, email: string) => {
     const result = await promote(newRole, email);
     if (result.success) {
@@ -75,10 +115,18 @@ const Admin = () => {
 
   return (
     <div className="min-h-screen h-auto px-4">
-      <div className="w-full grid grid-cols-3 gap-y-30 gap-x-10">
-        <div className="flex flex-col items-center col-span-2">
-          <div>Total users in application: {userList.length}</div>
-          <DataTable columns={columns} data={userList} />
+      <div className="w-full overflow-x-hidden flex flex-col gap-y-10 2xl:grid 2xl:grid-cols-3 2xl:gap-y-30 2xl:gap-x-10">
+        <div className="w-full flex flex-col 2xl:col-span-2">
+          <div className="self-center">
+            Total users in application: {userList.length}
+          </div>
+          <div className="-mx-4 2xl:mx-0">
+            <div className="overflow-x-scroll px-4">
+              <div className="inline-block min-w-[720px] align-top">
+                <DataTable columns={columns} data={userList} />
+              </div>
+            </div>
+          </div>
         </div>
         <div className="flex items-start">
           <Card className="border-accent h-fit w-full shadow-lg">
@@ -95,8 +143,8 @@ const Admin = () => {
                 Here you can manage the members of the database. Please keep in
                 mind the delete action is{" "}
                 <strong className="text-red-500">irreversible.</strong> Also
-                keep in mind thhat you can not <i>remove or manage</i> Admins,
-                so once you give someone admin access they will remian there
+                keep in mind that you can not <i>remove or manage</i> Admins, so
+                once you give someone admin access they will remian there
                 forever.
               </p>
             </CardContent>
@@ -147,19 +195,63 @@ const Admin = () => {
             <div className="flex justify-center">
               <Card className="primary-card">
                 <CardContent className="space-y-4">
-                  <TotalUsers
-                    data={totalGrowth}
-                    granularity={granularity}
-                    setGranularity={(g) => {
-                      setGranularity(g);
-                      fetchGrowth(g, cumulative);
-                    }}
-                    cumulative={cumulative}
-                    setCumulative={(c) => {
-                      setCumulative(c);
-                      fetchGrowth(granularity, c);
-                    }}
-                  />
+                  <div className="flex flex-col gap-4">
+                    <div className="flex flex-wrap items-center gap-3">
+                      <Select
+                        value={granularity}
+                        onValueChange={(v) => setGranularity(v as any)}
+                      >
+                        <SelectTrigger className="w-[180px]">
+                          <SelectValue placeholder="Granularity" />
+                        </SelectTrigger>
+                        <SelectContent className="bg-white">
+                          {GRANULARITIES.map((g) => (
+                            <SelectItem key={g} value={g}>
+                              {g}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+
+                      <div className="flex items-center gap-2">
+                        <Switch
+                          id="cumulative"
+                          checked={cumulative}
+                          className="
+    h-6 w-11 rounded-full
+    data-[state=checked]:bg-emerald-600
+    data-[state=unchecked]:bg-gray-300
+    [&>span]:h-5 [&>span]:w-5
+    [&>span]:bg-white [&>span]:rounded-full
+    [&>span]:shadow [&>span]:transition-transform
+    [&>span]:ring-1 [&>span]:ring-black/10
+    data-[state=unchecked]:[&>span]:translate-x-0
+    data-[state=checked]:[&>span]:translate-x-5
+  "
+                          onCheckedChange={(checked) => setCumulative(checked)}
+                        />
+                        <Label htmlFor="cumulative">Cumulative</Label>
+                      </div>
+
+                      <DateRangePicker value={range} onChange={setRange} />
+
+                      <Button onClick={apply} disabled={loading}>
+                        {tgLoading ? "Loading…" : "Apply"}
+                      </Button>
+                    </div>
+
+                    {error && (
+                      <div className="text-red-600 text-sm">{error}</div>
+                    )}
+
+                    <TotalUsers
+                      data={totalGrowth}
+                      granularity={granularity}
+                      setGranularity={setGranularity}
+                      cumulative={cumulative}
+                      setCumulative={setCumulative}
+                    />
+                  </div>
                 </CardContent>
               </Card>
             </div>

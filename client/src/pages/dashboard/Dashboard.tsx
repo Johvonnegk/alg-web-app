@@ -34,7 +34,6 @@ const Dashboard = () => {
   };
 
   const { profile, loading: pLoading, error: pError } = useUserProfile();
-
   const renderView = useMemo(() => {
     if (!profile) return null;
     switch (view) {
@@ -69,15 +68,10 @@ const Dashboard = () => {
     <>
       <SidebarProvider>
         <AppSidebar profile={profile} onSelect={setView} selected={view} />
-        <main className="w-full px-10">
+        <main className="w-full md:px-10">
           <DashboardContainer profile={profile} View={renderView} />
         </main>
       </SidebarProvider>
-      {/* <main className="grid gap-4 p-4 grid-cols-[220px_1fr]">
-        <Sidebar profile={profile} onSelect={setView} selected={view} />
-        <DashboardContainer profile={profile} View={renderView} />
-        <button onClick={handleSignOut}> Sign Out</button>
-      </main> */}
     </>
   );
 };

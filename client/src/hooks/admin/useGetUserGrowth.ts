@@ -5,17 +5,29 @@ interface UseGetUserGrowthReturn {
   growth: any;
   loading: boolean;
   error: string;
-  fetchGrowth: (granularity: string, cumulative: boolean) => Promise<void>;
+  fetchGrowth: (
+    granularity: string,
+    cumulative: boolean,
+    start?: Date | null,
+    end?: Date | null
+  ) => Promise<void>;
 }
 
 export const useGetUserGrowth = (
   granularity: string,
-  cumulative: boolean
+  cumulative: boolean,
+  start?: Date | null,
+  end?: Date | null
 ): UseGetUserGrowthReturn => {
   const [growth, setGrowth] = useState(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
-  const fetchGrowth = async (granularity: string, cumulative: boolean) => {
+  const fetchGrowth = async (
+    granularity: string,
+    cumulative: boolean,
+    start?: Date | null,
+    end?: Date | null
+  ) => {
     try {
       setLoading(true);
       const {
@@ -27,14 +39,18 @@ export const useGetUserGrowth = (
         setError(userError?.message || "No authenticated user found");
         return;
       }
-      const { data, error } = await supabase.rpc("get_user_growth", {
-        granularity: granularity,
-        cumulative: cumulative,
+
+      const { data, error } = await supabase.rpc("user_growth", {
+        p_granularity: granularity,
+        p_cumulative: cumulative,
+        p_start: start ? start.toISOString() : null,
+        p_end: end ? end.toISOString() : null,
+        p_tz: Intl.DateTimeFormat().resolvedOptions().timeZone,
       });
       if (error) {
         setError(error.message);
       } else {
-        console.log("PARAMS: ", cumulative, " ", granularity);
+        console.log("Data: ", data);
         setGrowth(data);
       }
     } catch (err) {
@@ -45,7 +61,7 @@ export const useGetUserGrowth = (
   };
 
   useEffect(() => {
-    fetchGrowth(granularity, cumulative);
+    fetchGrowth(granularity, cumulative, start, end);
   }, [granularity, cumulative]);
 
   return { growth, fetchGrowth, loading, error };

@@ -16,6 +16,7 @@ import { FaHome, FaLeaf } from "react-icons/fa";
 import { RiSurveyFill } from "react-icons/ri";
 import { MdGroup, MdAdminPanelSettings } from "react-icons/md";
 import { useAuth } from "@/context/AuthContext";
+import { UserProfile } from "@/types/UserProfile";
 const iconSize = `!w-5.5 !h-5.5`;
 const items = [
   {
@@ -44,15 +45,22 @@ const items = [
     icon: <MdAdminPanelSettings className={iconSize} />,
   },
 ];
-
-export function AppSidebar({ profile, onSelect, selected }) {
+export function AppSidebar({
+  profile,
+  onSelect,
+  selected,
+}: {
+  profile: UserProfile;
+  onSelect: (v: string) => void;
+  selected: string;
+}) {
   const { signOut } = useAuth();
   return (
     <Sidebar className="border-none mt-23 pl-4 h-[calc(100vh-7rem)]">
-      <SidebarHeader>
+      <SidebarHeader className="bg-white lg:bg-transparent">
         <SidebarMenu>
           <SidebarMenuItem>
-            <div className="flex justify-between bg-white rounded-md mb-6 shadow px-2 py-2 items-center">
+            <div className="flex justify-between rounded-md mb-6 bg-white shadow px-2 py-2 items-center">
               <Avatar>
                 <AvatarImage src="https://github.com/shadcn.png" />
                 <AvatarFallback>CN</AvatarFallback>
@@ -70,7 +78,7 @@ export function AppSidebar({ profile, onSelect, selected }) {
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
-      <SidebarContent>
+      <SidebarContent className="bg-white lg:bg-transparent">
         <SidebarGroup />
         <SidebarGroupContent>
           <SidebarMenu>
@@ -118,7 +126,7 @@ export function AppSidebar({ profile, onSelect, selected }) {
         </SidebarGroupContent>
         <SidebarGroup />
       </SidebarContent>
-      <SidebarFooter>
+      <SidebarFooter className="bg-white lg:bg-transparent">
         <SidebarMenu>
           <SidebarMenuItem>
             <Button onClick={signOut} className="w-full btn-primary">
