@@ -39,7 +39,7 @@ import {
 import toast from "react-hot-toast";
 import { UserProfile } from "@/types/UserProfile";
 import { Button } from "@/components/ui/button";
-import { UseUpdateUser } from "@/hooks/useUpdateUser";
+import { UseUpdateUserEmail } from "@/hooks/useUpdateUserEmail";
 import { Label } from "@/components/ui/label";
 import { Edit } from "lucide-react";
 
@@ -126,7 +126,7 @@ const Profile: React.FC<ProfileProps> = ({ profile, edit }) => {
       birthday: new Date(profile.birthday),
     },
   });
-  const { updateUser, loading, error } = UseUpdateUser();
+  const { updateUser, loading, error } = UseUpdateUserEmail();
 
   const updateEmailReq = async (values: z.infer<typeof emailFormSchema>) => {
     const result = await updateUser(values.email);
@@ -136,6 +136,9 @@ const Profile: React.FC<ProfileProps> = ({ profile, edit }) => {
       toast.error("Could not send email update request");
     }
   };
+  const updateProfileReq = async (
+    values: z.infer<typeof profileFormSchema>
+  ) => {};
   return (
     <Card>
       <CardHeader>
@@ -147,183 +150,187 @@ const Profile: React.FC<ProfileProps> = ({ profile, edit }) => {
       <CardContent>
         <CardDescription>User information</CardDescription>
         {editProfile ? (
-          <Form {...profileForm}>
-            <form action="">
-              <div className="flex flex-col gap-6">
-                <div className="grid grid-cols-2 gap-2 items-stretch">
-                  <FormField
-                    control={profileForm.control}
-                    name="fname"
-                    render={({ field }) => (
-                      <FormItem className="flex flex-col">
-                        <FormLabel className="font-semibold">
-                          First Name
-                        </FormLabel>
-                        <FormControl>
-                          <Input
-                            className="border border-stone-300"
-                            placeholder="First Name"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage className="text-sm text-red-500" />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={profileForm.control}
-                    name="lname"
-                    render={({ field }) => (
-                      <FormItem className="flex flex-col">
-                        <FormLabel className="font-semibold">
-                          Last Name
-                        </FormLabel>
-                        <FormControl>
-                          <Input
-                            className="border border-stone-300"
-                            placeholder="Last Name"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage className="text-sm text-red-500" />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-                <div className="grid gap-2">
-                  <FormField
-                    control={profileForm.control}
-                    name="phone"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="font-semibold">Phone</FormLabel>
-                        <FormControl>
-                          <Input
-                            className="border border-stone-300"
-                            placeholder="Phone Number"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage className="text-sm text-red-500" />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-                <div className="grid gap-2">
-                  <FormField
-                    control={profileForm.control}
-                    name="address"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="font-semibold">Address</FormLabel>
-                        <FormControl>
-                          <Input
-                            className="border border-stone-300"
-                            placeholder="Address"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage className="text-sm text-red-500" />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-                <div className="grid gap-2">
-                  <FormField
-                    control={profileForm.control}
-                    name="birthday"
-                    render={({ field }) => (
-                      <FormItem className="flex flex-col w-full">
-                        <FormLabel className="font-semibold">
-                          Date of birth
-                        </FormLabel>
-                        <Popover>
-                          <PopoverTrigger asChild>
-                            <FormControl>
-                              <Button
-                                className={cn(
-                                  "pl-3 text-left font-normal w-full border border-stone-300",
-                                  !field.value && "text-muted-foreground"
-                                )}
-                              >
-                                {field.value ? (
-                                  format(field.value, "PPP")
-                                ) : (
-                                  <span>Pick a date</span>
-                                )}
-                                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                              </Button>
-                            </FormControl>
-                          </PopoverTrigger>
-                          <PopoverContent
-                            className="w-full p-0 bg-stone-200 border-stone-300 border shadow-lg"
-                            align="center"
-                          >
-                            <Calendar
-                              mode="single"
-                              selected={field.value}
-                              onSelect={field.onChange}
-                              disabled={(date) =>
-                                date > new Date() ||
-                                date < new Date("1900-01-01")
-                              }
-                              captionLayout="dropdown"
+          <div>
+            <Form {...profileForm}>
+              <form onSubmit={profileForm.handleSubmit(updateProfileReq)}>
+                <div className="flex flex-col gap-6">
+                  <div className="flex flex-col 2xl:grid 2xl:grid-cols-2 2xl:gap-2 2xl:items-stretch">
+                    <FormField
+                      control={profileForm.control}
+                      name="fname"
+                      render={({ field }) => (
+                        <FormItem className="flex flex-col">
+                          <FormLabel className="font-semibold">
+                            First Name
+                          </FormLabel>
+                          <FormControl>
+                            <Input
+                              className="border border-stone-300"
+                              placeholder="First Name"
+                              {...field}
                             />
-                          </PopoverContent>
-                        </Popover>
-                        <FormDescription>
-                          Your date of birth is used to calculate your age.
-                        </FormDescription>
-                        <FormMessage className="text-sm text-red-500" />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-                <Button
-                  type="submit"
-                  className="w-full border border-stone-300 hover:bg-accent hover:text-white"
-                >
-                  Update Profile
-                </Button>
-                {updateBtn && (
-                  <div className="col-span-2">
-                    <Form {...emailForm}>
-                      <form onSubmit={emailForm.handleSubmit(updateEmailReq)}>
-                        <div className="w-full flex items-end gap-5">
-                          <FormField
-                            name="email"
-                            control={emailForm.control}
-                            render={({ field }) => (
-                              <FormItem className="w-2/3">
-                                <FormLabel className="font-semibold">
-                                  Email Address
-                                </FormLabel>
-                                <FormControl>
-                                  <Input
-                                    type="email"
-                                    className="w-full border border-stone-300"
-                                    placeholder="New email address"
-                                    {...field}
-                                  />
-                                </FormControl>
-                                <FormMessage className="text-sm text-red-500" />
-                              </FormItem>
-                            )}
-                          />
-                          <Button
-                            type="submit"
-                            className="hover:text-white hover:bg-accent"
-                          >
-                            Change Email
-                          </Button>
-                        </div>
-                      </form>
-                    </Form>
+                          </FormControl>
+                          <FormMessage className="text-sm text-red-500" />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={profileForm.control}
+                      name="lname"
+                      render={({ field }) => (
+                        <FormItem className="flex flex-col">
+                          <FormLabel className="font-semibold">
+                            Last Name
+                          </FormLabel>
+                          <FormControl>
+                            <Input
+                              className="border border-stone-300"
+                              placeholder="Last Name"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage className="text-sm text-red-500" />
+                        </FormItem>
+                      )}
+                    />
                   </div>
-                )}
+                  <div className="grid gap-2">
+                    <FormField
+                      control={profileForm.control}
+                      name="phone"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="font-semibold">Phone</FormLabel>
+                          <FormControl>
+                            <Input
+                              className="border border-stone-300"
+                              placeholder="Phone Number"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage className="text-sm text-red-500" />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <div className="grid gap-2">
+                    <FormField
+                      control={profileForm.control}
+                      name="address"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="font-semibold">
+                            Address
+                          </FormLabel>
+                          <FormControl>
+                            <Input
+                              className="border border-stone-300"
+                              placeholder="Address"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage className="text-sm text-red-500" />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <div className="grid gap-2">
+                    <FormField
+                      control={profileForm.control}
+                      name="birthday"
+                      render={({ field }) => (
+                        <FormItem className="flex flex-col w-full">
+                          <FormLabel className="font-semibold">
+                            Date of birth
+                          </FormLabel>
+                          <Popover>
+                            <PopoverTrigger asChild>
+                              <FormControl>
+                                <Button
+                                  className={cn(
+                                    "pl-3 text-left font-normal w-full border border-stone-300",
+                                    !field.value && "text-muted-foreground"
+                                  )}
+                                >
+                                  {field.value ? (
+                                    format(field.value, "PPP")
+                                  ) : (
+                                    <span>Pick a date</span>
+                                  )}
+                                  <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                </Button>
+                              </FormControl>
+                            </PopoverTrigger>
+                            <PopoverContent
+                              className="w-full p-0 bg-stone-200 border-stone-300 border shadow-lg"
+                              align="center"
+                            >
+                              <Calendar
+                                mode="single"
+                                selected={field.value}
+                                onSelect={field.onChange}
+                                disabled={(date) =>
+                                  date > new Date() ||
+                                  date < new Date("1900-01-01")
+                                }
+                                captionLayout="dropdown"
+                              />
+                            </PopoverContent>
+                          </Popover>
+                          <FormDescription>
+                            Your date of birth is used to calculate your age.
+                          </FormDescription>
+                          <FormMessage className="text-sm text-red-500" />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <Button
+                    type="submit"
+                    className="w-full border border-stone-300 hover:bg-accent hover:text-white"
+                  >
+                    Update Profile
+                  </Button>
+                </div>
+              </form>
+            </Form>
+            {updateBtn && (
+              <div className="col-span-2">
+                <Form {...emailForm}>
+                  <form onSubmit={emailForm.handleSubmit(updateEmailReq)}>
+                    <div className="w-full flex items-end gap-5">
+                      <FormField
+                        name="email"
+                        control={emailForm.control}
+                        render={({ field }) => (
+                          <FormItem className="w-2/3">
+                            <FormLabel className="font-semibold">
+                              Email Address
+                            </FormLabel>
+                            <FormControl>
+                              <Input
+                                type="email"
+                                className="w-full border border-stone-300"
+                                placeholder="New email address"
+                                {...field}
+                              />
+                            </FormControl>
+                            <FormMessage className="text-sm text-red-500" />
+                          </FormItem>
+                        )}
+                      />
+                      <Button
+                        type="submit"
+                        className="hover:text-white hover:bg-accent"
+                      >
+                        Change Email
+                      </Button>
+                    </div>
+                  </form>
+                </Form>
               </div>
-            </form>
-          </Form>
+            )}
+          </div>
         ) : (
           <ul>
             <li key="email">Email: {profile.email}</li>
@@ -341,25 +348,25 @@ const Profile: React.FC<ProfileProps> = ({ profile, edit }) => {
       </CardContent>
       <CardFooter>
         {edit && (
-          <div className="w-full flex justify-around">
-            <Button
-              onClick={() => setEditProfile(!editProfile)}
-              className={`hover:bg-accent hover:text-white ${
-                editProfile ? "text-white bg-red-500" : ""
-              }`}
-            >
-              {editProfile ? "Cancel Profile Update" : " Edit Profile"}
-            </Button>
+          <div className="w-full flex flex-col gap-y-5 md:flex-row justify-around">
             {editProfile && (
               <Button
                 onClick={() => setUpdateBtn(!updateBtn)}
-                className={`hover:bg-accent hover:text-white ${
-                  updateBtn ? "text-white bg-red-500" : ""
+                className={`hover:bg-accent hover:text-white sm:w-1/2 sm:self-center md:w-auto ${
+                  updateBtn ? "btn-danger" : ""
                 }`}
               >
                 {updateBtn ? "Cancel Email Update" : "Update Email Address"}
               </Button>
             )}
+            <Button
+              onClick={() => setEditProfile(!editProfile)}
+              className={`hover:bg-accent hover:text-white sm:w-1/2 sm:self-center md:w-auto ${
+                editProfile ? "btn-danger" : ""
+              }`}
+            >
+              {editProfile ? "Cancel Profile Update" : " Edit Profile"}
+            </Button>
           </div>
         )}
       </CardFooter>

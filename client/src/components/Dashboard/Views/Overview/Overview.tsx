@@ -26,9 +26,9 @@ const Overview: React.FC<OverviewProps> = ({ profile }) => {
     error: discipleshipError,
   } = useGetDiscipleship();
   return (
-    <div className="px-14 w-full grid grid-cols-2 gap-y-10 gap-x-10">
+    <div className="w-full flex flex-col gap-y-10 px-4 2xl:px-14 2xl:grid 2xl:grid-cols-2 2xl:gap-y-10 2xl:gap-x-10">
       <div className="col-span-2 flex justify-center">
-        <div className="w-1/2">
+        <div className="w-full 2xl:w-1/2">
           <Profile profile={profile} edit={true} />
         </div>
       </div>

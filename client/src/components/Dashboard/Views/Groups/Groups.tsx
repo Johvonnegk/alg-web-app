@@ -49,8 +49,6 @@ const Groups = () => {
   };
 
   const setCreateAccess = () => {
-    console.log("ALLOWED: ", allowed);
-    console.log("OWNERSHIPS: ", ownerships);
     if (allowed) {
       if (!ownerships) {
         return true;
@@ -69,12 +67,12 @@ const Groups = () => {
   const createAccess = setCreateAccess();
   console.log("CREATE ACCESS: ", createAccess);
   return (
-    <div className="px-14">
+    <div className="px-2 2xl:px-14">
       <h1 className="text-2xl mb-2 font-semibold border-stone-300">
         Group Settings
       </h1>
       <hr className="mb-20 text-stone-300 w-7/8" />
-      <div className="groups-contianer grid grid-cols-2 gap-x-20 gap-y-15">
+      <div className="groups-contianer flex flex-col gap-10 2xl:grid 2xl:grid-cols-2 2xl:gap-x-20 2xl:gap-y-15">
         <div className="view-group">
           <GeneralView otherGroups={otherGroups} />
         </div>

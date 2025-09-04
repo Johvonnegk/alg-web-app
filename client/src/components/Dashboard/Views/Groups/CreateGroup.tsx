@@ -79,7 +79,8 @@ const CreateGroup = () => {
               to be apart of this group!
             </CardDescription>
             <CardDescription className="text-stone-400">
-              *Enter your account information below to login
+              *Enter a name for your group and a fun little description to get
+              started!
             </CardDescription>
           </CardHeader>
           <CardContent>

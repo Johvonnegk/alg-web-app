@@ -29,7 +29,7 @@ const AllGroups = () => {
     }
   };
   return (
-    <div className="grid grid-cols-4 gap-x-10">
+    <div className="flex flex-col gap-y-10 mt-10 2xl:grid 2xl:grid-cols-4 2xl:gap-x-10">
       {groups?.map((group) => {
         const formattedDate = format(new Date(group.created_at), "yyyy-MM-dd");
         return (

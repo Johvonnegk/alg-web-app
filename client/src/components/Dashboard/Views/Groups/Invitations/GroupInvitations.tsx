@@ -52,8 +52,10 @@ const GroupInvitations = () => {
   };
   const columns = baseColumns({ handleInvite, handleArchive });
   return (
-    <div className="flex flex-col items-center justify-center w-full">
-      <DataTable columns={columns} data={invites ? invites : []} />
+    <div className="flex flex-col justify-center w-full overflow-x-hidden">
+      <div className="overflow-x-scroll">
+        <DataTable columns={columns} data={invites ? invites : []} />
+      </div>
     </div>
   );
 };

@@ -114,7 +114,7 @@ const Admin = () => {
   });
 
   return (
-    <div className="min-h-screen h-auto px-4">
+    <div className="min-h-screen h-auto px-2 xl:px-4">
       <div className="w-full overflow-x-hidden flex flex-col gap-y-10 2xl:grid 2xl:grid-cols-3 2xl:gap-y-30 2xl:gap-x-10">
         <div className="w-full flex flex-col 2xl:col-span-2">
           <div className="self-center">

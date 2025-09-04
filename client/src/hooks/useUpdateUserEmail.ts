@@ -8,7 +8,7 @@ interface UseUpadteUserReturn {
   error: string;
 }
 
-export const UseUpdateUser = (): UseUpadteUserReturn => {
+export const UseUpdateUserEmail = (): UseUpadteUserReturn => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
 

@@ -170,7 +170,7 @@ const GroupManager = ({ group }: GroupManagerProps) => {
     toggleUserSelection,
   });
   return (
-    <div className="group-management w-full grid grid-cols-2 gap-2">
+    <div className="group-management w-full flex flex-col gap-y-10 2xl:grid 2xl:grid-cols-2 2xl:gap-2">
       <div className="managed-members flex flex-col">
         <form className="mb-5" onSubmit={removeGroupMembers}>
           <DataTable columns={columns} data={group} />
@@ -204,7 +204,7 @@ const GroupManager = ({ group }: GroupManagerProps) => {
         <Form {...transferForm}>
           <form
             onSubmit={transferForm.handleSubmit(transferOwnership)}
-            className="w-full flex justify-start gap-8"
+            className="w-full flex flex-col 2xl:flex-row justify-start gap-8"
           >
             <div>
               <FormField
@@ -232,7 +232,7 @@ const GroupManager = ({ group }: GroupManagerProps) => {
                 )}
               />
             </div>
-            <div className="flex items-end">
+            <div className="flex items-end self-center 2xl:self-end">
               <Button type="submit" className="btn-primary">
                 Transfer group ownership
               </Button>

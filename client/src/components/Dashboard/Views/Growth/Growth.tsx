@@ -96,7 +96,7 @@ const Growth = () => {
   };
   return (
     <div className="min-h-screen flex flex-col items-center">
-      <div className="w-1/2 p-5">
+      <div className="w-full lg:w-1/2 px-2 md:px-4">
         <div>
           <h1 className="text-2xl mb-2 font-semibold">
             Record Growth Tracks Data
@@ -105,8 +105,8 @@ const Growth = () => {
         <Card className="w-full">
           <CardHeader>
             <CardDescription className="font-semibold text-gray-600">
-              *Record your growth tracks data here. You can update all courses
-              at once by selecting add course*
+              *Record growth tracks data here. You can update all courses at
+              once by selecting add course*
             </CardDescription>
           </CardHeader>
           <CardContent>
