@@ -9,6 +9,7 @@ import toast from "react-hot-toast";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { z } from "zod";
+import zxcvbn from "zxcvbn";
 import {
   Form,
   FormControl,
@@ -57,6 +58,11 @@ const formSchema = z
     password: z
       .string()
       .min(8, { message: "Password must be at least 8 characters." })
+      .regex(/\d.*\d/, "Password must contain at least 2 digits")
+      .regex(
+        /[!#$&]/,
+        "Password must contain at least one special character (!, #, $, &)"
+      )
       .max(50, { message: "Maximum password length is 50 characters." }),
     confirmPassword: z
       .string()
@@ -73,6 +79,44 @@ const formSchema = z
   .refine((data) => data.password === data.confirmPassword, {
     message: "passwords do not match",
     path: ["confirmPassword"],
+  })
+  .superRefine(async (data, ctx) => {
+    const { password, fname, lname, email } = data;
+
+    // Run zxcvbn check
+    const result = zxcvbn(password);
+
+    // Require "score >= 3" (0–4 scale)
+    if (result.score < 3) {
+      ctx.addIssue({
+        code: "custom",
+        message:
+          "Password is too weak: " + result.feedback.suggestions.join(" "),
+        path: ["password"],
+      });
+    }
+
+    // Disallow personal info
+    const disallowed = [
+      fname,
+      lname,
+      email,
+      fname.toLowerCase(),
+      lname.toLowerCase(),
+      email.toLowerCase(),
+      email.split("@")[0],
+    ].filter(Boolean);
+
+    for (const bad of disallowed) {
+      if (bad && password.toLowerCase().includes(bad.toLowerCase())) {
+        ctx.addIssue({
+          code: "custom",
+          message: "Password cannot contain your personal information",
+          path: ["password"],
+        });
+        break;
+      }
+    }
   });
 
 const Register = () => {
@@ -124,8 +168,8 @@ const Register = () => {
 
   return (
     <>
-      <div className="flex justify-center items-center min-h-screen">
-        <Card className="w-full max-w-sm border-0">
+      <div className="flex justify-center items-center min-h-screen px-4 lg:px-auto">
+        <Card className="w-full bg-white shadow-xl max-w-sm border-0">
           <CardHeader>
             <CardTitle className="text-lg">Make your account</CardTitle>
             <CardDescription>
