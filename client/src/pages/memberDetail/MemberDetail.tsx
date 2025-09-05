@@ -40,7 +40,7 @@ const MemberDetail = () => {
     error: growthError,
   } = useGetGrowth("group_leader", userId);
   return (
-    <div className="px-14 min-h-screen min-w-screen grid grid-cols-2 gap-y-10 gap-x-10">
+    <div className="px-4 py-10 lg:px-14 min-h-screen min-w-screen flex flex-col gap-y-20 xl:gap-y-10 xl:grid xl:grid-cols-2 xl:gap-x-10">
       <div className="flex flex-col items-center col-span-2">
         {userLoading ? (
           <div className="flex flex-col w-1/2 min-h-full col-span-2 space-y-3">
@@ -53,7 +53,7 @@ const MemberDetail = () => {
           </div>
         ) : user ? (
           <div className="flex flex-col items-center w-full">
-            <div className="w-1/2">
+            <div className="w-full xl:w-1/2">
               <h2 className="font-semibold text-2xl mb-4">User Profile</h2>
               <Profile profile={user} edit={false} />
             </div>
@@ -104,7 +104,7 @@ const MemberDetail = () => {
       </div>
       <div className="flex flex-col items-center">
         <div className="flex flex-col w-full min-h-full col-span-2 space-y-3 items-center">
-          <h2 className="w-1/2 font-semibold text-2xl">Discipleship Data</h2>
+          <h2 className="w-full font-semibold text-2xl">Discipleship Data</h2>
           {discipleshipLoading ? (
             <>
               <Skeleton className="h-full w-full rounded-xl" />

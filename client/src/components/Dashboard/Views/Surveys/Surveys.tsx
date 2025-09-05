@@ -145,13 +145,13 @@ const Surveys = () => {
 
   return (
     <>
-      <div className="px-14">
+      <div className="px-4 xl:px-14">
         <h1 className="text-2xl mb-2 font-semibold border-stone-300">
           Spritual Surveys
         </h1>
-        <hr className="mb-20 text-stone-300 w-7/8" />
-        <div className="gifts-container w-full grid grid-cols-2 gap-20 mb-20 ">
-          <div className="grid grid-rows-2 gap-y-2">
+        <hr className="mb-4 xl:mb-20 text-stone-300 w-7/8" />
+        <div className="gifts-container gap-y-5 flex flex-col w-full lg:grid lg:grid-cols-2 lg:gap-20 lg:mb-20 ">
+          <div className="flex flex-col gap-y-5 mb-5 lg:mb-auto lg:grid lg:grid-rows-2 lg:gap-y-2">
             <Form {...giftsForm}>
               <form onSubmit={giftsForm.handleSubmit(submitGifts)}>
                 <Card className="border-accent shadow-lg w-full">
@@ -161,7 +161,7 @@ const Surveys = () => {
                       Enter your score for your gifts
                     </CardDescription>
                   </CardHeader>
-                  <CardContent className="grid grid-cols-2 w-full gap-x-5 gap-y-3">
+                  <CardContent className="flex flex-col gap-y-5 xl:grid xl:grid-cols-2 w-full xl:gap-x-5 xl:gap-y-3">
                     {(Object.keys(gifts) as Array<keyof typeof gifts>).map(
                       (key, index) => {
                         const isLast =
@@ -180,14 +180,16 @@ const Surveys = () => {
                                     : ""
                                 }`}
                               >
-                                <FormLabel>{gifts[key].display}</FormLabel>
+                                <FormLabel className="self-start lg:self-center">
+                                  {gifts[key].display}
+                                </FormLabel>
                                 <FormMessage className="text-sm text-red-500" />
                                 <FormControl>
                                   <div className="w-full flex justify-center">
                                     <Input
-                                      className={`border-stone-300 ${
+                                      className={`border-stone-300 w-full ${
                                         isLast && isOdd
-                                          ? "w-1/2 border-stone-300"
+                                          ? "xl:w-1/2 border-stone-300"
                                           : ""
                                       }`}
                                       placeholder={gifts[key].display}
@@ -252,7 +254,7 @@ const Surveys = () => {
               </form>
             </Form>
 
-            <Card className="gifts-description border-accent shadow-lg h-fit place-self-center">
+            <Card className="gifts-description border-accent shadow-lg h-fit lg:place-self-center">
               <CardHeader>
                 <CardTitle>What is spritual growth?</CardTitle>
                 <CardDescription></CardDescription>
@@ -276,8 +278,8 @@ const Surveys = () => {
             </Card>
           </div>
 
-          <div className="gifts-description h-full flex items-start">
-            <ul className="bg-accent text-white rounded-lg py-8 px-10 shadow-2xl">
+          <div className="gifts-description mb-30 lg:mb-auto h-full flex items-start">
+            <ul className="bg-accent text-white rounded-lg px-7 py-8 xl:px-10 shadow-2xl">
               {Object.entries(giftsDescriptions).map(([key, gift]) => (
                 <li key={key} className="pb-5">
                   <h4 className="text-center font-semibold">{gift.name}</h4>
@@ -287,7 +289,7 @@ const Surveys = () => {
             </ul>
           </div>
 
-          <div className="ministries-container grid grid-rows-2 gap-y-2">
+          <div className="ministries-container flex flex-col gap-y-5 xl:grid xl:grid-rows-2 xl:gap-y-2">
             <Form {...ministriesForm}>
               <form onSubmit={ministriesForm.handleSubmit(submitMinistries)}>
                 <Card className="border-accent shadow-lg">
@@ -297,7 +299,7 @@ const Surveys = () => {
                       Enter your scores for the different ministries
                     </CardDescription>
                   </CardHeader>
-                  <CardContent className="grid grid-cols-2 w-full gap-x-5 gap-y-3">
+                  <CardContent className="flex flex-col gap-y-5 lg:grid lg:grid-cols-2 w-full lg:gap-x-5 lg:gap-y-3">
                     {(
                       Object.keys(ministries) as Array<keyof typeof ministries>
                     ).map((key, index) => {
@@ -322,7 +324,9 @@ const Surveys = () => {
                                   : ""
                               }`}
                             >
-                              <FormLabel>{ministries[key].display}</FormLabel>
+                              <FormLabel className="self-start lg:self-center">
+                                {ministries[key].display}
+                              </FormLabel>
                               <FormMessage className="text-sm text-red-500" />
                               <FormControl>
                                 <div className="w-full flex justify-center">
@@ -334,7 +338,7 @@ const Surveys = () => {
                                     }
                                     className={`border-stone-300 ${
                                       isLast && isOdd
-                                        ? "w-1/2 border-stone-300"
+                                        ? "w-full xl:w-1/2 border-stone-300"
                                         : ""
                                     }`}
                                   />
@@ -423,7 +427,7 @@ const Surveys = () => {
             </Card>
           </div>
           <div className="ministries-description">
-            <ul className="bg-accent text-white rounded-lg py-8 px-10 shadow-2xl">
+            <ul className="bg-accent px-7 mb-30 text-white rounded-lg py-8 xl:px-10 lg:mb-auto shadow-2xl">
               {Object.entries(ministriesDesc).map(([key, ministry]) => (
                 <li key={key} className="pb-5">
                   <h4 className="text-center font-semibold">{ministry.name}</h4>
