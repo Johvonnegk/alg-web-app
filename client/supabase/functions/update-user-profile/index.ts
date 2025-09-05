@@ -30,6 +30,7 @@ serve(async (req) => {
       birthday: birthday,
     })
     .eq("user_id", id)
+    .select()
     .maybeSingle();
 
   if (error || !data) return errorResponse("Could not get user data", 400);

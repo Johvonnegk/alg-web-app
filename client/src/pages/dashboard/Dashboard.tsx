@@ -1,6 +1,6 @@
 import { useEffect, useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { useUserProfile } from "../../hooks/useUserProfile";
+import { useUserProfile } from "../../hooks/profile/useUserProfile";
 import { useAuth } from "../../context/AuthContext";
 import Overview from "../../components/Dashboard/Views/Overview/Overview";
 import Groups from "../../components/Dashboard/Views/Groups/Groups";

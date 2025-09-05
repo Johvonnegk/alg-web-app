@@ -7,6 +7,7 @@ export interface UserProfile {
   address: string;
   birthday: string;
   phone: string;
+  profile_icon?: string;
   created_at: string;
   confirmed?: string;
 }

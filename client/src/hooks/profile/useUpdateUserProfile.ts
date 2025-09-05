@@ -1,18 +1,30 @@
 import { useEffect, useState } from "react";
-import { supabase } from "../supabaseClient";
-import { UserProfile } from "../types/UserProfile";
+import { supabase } from "../../supabaseClient";
+import { UserProfile } from "../../types/UserProfile";
 
 interface UseUpadteUserReturn {
-  updateUser: (userData: UserProfile) => Promise<boolean>;
+  updateUser: (userData: {
+    fname: string;
+    lname: string;
+    phone: string;
+    address: string;
+    birthday: Date;
+  }) => Promise<boolean>;
   loading: boolean;
   error: string;
 }
 
-export const UseUpdateUserEmail = (): UseUpadteUserReturn => {
+export const UseUpdateUserProfile = (): UseUpadteUserReturn => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
 
-  const updateUser = async (userData: UserProfile) => {
+  const updateUser = async (userData: {
+    fname: string;
+    lname: string;
+    phone: string;
+    address: string;
+    birthday: Date;
+  }) => {
     try {
       setLoading(true);
 
@@ -28,17 +40,17 @@ export const UseUpdateUserEmail = (): UseUpadteUserReturn => {
           },
         }
       );
-
+      console.log("USER ERROR: ", userError, " USER: ", user);
       if (userError || !user) {
+        console.log("here");
         setError(userError?.message || "No authenticated user found");
         return false;
       }
       return true;
     } catch (err) {
-      setError(err.message || "Unexpected error occurred");
+      return false;
     } finally {
       setLoading(false);
-      return false;
     }
   };
 

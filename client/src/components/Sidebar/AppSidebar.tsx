@@ -17,6 +17,7 @@ import { RiSurveyFill } from "react-icons/ri";
 import { MdGroup, MdAdminPanelSettings } from "react-icons/md";
 import { useAuth } from "@/context/AuthContext";
 import { UserProfile } from "@/types/UserProfile";
+import ProfilePill from "../Profile/UserProfilePill";
 const iconSize = `!w-5.5 !h-5.5`;
 const items = [
   {
@@ -60,20 +61,7 @@ export function AppSidebar({
       <SidebarHeader className="bg-white lg:bg-transparent">
         <SidebarMenu>
           <SidebarMenuItem>
-            <div className="flex justify-between rounded-md mb-6 bg-white shadow px-2 py-2 items-center">
-              <Avatar>
-                <AvatarImage src="https://github.com/shadcn.png" />
-                <AvatarFallback>CN</AvatarFallback>
-              </Avatar>
-              <div className="flex flex-col pr-3">
-                <span className="text-xs font-semibold">
-                  {profile.fname} {profile.lname}
-                </span>
-                <span className="text-xs text-stone-400 font-semibold">
-                  {profile.email}
-                </span>
-              </div>
-            </div>
+            <ProfilePill profile={profile} />
             <hr className="text-stone-300" />
           </SidebarMenuItem>
         </SidebarMenu>

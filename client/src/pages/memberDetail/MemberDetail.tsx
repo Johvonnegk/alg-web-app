@@ -1,6 +1,6 @@
 import React, { use } from "react";
 import { useParams } from "react-router-dom";
-import { useGetUserDetails } from "@/hooks/useGetUserDetails";
+import { useGetUserDetails } from "@/hooks/profile/useGetUserDetails";
 import { useGetGifts } from "@/hooks/surveys/useGetGifts";
 import { useGetMinistry } from "@/hooks/surveys/useGetMinisty";
 import { useGetDiscipleship } from "@/hooks/surveys/useGetDiscipleship";

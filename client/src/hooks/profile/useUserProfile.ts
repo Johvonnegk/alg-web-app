@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { supabase } from "../supabaseClient";
-import { UserProfile } from "../types/UserProfile";
+import { supabase } from "../../supabaseClient";
+import { UserProfile } from "../../types/UserProfile";
 
 interface UseUserProfileReturn {
   profile: UserProfile | null;

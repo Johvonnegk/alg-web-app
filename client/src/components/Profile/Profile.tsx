@@ -17,6 +17,7 @@ import {
   differenceInHours,
   differenceInYears,
   format,
+  add,
 } from "date-fns";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -39,9 +40,13 @@ import {
 import toast from "react-hot-toast";
 import { UserProfile } from "@/types/UserProfile";
 import { Button } from "@/components/ui/button";
-import { UseUpdateUserEmail } from "@/hooks/useUpdateUserEmail";
+import { UseUpdateUserEmail } from "@/hooks/profile/useUpdateUserEmail";
 import { Label } from "@/components/ui/label";
+4;
+import { UseUpdateIcon } from "@/hooks/profile/useUpdateIcon";
 import { Edit } from "lucide-react";
+import ProfilePill from "./UserProfilePill";
+import { UseUpdateUserProfile } from "@/hooks/profile/useUpdateUserProfile";
 
 function formatPhoneNumber(phone: string) {
   const cleaned = ("" + phone).replace(/\D/g, "");
@@ -63,6 +68,15 @@ interface ProfileProps {
 const Profile: React.FC<ProfileProps> = ({ profile, edit }) => {
   const [updateBtn, setUpdateBtn] = useState<boolean>(false);
   const [editProfile, setEditProfile] = useState<boolean>(false);
+  const [preview, setPreview] = useState<string | null>(null);
+
+  const { updateIcon } = UseUpdateIcon();
+  const {
+    updateUser: updateUserProfile,
+    loading: loadingUpdateUser,
+    error: updateUserErr,
+  } = UseUpdateUserProfile();
+
   const formattedBirthDay = format(new Date(profile.birthday), "yyyy-MM-dd");
   const age = differenceInYears(new Date(), new Date(profile.birthday));
   const now = new Date();
@@ -108,6 +122,52 @@ const Profile: React.FC<ProfileProps> = ({ profile, edit }) => {
       .transform((val) => val.trim().toLowerCase()),
   });
 
+  const imageFieldSchema = z
+    .object({
+      file: z
+        .instanceof(File)
+        .refine((file) => file.size <= 5 * 1024 * 1024, "Max file size is 5MB")
+        .refine(
+          (file) =>
+            ["image/jpeg", "image/png", "image/webp"].includes(file.type),
+          "Only .jpg, .png, .webp formats are supported"
+        )
+        .optional(),
+
+      url: z.union([
+        z.literal(""), // allow empty string
+        z
+          .string()
+          .url("Must be a valid URL")
+          .refine(
+            (url) => /\.(jpg|jpeg|png|webp|gif)$/i.test(url),
+            "URL must point to an image"
+          ),
+      ]),
+    })
+    .refine((data) => !(data.file && data.url && data.url !== ""), {
+      message: "Provide either a file OR a URL, not both",
+      path: ["url"],
+    })
+    .refine((data) => data.file || (data.url && data.url !== ""), {
+      message: "Provide a file OR a URL",
+      path: ["url"],
+    });
+
+  const imageFormSchema = z.object({
+    image: imageFieldSchema,
+  });
+
+  const imageForm = useForm<z.infer<typeof imageFormSchema>>({
+    resolver: zodResolver(imageFormSchema),
+    defaultValues: {
+      image: {
+        file: undefined,
+        url: "",
+      },
+    },
+  });
+
   type emailFormInput = z.input<typeof emailFormSchema>;
   const emailForm = useForm<emailFormInput>({
     resolver: zodResolver(emailFormSchema),
@@ -126,19 +186,60 @@ const Profile: React.FC<ProfileProps> = ({ profile, edit }) => {
       birthday: new Date(profile.birthday),
     },
   });
-  const { updateUser, loading, error } = UseUpdateUserEmail();
+
+  const watchFname = profileForm.watch("fname");
+  const watchLname = profileForm.watch("lname");
+  const watchEmail = emailForm.watch("email");
+  const watchImage = imageForm.watch("image");
+
+  const liveProfile: UserProfile = {
+    ...profile,
+    fname: watchFname,
+    lname: watchLname,
+    email: watchEmail === "" ? profile.email : watchEmail,
+    profile_icon:
+      preview ||
+      (typeof watchImage === "string" ? watchImage : profile.profile_icon),
+  };
+
+  const uploadImage = async (values: z.infer<typeof imageFormSchema>) => {
+    const result = await updateIcon(values.image.url, values.image.file);
+    if (result) {
+      toast.success("Successfully updated profile icon");
+      setTimeout(() => {
+        window.location.reload();
+      }, 300);
+    } else toast.error("Cold not upload image");
+  };
+
+  const { updateUser } = UseUpdateUserEmail();
 
   const updateEmailReq = async (values: z.infer<typeof emailFormSchema>) => {
     const result = await updateUser(values.email);
     if (result) {
       toast.success("Successfully sent request to update email");
+      setTimeout(() => {
+        window.location.reload();
+      }, 300);
     } else {
       toast.error("Could not send email update request");
     }
   };
   const updateProfileReq = async (
     values: z.infer<typeof profileFormSchema>
-  ) => {};
+  ) => {
+    const { fname, lname, phone, address, birthday } = values;
+    const userData = { fname, lname, phone, address, birthday };
+    const result = await updateUserProfile(userData);
+    if (result) {
+      toast.success("Successfully updated user data");
+      setTimeout(() => {
+        window.location.reload();
+      }, 300);
+    } else {
+      toast.error("Could not update user data");
+    }
+  };
   return (
     <Card>
       <CardHeader>
@@ -292,6 +393,70 @@ const Profile: React.FC<ProfileProps> = ({ profile, edit }) => {
                     Update Profile
                   </Button>
                 </div>
+              </form>
+            </Form>
+            <div className="flex flex-col gap-2">
+              <Label>Profile Preview</Label>
+              <div className="w-fit">
+                <ProfilePill profile={liveProfile} />
+              </div>
+            </div>
+            <Form {...imageForm}>
+              <form onSubmit={imageForm.handleSubmit(uploadImage)}>
+                <FormField
+                  control={imageForm.control}
+                  name="image.file"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-col">
+                      <FormLabel>Upload image</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="file"
+                          accept="image/*"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file) {
+                              field.onChange(file);
+                              imageForm.setValue("image.url", "");
+                              setPreview(URL.createObjectURL(file));
+                            }
+                          }}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <span className="text-center text-stone-400">— OR —</span>
+
+                <FormField
+                  control={imageForm.control}
+                  name="image.url"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-col">
+                      <FormLabel>Paste image URL</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="url"
+                          placeholder="https://example.com/image.jpg"
+                          {...field} // ✅ updates image.url only
+                          onChange={(e) => {
+                            const url = e.target.value;
+                            field.onChange(url);
+                            imageForm.setValue("image.file", undefined); // clear file
+                            setPreview(url);
+                          }}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <Button type="submit" className="btn-primary">
+                  Upload Image
+                </Button>
               </form>
             </Form>
             {updateBtn && (

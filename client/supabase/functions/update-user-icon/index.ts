@@ -7,45 +7,59 @@ import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { serve } from "https://deno.land/std@0.177.0/http/server.ts";
 import {
   errorResponse,
-  transformUserId,
   getUserId,
   supabase,
   corsHeaders,
   handleOptions,
-  checkViewingAuthorization,
-  transformUserEmailtoId,
 } from "../utils/helper.ts";
 
 serve(async (req) => {
   const optionRes = handleOptions(req);
   if (optionRes) return optionRes;
-  let { authorization, targetId } = await req.json();
+  const formData = await req.formData();
   const id = await getUserId(req);
   if (!id) return errorResponse("Unauthorized", 401);
-  const userId = await transformUserId(id);
-  if (!targetId) targetId = userId;
-  else targetId = await transformUserId(targetId);
-  const result = await checkViewingAuthorization(
-    authorization,
-    userId,
-    targetId
-  );
-  if ("error" in result)
-    return errorResponse(result.error.message, result.error.code);
 
+  let profileIconUrl = "";
+
+  const image = formData.get("file") as File | null;
+
+  if (image && image !== undefined) {
+    if (image instanceof File) {
+      const ext = image.name.split(".").pop();
+      const filePath = `${id}_icon.${ext}`;
+      const { data, error } = await supabase.storage
+        .from("profile-icons")
+        .upload(filePath, image, {
+          upsert: true,
+        });
+      if (error)
+        return errorResponse("Could not update profile icon invalid file", 400);
+
+      const {
+        data: { publicUrl },
+      } = supabase.storage.from("profile-icons").getPublicUrl(data.path);
+      profileIconUrl = publicUrl;
+    }
+  }
+  const url = formData.get("url") as string | null;
+  if (url && url !== "") {
+    profileIconUrl = url;
+  }
+  console.log("USER_ID", id);
   const { data, error } = await supabase
     .from("users")
-    .select(
-      "user_id, role_id, fname, lname, phone, address, email, profile_icon, birthday, created_at"
-    )
-    .eq("id", targetId)
+    .update({ profile_icon: profileIconUrl })
+    .eq("user_id", id)
+    .select()
     .maybeSingle();
-
-  if (error || !data) return errorResponse("Could not get user data", 400);
+  console.log("data: ", data);
+  if (error || !data)
+    return errorResponse("Could not update profile icon", 400);
 
   return new Response(
     JSON.stringify({
-      message: "Fetched user successfully",
+      message: "Successfully updated user data",
       user: data,
     }),
     {

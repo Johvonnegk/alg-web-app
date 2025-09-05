@@ -24,7 +24,7 @@ import {
 } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useUserProfile } from "@/hooks/useUserProfile";
+import { useUserProfile } from "@/hooks/profile/useUserProfile";
 
 const Recovery = () => {
   const [error, setError] = useState("");

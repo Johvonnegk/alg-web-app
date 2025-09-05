@@ -65,7 +65,6 @@ const Groups = () => {
 
   const manageAccess = setManageAccess();
   const createAccess = setCreateAccess();
-  console.log("CREATE ACCESS: ", createAccess);
   return (
     <div className="px-2 2xl:px-14">
       <h1 className="text-2xl mb-2 font-semibold border-stone-300">

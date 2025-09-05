@@ -93,7 +93,7 @@ const Surveys = () => {
     defaultValues: { email: "" },
   });
   const submitGifts = async (values: Gifts) => {
-    if (!helperMins && values.email === "") {
+    if (!helperGifts && values.email === "") {
       setError(
         "If you wish to enter for yourself please uncheck the box, otherwise please provide an email"
       );
