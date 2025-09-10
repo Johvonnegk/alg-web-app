@@ -33,7 +33,10 @@ const AllGroups = () => {
       {groups?.map((group) => {
         const formattedDate = format(new Date(group.created_at), "yyyy-MM-dd");
         return (
-          <Card key={group.name} className="border-stone-300">
+          <Card
+            key={group.name}
+            className="border-stone-300 w-full max-w-sm mx-auto"
+          >
             <CardHeader>
               <CardTitle>Group Name: {group.name}</CardTitle>
               <CardDescription>

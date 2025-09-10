@@ -52,13 +52,13 @@ export const columns = ({
       const invite = row.original;
       if (invite.type === "invite")
         return (
-          <div className="flex justify-between items-center">
-            <div className="flex flex-col items-center text-stone-600 text-sm font-semibold">
+          <div className="flex justify-between  items-center">
+            <div className="flex flex-col items-center min-w-0 justify-center text-stone-600 text-sm font-semibold px-5">
               <CustomAvatar profile={invite.sender} />
-              <span>{invite.sender.fname}</span>
+              <span className="truncate">{invite.sender.fname}</span>
             </div>
-            <FaLongArrowAltRight className="size-4" />
-            <div className="flex flex-col items-center text-stone-600 text-sm font-semibold">
+            <FaLongArrowAltRight className="size-5" />
+            <div className="flex flex-col items-center justify-center text-stone-600 text-sm font-semibold px-5">
               <CustomAvatar profile={invite.recipient} />
               <span>{invite.recipient.fname}</span>
             </div>
@@ -67,12 +67,12 @@ export const columns = ({
       else
         return (
           <div className="flex justify-between items-center">
-            <div className="flex flex-col items-center text-stone-600 text-sm font-semibold">
+            <div className="flex flex-col items-center text-stone-600 text-sm font-semibold px-5">
               <CustomAvatar profile={invite.recipient} />
               <span>{invite.recipient.fname}</span>
             </div>
-            <FaLongArrowAltLeft className="size-4" />
-            <div className="flex flex-col items-center text-stone-600 text-sm font-semibold">
+            <FaLongArrowAltLeft className="size-5" />
+            <div className="flex flex-col items-center text-stone-600 text-sm font-semibold px-5">
               <CustomAvatar profile={invite.sender} />
               <span>{invite.sender.fname}</span>
             </div>

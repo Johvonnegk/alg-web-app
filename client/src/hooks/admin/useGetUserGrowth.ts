@@ -50,7 +50,6 @@ export const useGetUserGrowth = (
       if (error) {
         setError(error.message);
       } else {
-        console.log("Data: ", data);
         setGrowth(data);
       }
     } catch (err) {

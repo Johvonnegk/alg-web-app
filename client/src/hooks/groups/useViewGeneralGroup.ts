@@ -25,7 +25,7 @@ export const useViewGeneralGroups = (): UseViewGeneralGroupsReturn => {
         const result = (await supabase.functions.invoke(
           "view-general-members"
         )) as SupabaseFunctionResult;
-
+        console.log("RESULT: ", result);
         if (result.error) {
           setError(result.error.message || "Unknown error occurred");
           setGroup(null);

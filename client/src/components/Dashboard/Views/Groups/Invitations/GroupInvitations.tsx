@@ -24,18 +24,17 @@ const GroupInvitations = () => {
   if (loading) return <p>Loading...</p>;
 
   const handleInvite = async (accepted: boolean, inviteId: number) => {
-    const success = await updateInvites({ accepted, inviteId });
+    const { success, error } = await updateInvites({ accepted, inviteId });
     if (success) {
       toast.success(
         `Successfully ${accepted ? "accepted" : "declined"} the invite`
       );
       if (accepted) {
-        setTimeout(() => {
-          window.location.reload();
-        }, 300);
+        setTimeout(() => window.location.reload(), 300);
       }
     } else {
-      console.error("Failed to accept invite: ", error);
+      toast.error(`Failed to accept invite: ${error}`);
+      setTimeout(() => window.location.reload(), 300);
     }
   };
 

@@ -87,12 +87,16 @@ const GroupDescCard = ({
   }
 
   return (
-    <Card className="w-full max-w-sm border-stone-300 shadow-xl">
+    <Card className="w-full h-fit max-w-sm border-stone-300 shadow-xl">
       <CardHeader>
         <div className="flex gap-x-5 items-center">
-          <div className="flex flex-col justify-center">
+          <div className="flex flex-col items-center min-w-0 justify-center">
             <CustomAvatar profile={groupLeader} />
-            <span className="text-xs">Leader: {groupLeader?.fname}</span>
+            <div>
+              <span className="text-xs truncate">
+                Leader: {groupLeader?.fname}
+              </span>
+            </div>
           </div>
 
           <CardTitle>Group Description</CardTitle>

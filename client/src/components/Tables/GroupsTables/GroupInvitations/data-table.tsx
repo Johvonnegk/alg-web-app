@@ -129,7 +129,7 @@ export function DataTable<TData, TValue>({
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
-                  className="text-center"
+                  className="text-center border-stone-300"
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
                 >

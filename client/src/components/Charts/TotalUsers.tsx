@@ -34,7 +34,7 @@ const TotalUsers: React.FC<Props> = ({
   return (
     <div className="w-full flex flex-col items-center justify-center px-4 py-6 space-y-6">
       <h2 className="text-center font-semibold text-lg">
-        User Growth Over Time ({granularity},{" "}
+        User Growth Over Time ({granularity} (Tier 4),{" "}
         {cumulative ? "Cumulative" : "Non-Cumulative"})
       </h2>
 

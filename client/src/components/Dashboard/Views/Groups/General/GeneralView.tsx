@@ -32,9 +32,9 @@ const GeneralView = ({ otherGroups }: GeneralViewProps) => {
     }
   };
   return (
-    <div className="view-group w-full flex justify-center">
+    <div className="view-group w-full">
       {group ? (
-        <div className="flex flex-col gap-y-10 lg:flex-row gap-x-10">
+        <div className="flex flex-col items-center gap-y-10 lg:flex-row gap-x-10">
           <div className="flex flex-col items-center">
             <h3 className="text-xl text-center">Welcome to {groupName}</h3>
             <hr className="text-stone-300 w-full" />
@@ -50,9 +50,8 @@ const GeneralView = ({ otherGroups }: GeneralViewProps) => {
               </Button>
             </div>
           </div>
-          <div className="self-center">
-            <GroupDescCard group={group} edit={false} />
-          </div>
+
+          <GroupDescCard group={group} edit={false} />
         </div>
       ) : (
         <p className="text-stone-500">
