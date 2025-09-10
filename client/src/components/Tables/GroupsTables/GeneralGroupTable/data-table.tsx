@@ -61,7 +61,7 @@ export function DataTable<TData, TValue>({
   return (
     <div>
       <div className="flex items-center py-4">
-        <div className="w-full flex justify-between">
+        <div className="w-full flex justify-center">
           <div>
             <Input
               placeholder="Filter by name..."
@@ -71,44 +71,16 @@ export function DataTable<TData, TValue>({
               onChange={(event) =>
                 table.getColumn("name")?.setFilterValue(event.target.value)
               }
-              className="max-w-sm"
+              className="max-w-sm border-stone-300"
             />
           </div>
         </div>
-        <div>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" className="ml-auto">
-                Columns
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="bg-white" align="end">
-              {table
-                .getAllColumns()
-                .filter((column) => column.getCanHide())
-                .map((column) => {
-                  return (
-                    <DropdownMenuCheckboxItem
-                      key={column.id}
-                      className="capitalize"
-                      checked={column.getIsVisible()}
-                      onCheckedChange={(value) =>
-                        column.toggleVisibility(!!value)
-                      }
-                    >
-                      {column.id}
-                    </DropdownMenuCheckboxItem>
-                  );
-                })}
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
       </div>
-      <div className="rounded-md border">
+      <div className="rounded-md border border-stone-300">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
+              <TableRow className="border-stone-300" key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   return (
                     <TableHead className="text-center" key={header.id}>
@@ -128,7 +100,7 @@ export function DataTable<TData, TValue>({
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
-                  className="text-center"
+                  className="text-center border-stone-300"
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
                 >

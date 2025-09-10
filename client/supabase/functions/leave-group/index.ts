@@ -18,6 +18,17 @@ serve(async (req) => {
     const id = await getUserId(req);
     if (!id) return errorResponse("Unauthorized", 401);
     const userId = await transformUserId(id);
+
+    const { data: ownership, error: ownershipErr } = await supabase
+      .from("group_members")
+      .select("role_id")
+      .eq("group_id", group_id)
+      .eq("user_id", userId)
+      .single();
+
+    if (!ownership || ownershipErr)
+      return errorResponse("Could not find user", 400);
+
     const { data: _user, error: userError } = await supabase
       .from("group_members")
       .delete()
@@ -26,12 +37,15 @@ serve(async (req) => {
 
     if (userError) return errorResponse("Could not find user", 400);
 
-    const { data: _group, error: groupError } = await supabase
-      .from("groups")
-      .delete()
-      .eq("owner_id", userId);
+    if (ownership.role_id === 1) {
+      const { data: _group, error: groupError } = await supabase
+        .from("groups")
+        .delete()
+        .eq("owner_id", userId);
 
-    if (groupError) errorResponse("There was an error removing the group", 400);
+      if (groupError)
+        errorResponse("There was an error removing the group", 400);
+    }
 
     return new Response(
       JSON.stringify({

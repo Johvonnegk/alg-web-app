@@ -4,9 +4,9 @@ import { FaMinusCircle } from "react-icons/fa";
 import { useGetGroupInvitations } from "@/hooks/groups/useGetGroupInvitations";
 import { useUpdateInvites } from "@/hooks/groups/useUpdateInvites";
 import { useArchiveInvite } from "@/hooks/groups/useArchiveInvite";
-import { DataTable } from "./Table/data-table";
+import { DataTable } from "@/components/Tables/GroupsTables/GroupInvitations/data-table";
 import toast from "react-hot-toast";
-import { columns as baseColumns } from "./Table/columns";
+import { columns as baseColumns } from "@/components/Tables/GroupsTables/GroupInvitations/columns";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -35,7 +35,7 @@ const GroupInvitations = () => {
         }, 300);
       }
     } else {
-      console.error("Failed to accpet invite: ", error);
+      console.error("Failed to accept invite: ", error);
     }
   };
 
@@ -51,11 +51,17 @@ const GroupInvitations = () => {
     }
   };
   const columns = baseColumns({ handleInvite, handleArchive });
-  return (
+  return invites && invites.length > 0 ? (
     <div className="flex flex-col justify-center w-full overflow-x-hidden">
+      <h3 className="self-center text-xl mb-2 xl:self-start">Manage Invites</h3>
+      <hr className="mb-2 w-full xl:mb-10 text-stone-300 xl:w-7/8" />
       <div className="overflow-x-scroll">
-        <DataTable columns={columns} data={invites ? invites : []} />
+        <DataTable columns={columns} data={invites} />
       </div>
+    </div>
+  ) : (
+    <div className="flex flex-col items-center text-stone-500">
+      You have no group invites
     </div>
   );
 };

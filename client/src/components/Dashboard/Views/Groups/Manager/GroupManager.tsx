@@ -31,8 +31,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { columns as baseColumns } from "./Table/columns";
-import { DataTable } from "./Table/data-table";
+import GroupDescCard from "../GroupDescCard";
+import { columns as baseColumns } from "../../../../Tables/GroupsTables/ManagerGroupTable/columns";
+import { DataTable } from "@/components/Tables/GroupsTables/ManagerGroupTable/data-table";
 import { useAuth } from "../../../../../context/AuthContext";
 
 const inviteFormSchema = z.object({
@@ -52,6 +53,7 @@ const GroupManager = ({ group }: GroupManagerProps) => {
   const groupInfo = group[0];
   const groupName = groupInfo?.groups.name;
   const groupId = groupInfo?.groups.id;
+  const groupDesc = groupInfo?.groups.description;
   const { transferOwnership: transfer, loading: tansLoading } =
     useTransferOwnership();
   const { handlePromotion: promote, loading: promoteLoading } =
@@ -171,77 +173,83 @@ const GroupManager = ({ group }: GroupManagerProps) => {
   });
   return (
     <div className="group-management w-full flex flex-col gap-y-10 2xl:grid 2xl:grid-cols-2 2xl:gap-2">
-      <div className="managed-members flex flex-col">
-        <form className="mb-5" onSubmit={removeGroupMembers}>
-          <DataTable columns={columns} data={group} />
-          {selectedUsers.length > 0 && (
-            <RemoveMemberConfirmDialog
-              onConfirm={() => removeGroupMembers()}
-              trigger={
-                <Button variant="destructive" className="btn-danger">
-                  Remove
-                </Button>
-              }
-              title="Remove this member?"
-              description={`Are you sure you want to remove ${selectedUsers.join(
-                ", "
-              )} from the group?`}
-              confirmText="Yes, remove"
-              cancelText="Cancel"
-            />
-          )}
-        </form>
-        <div className="flex-1 flex justify-center">
-          <LeaveGroupDialog
-            groupName={groupName}
-            onConfirm={() => {
-              leaveGroup();
-            }}
-          />
-        </div>
-
-        <hr className="w-full border-2 text-stone-200 mb-5" />
-        <Form {...transferForm}>
-          <form
-            onSubmit={transferForm.handleSubmit(transferOwnership)}
-            className="w-full flex flex-col 2xl:flex-row justify-start gap-8"
-          >
-            <div>
-              <FormField
-                control={transferForm.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel htmlFor="email" className="font-semibold">
-                      Users email address
-                    </FormLabel>
-                    <FormDescription>
-                      Enter the email of the user you wish to transfer ownership
-                      to for{" "}
-                      <strong className="text-accent">{groupName}</strong>
-                    </FormDescription>
-                    <FormMessage className="text-sm text-red-500" />
-                    <FormControl>
-                      <Input
-                        placeholder="mail@example.com"
-                        className="border-stone-300"
-                        {...field}
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
+      <div>
+        <div className="managed-members flex flex-col">
+          <div className=" self-center mt-10 mb-2 xl:mt-0 xl:mb-10">
+            <h3 className="text-xl">Manage {groupName}</h3>
+            <hr className="text-stone-300 w-full" />
+          </div>
+          <form className="mb-5" onSubmit={removeGroupMembers}>
+            <DataTable columns={columns} data={group} />
+            {selectedUsers.length > 0 && (
+              <RemoveMemberConfirmDialog
+                onConfirm={() => removeGroupMembers()}
+                trigger={
+                  <Button variant="destructive" className="btn-danger">
+                    Remove
+                  </Button>
+                }
+                title="Remove this member?"
+                description={`Are you sure you want to remove ${selectedUsers.join(
+                  ", "
+                )} from the group?`}
+                confirmText="Yes, remove"
+                cancelText="Cancel"
               />
-            </div>
-            <div className="flex items-end self-center 2xl:self-end">
-              <Button type="submit" className="btn-primary">
-                Transfer group ownership
-              </Button>
-            </div>
+            )}
           </form>
-        </Form>
+          <div className="flex-1 flex justify-center">
+            <LeaveGroupDialog
+              groupName={groupName}
+              onConfirm={() => {
+                leaveGroup();
+              }}
+            />
+          </div>
+          <hr className="w-full border-2 text-stone-200 mb-5" />
+          <Form {...transferForm}>
+            <form
+              onSubmit={transferForm.handleSubmit(transferOwnership)}
+              className="w-full flex flex-col 2xl:flex-row justify-start gap-8"
+            >
+              <div>
+                <FormField
+                  control={transferForm.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel htmlFor="email" className="font-semibold">
+                        Users email address
+                      </FormLabel>
+                      <FormDescription>
+                        Enter the email of the user you wish to transfer
+                        ownership to for{" "}
+                        <strong className="text-accent">{groupName}</strong>
+                      </FormDescription>
+                      <FormMessage className="text-sm text-red-500" />
+                      <FormControl>
+                        <Input
+                          placeholder="mail@example.com"
+                          className="border-stone-300"
+                          {...field}
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <div className="flex items-end self-center 2xl:self-end">
+                <Button type="submit" className="btn-primary">
+                  Transfer group ownership
+                </Button>
+              </div>
+            </form>
+          </Form>
+        </div>
       </div>
-      <div className="add-member flex justify-center">
-        <Card className="w-full max-w-sm border-0">
+      <div className="add-member flex flex-col items-center gap-y-10 justify-center">
+        <GroupDescCard group={group} edit={true} />
+        <Card className="w-full max-w-sm h-fit border-0 xl:self-center">
           <CardHeader>
             <CardTitle className="text-lg">
               Invite user to <span className="text-accent">{groupName}</span>

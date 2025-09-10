@@ -4,32 +4,35 @@ import { useState, useCallback } from "react";
 interface GroupInfo {
   name: string;
   description: string;
+  id: number;
 }
 
-interface CreateGroupResponse {
+interface UpdateGroupResponse {
   error?: string;
   message?: string;
   success: boolean;
 }
 
-export const useCreateGroup = () => {
+export const useUpdateGroup = () => {
   const [loading, setLoading] = useState(false);
 
-  const createGroup = useCallback(
-    async (groupInfo: GroupInfo): Promise<CreateGroupResponse> => {
+  const updateGroup = useCallback(
+    async (groupInfo: GroupInfo): Promise<UpdateGroupResponse> => {
       setLoading(true);
       try {
-        const { name, description } = groupInfo;
+        const { name, description, id } = groupInfo;
+        console.log(id);
         const { data: _groupData, error: groupError } =
-          await supabase.functions.invoke("create-group", {
+          await supabase.functions.invoke("update-group", {
             body: {
               name,
               description,
+              gId: id,
             },
           });
 
         if (groupError) {
-          console.error("There was an error creating the group:", groupError);
+          console.error("There was an error updating the group:", groupError);
           return { success: false, error: groupError };
         }
 
@@ -44,5 +47,5 @@ export const useCreateGroup = () => {
     []
   );
 
-  return { createGroup, loading };
+  return { updateGroup, loading };
 };

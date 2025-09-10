@@ -20,45 +20,42 @@ serve(async (req) => {
   if (optionRes) return optionRes;
 
   try {
+    const { name, description, gId } = await req.json();
     const id = await getUserId(req);
     if (!id) return errorResponse("Unauthorized", 401);
     const userId = await transformUserId(id);
-    const { data: group, error: groupIdError } = await supabase
+    const { data: targetUser, error: groupError } = await supabase
       .from("group_members")
-      .select("group_id")
+      .select("role_id")
+      .eq("group_id", gId)
       .eq("user_id", userId)
-      .not("role_id", "in", "(1,2)")
       .maybeSingle();
-
-    if (groupIdError) {
-      return errorResponse(
-        `Error fetching group: ${groupIdError.message}`,
-        400
-      );
+    console.log("Group Id", gId);
+    console.log("User Id: ", userId);
+    if (!targetUser || groupError) {
+      return errorResponse("Error getting target user", 400);
     }
-    if (!group) {
-      return new Response(JSON.stringify({ message: "No user found" }), {
+
+    if (![1, 2].includes(targetUser.role_id))
+      return errorResponse("Unauthorized", 400);
+
+    const { error: updateErr } = await supabase
+      .from("groups")
+      .update({ name: name, description: description })
+      .eq("id", gId);
+
+    if (updateErr) return errorResponse("Error updating user data", 400);
+
+    return new Response(
+      JSON.stringify({
+        message: `Group updated successfully`,
+        success: true,
+      }),
+      {
         status: 200,
         headers: corsHeaders,
-      });
-    }
-
-    const groupId = group?.group_id;
-    const { data: groupMembers, error: groupError } = await supabase
-      .from("group_members")
-      .select(
-        "role_id, users(fname, lname, role_id, email, profile_icon), groups(name, id, description)"
-      )
-      .eq("group_id", groupId);
-
-    if (groupError) {
-      return errorResponse(groupError.message, 400);
-    }
-
-    return new Response(JSON.stringify(groupMembers), {
-      status: 200,
-      headers: corsHeaders,
-    });
+      }
+    );
   } catch (e) {
     return errorResponse(`${e}`, 500);
   }

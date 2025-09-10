@@ -32,7 +32,7 @@ serve(async (req) => {
     const { data: users, error: userError } = await supabase
       .from("users")
       .select(
-        "user_id, role_id, fname, lname, email, phone, address, birthday, created_at, confirmed"
+        "user_id, role_id, fname, lname, email, phone, address, birthday, profile_icon, created_at, confirmed"
       );
 
     if (userError || !users)

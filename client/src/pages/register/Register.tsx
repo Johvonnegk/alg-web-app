@@ -60,8 +60,8 @@ const formSchema = z
       .min(8, { message: "Password must be at least 8 characters." })
       .regex(/\d.*\d/, "Password must contain at least 2 digits")
       .regex(
-        /[!#$&]/,
-        "Password must contain at least one special character (!, #, $, &)"
+        /[!#$&?]/,
+        "Password must contain at least one special character (!, #, $, &, ?)"
       )
       .max(50, { message: "Maximum password length is 50 characters." }),
     confirmPassword: z

@@ -1,10 +1,10 @@
 import React from "react";
 import { useState } from "react";
 import { ColumnDef } from "@tanstack/react-table";
-import { GroupMember } from "../../../../../../types/Group";
-import { roleMap, memberMap } from "../../Groups";
+import { GroupMember } from "@/types/Group";
 import { Button } from "@/components/ui/button";
 import { ArrowUp, ArrowDown, ArrowUpDown } from "lucide-react";
+import GroupProfilePill from "@/components/Profile/GroupProfilePill";
 
 interface ColumnParams {
   sessionEmail: string;
@@ -27,36 +27,17 @@ export const columns: ColumnDef<GroupMember>[] = [
         >
           Name
           {sorted === "asc" ? (
-            <ArrowUp className="ml-2 h-4 w-4" />
+            <ArrowUp className="h-4 w-4" />
           ) : sorted === "desc" ? (
-            <ArrowDown className="ml-2 h-4 w-4" />
+            <ArrowDown className="h-4 w-4" />
           ) : (
-            <ArrowUpDown className="ml-2 h-4 w-4" />
+            <ArrowUpDown className="h-4 w-4" />
           )}
         </Button>
       );
     },
-    cell: ({ row }) =>
-      `${row.original.users.fname} ${row.original.users.lname}`,
-  },
-  {
-    id: "Group Role",
-    accessorKey: "groupRole",
-    header: "Group Role",
-    cell: ({ row }) => `${memberMap[row.original.role_id - 1]}`,
-  },
-  {
-    id: "level",
-    accessorKey: "level",
-    header: "Level",
-    cell: ({ row }) =>
-      row.original.users.role_id !== undefined
-        ? `${roleMap[row.original.users.role_id]}`
-        : "",
-  },
-  {
-    id: "email",
-    accessorKey: "users.email",
-    header: "Email",
+    cell: ({ row }) => {
+      return <GroupProfilePill p={row.original} />;
+    },
   },
 ];

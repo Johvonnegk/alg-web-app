@@ -2,17 +2,12 @@ import React from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { UserProfile } from "@/types/UserProfile";
 import { User } from "@supabase/supabase-js";
+import CustomAvatar from "./CustomAvatar";
 const ProfilePill = ({ profile }: { profile: UserProfile }) => {
   return (
     <div className="flex justify-between rounded-md mb-6 bg-white shadow-md px-2 py-2 items-center">
       <div className="pr-5">
-        <Avatar>
-          <AvatarImage src={profile.profile_icon} />
-          <AvatarFallback className="bg-accent text-white">
-            {profile.fname[0]}
-            {profile.lname[0]}
-          </AvatarFallback>
-        </Avatar>
+        <CustomAvatar profile={profile} />
       </div>
 
       <div className="flex flex-col pl-5 pr-3">

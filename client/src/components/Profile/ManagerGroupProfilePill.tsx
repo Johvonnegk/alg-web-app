@@ -1,8 +1,11 @@
 import React from "react";
-import CustomAvatar from "./CustomAvatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { GroupMember } from "@/types/Group";
 import { roleMap, memberMap } from "@/components/Dashboard/Views/Groups/Groups";
-const GroupProfilePill = ({ p }: { p: GroupMember }) => {
+import { Link } from "react-router-dom";
+import { HiDotsHorizontal } from "react-icons/hi";
+import CustomAvatar from "./CustomAvatar";
+const ManagerGroupProfilePill = ({ p }: { p: GroupMember }) => {
   const profile = p.users;
   return (
     <div className="flex justify-between rounded-md bg-white shadow-md px-2 py-2 items-center">
@@ -22,8 +25,16 @@ const GroupProfilePill = ({ p }: { p: GroupMember }) => {
         </span>
         <span className="text-stone-400 font-semibold">{profile.email}</span>
       </div>
+      <div className="px-2">
+        <Link
+          className="underline text-accent hover:text-black"
+          to={`/member-details/${profile.user_id}`}
+        >
+          <HiDotsHorizontal className="text-accent size-7" />
+        </Link>
+      </div>
     </div>
   );
 };
 
-export default GroupProfilePill;
+export default ManagerGroupProfilePill;

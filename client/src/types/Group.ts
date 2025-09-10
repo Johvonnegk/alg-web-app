@@ -6,8 +6,9 @@ export interface GroupMember {
     lname: string;
     role_id?: number;
     email?: string;
+    profile_icon?: string;
   };
-  groups: { name: string; id?: number };
+  groups: { name: string; id?: number; description: string };
 }
 
 export interface Groups {

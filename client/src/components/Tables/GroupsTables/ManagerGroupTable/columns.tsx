@@ -1,12 +1,13 @@
 import React from "react";
 import { useState } from "react";
 import { ColumnDef } from "@tanstack/react-table";
-import { GroupMember } from "../../../../../../types/Group";
-import { memberMap } from "../../Groups";
+import { GroupMember } from "../../../../types/Group";
 import { Button } from "@/components/ui/button";
 import { FaArrowAltCircleUp, FaArrowAltCircleDown } from "react-icons/fa";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ArrowUp, ArrowDown, ArrowUpDown } from "lucide-react";
+import ManagerGroupProfilePill from "@/components/Profile/ManagerGroupProfilePill";
+import { HiDotsHorizontal } from "react-icons/hi";
 import { Link } from "react-router-dom";
 
 interface ColumnParams {
@@ -35,28 +36,18 @@ export const columns = ({
         >
           Name
           {sorted === "asc" ? (
-            <ArrowUp className="ml-2 h-4 w-4" />
+            <ArrowUp className="h-4 w-4" />
           ) : sorted === "desc" ? (
-            <ArrowDown className="ml-2 h-4 w-4" />
+            <ArrowDown className="h-4 w-4" />
           ) : (
-            <ArrowUpDown className="ml-2 h-4 w-4" />
+            <ArrowUpDown className="h-4 w-4" />
           )}
         </Button>
       );
     },
-    cell: ({ row }) =>
-      `${row.original.users.fname} ${row.original.users.lname}`,
-  },
-  {
-    id: "Group Role",
-    accessorKey: "groupRole",
-    header: "Group Role",
-    cell: ({ row }) => `${memberMap[row.original.role_id - 1]}`,
-  },
-  {
-    id: "email",
-    accessorKey: "users.email",
-    header: "Email",
+    cell: ({ row }) => {
+      return <ManagerGroupProfilePill p={row.original} />;
+    },
   },
   {
     accessorKey: "manage",
@@ -115,21 +106,6 @@ export const columns = ({
           </div>
         );
       }
-    },
-  },
-  {
-    id: "more",
-    accessorKey: "View More",
-    cell: ({ row }) => {
-      const member = row.original;
-      return (
-        <Link
-          className="underline text-accent hover:text-black"
-          to={`/member-details/${member.users.user_id}`}
-        >
-          View More
-        </Link>
-      );
     },
   },
 ];

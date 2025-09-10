@@ -241,7 +241,7 @@ const Profile: React.FC<ProfileProps> = ({ profile, edit }) => {
     }
   };
   return (
-    <Card>
+    <Card className="border-stone-300 shadow-xl">
       <CardHeader>
         <CardTitle>
           {profile.fname} {profile.lname}'s Profile
@@ -255,7 +255,7 @@ const Profile: React.FC<ProfileProps> = ({ profile, edit }) => {
             <Form {...profileForm}>
               <form onSubmit={profileForm.handleSubmit(updateProfileReq)}>
                 <div className="flex flex-col gap-6">
-                  <div className="flex flex-col 2xl:grid 2xl:grid-cols-2 2xl:gap-2 2xl:items-stretch">
+                  <div className="flex flex-col gap-6 2xl:grid 2xl:grid-cols-2 2xl:gap-2 2xl:items-stretch">
                     <FormField
                       control={profileForm.control}
                       name="fname"
@@ -386,31 +386,32 @@ const Profile: React.FC<ProfileProps> = ({ profile, edit }) => {
                       )}
                     />
                   </div>
-                  <Button
-                    type="submit"
-                    className="w-full border border-stone-300 hover:bg-accent hover:text-white"
-                  >
+                  <Button type="submit" className="w-full border btn-primary">
                     Update Profile
                   </Button>
                 </div>
               </form>
             </Form>
-            <div className="flex flex-col gap-2">
-              <Label>Profile Preview</Label>
-              <div className="w-fit">
-                <ProfilePill profile={liveProfile} />
-              </div>
+            <div className="mt-5 w-full flex flex-col items-center gap-3">
+              <Label className="font-semibold">Profile Preview</Label>
+              <ProfilePill profile={liveProfile} />
             </div>
             <Form {...imageForm}>
-              <form onSubmit={imageForm.handleSubmit(uploadImage)}>
+              <form
+                className="w-full flex flex-col items-center gap-y-2"
+                onSubmit={imageForm.handleSubmit(uploadImage)}
+              >
                 <FormField
                   control={imageForm.control}
                   name="image.file"
                   render={({ field }) => (
                     <FormItem className="flex flex-col">
-                      <FormLabel>Upload image</FormLabel>
+                      <FormLabel className="font-semibold">
+                        Upload image
+                      </FormLabel>
                       <FormControl>
                         <Input
+                          className="border-stone-300 shadow-sm text-stone-500"
                           type="file"
                           accept="image/*"
                           onChange={(e) => {
@@ -435,9 +436,12 @@ const Profile: React.FC<ProfileProps> = ({ profile, edit }) => {
                   name="image.url"
                   render={({ field }) => (
                     <FormItem className="flex flex-col">
-                      <FormLabel>Paste image URL</FormLabel>
+                      <FormLabel className="font-semibold">
+                        Paste image URL
+                      </FormLabel>
                       <FormControl>
                         <Input
+                          className="w-full border-stone-300 shadow-sm"
                           type="url"
                           placeholder="https://example.com/image.jpg"
                           {...field} // ✅ updates image.url only

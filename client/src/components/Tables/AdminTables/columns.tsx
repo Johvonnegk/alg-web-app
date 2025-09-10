@@ -9,6 +9,7 @@ import { roleMap } from "../../Dashboard/Views/Groups/Groups";
 import { format } from "date-fns";
 import { DeleteUserConfirmDialog } from "../../Dashboard/Views/Admin/DeleteUserConfirmDialog";
 import { RoleChanger } from "../../Dashboard/Views/Admin/RoleChanger";
+import AdminProfilePill from "@/components/Profile/AdminProfilePill";
 
 interface ColumnParams {
   userRole: number;
@@ -46,18 +47,7 @@ export const columns = ({
         </Button>
       );
     },
-    cell: ({ row }) => `${row.original.fname} ${row.original.lname}`,
-  },
-  {
-    id: "system level",
-    accessorKey: "level",
-    header: "System Level",
-    cell: ({ row }) => `${roleMap[row.original.role_id]}`,
-  },
-  {
-    id: "email",
-    accessorKey: "email",
-    header: "Email",
+    cell: ({ row }) => <AdminProfilePill profile={row.original} />,
   },
   {
     id: "confirmed",
