@@ -17,7 +17,7 @@ import {
   differenceInHours,
   differenceInYears,
   format,
-  add,
+  parse,
 } from "date-fns";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -44,7 +44,6 @@ import { UseUpdateUserEmail } from "@/hooks/profile/useUpdateUserEmail";
 import { Label } from "@/components/ui/label";
 4;
 import { UseUpdateIcon } from "@/hooks/profile/useUpdateIcon";
-import { Edit } from "lucide-react";
 import ProfilePill from "./UserProfilePill";
 import { UseUpdateUserProfile } from "@/hooks/profile/useUpdateUserProfile";
 
@@ -77,7 +76,8 @@ const Profile: React.FC<ProfileProps> = ({ profile, edit }) => {
     error: updateUserErr,
   } = UseUpdateUserProfile();
 
-  const formattedBirthDay = format(new Date(profile.birthday), "yyyy-MM-dd");
+  const parsed = parse(profile.birthday, "yyyy-MM-dd", new Date());
+  const formattedBirthday = format(parsed, "MMMM d, yyyy");
   const age = differenceInYears(new Date(), new Date(profile.birthday));
   const now = new Date();
   const createdAt = new Date(profile.created_at);
@@ -507,7 +507,7 @@ const Profile: React.FC<ProfileProps> = ({ profile, edit }) => {
               Phone Number: {formatPhoneNumber(profile.phone)}
             </li>
             <li key="address">Address: {profile.address}</li>
-            <li key="birthday">Birthday: {formattedBirthDay}</li>
+            <li key="birthday">Birthday: {formattedBirthday}</li>
             <li key="age">Age: {age}</li>
             <li key="join date">
               Joined: {memberSince} {timeUnit} ago

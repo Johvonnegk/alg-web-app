@@ -256,15 +256,20 @@ const Surveys = () => {
 
             <Card className="gifts-description border-accent shadow-lg h-fit lg:place-self-center">
               <CardHeader>
-                <CardTitle>What is spritual growth?</CardTitle>
-                <CardDescription></CardDescription>
+                <CardTitle>
+                  What is spritual growth and how might God be calling you to
+                  help build His kingdom??
+                </CardTitle>
+                <CardDescription className="font-semibold text-stone-600">
+                  Ministries and Gifts
+                </CardDescription>
               </CardHeader>
               <CardContent>
                 <p key="Spiritual Growth Description">
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                  Eligendi dignissimos facilis rerum accusamus earum. Labore ex
-                  asperiores error laborum quo recusandae suscipit? Harum
-                  quaerat rem ratione nemo modi natus alias!
+                  Spiritual growth is the process of becoming more and more like
+                  Jesus Christ. When we place our faith in Jesus, the Holy
+                  Spirit begins the process of making us more like Him,
+                  conforming us to His image.
                 </p>
               </CardContent>
               <CardFooter>
@@ -401,11 +406,9 @@ const Surveys = () => {
             </Form>
             <Card className="border-accent h-fit place-self-center shadow-lg">
               <CardHeader>
-                <CardTitle className="text-lg">
-                  How might God be calling you to help build His kingdom?
-                </CardTitle>
+                <CardTitle className="text-lg">Discipleship Survey</CardTitle>
                 <CardDescription className="font-semibold text-stone-600">
-                  Ministries
+                  Discipleship
                 </CardDescription>
               </CardHeader>
               <CardContent>
