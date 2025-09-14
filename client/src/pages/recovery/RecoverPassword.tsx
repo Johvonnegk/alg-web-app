@@ -120,7 +120,7 @@ const Recovery = () => {
 
   return (
     <>
-      <div className="flex justify-center items-center min-h-screen px-4 lg:px-auto">
+      <div className="flex justify-center items-center min-h-screen px-4 lg:px-auto pt-21">
         <Card className="bg-white shadow-xl w-full max-w-sm border-0">
           <CardHeader>
             <CardTitle className="text-lg">Recover your password</CardTitle>

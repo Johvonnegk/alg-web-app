@@ -23,6 +23,18 @@
   @apply font-semibold text-stone-600
 }
 
+.page-sections > div {
+  @apply py-10 px-4 xl:px-14 flex flex-col items-center justify-center gap-10
+}
+
+.page-sections > div > div {
+  @apply pb-5
+}
+
+.page-sections > div > div > h2 {
+  @apply text-xl xl:text-2xl font-bold py-10
+}
+
 [aria-label*="today"],
 [data-day][class*="today"] {
   background-color: transparent !important;

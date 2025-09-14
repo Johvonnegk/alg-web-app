@@ -82,7 +82,7 @@ const Overview: React.FC<OverviewProps> = ({ profile }) => {
         discipleship &&
         discipleship.length > 0 && (
           <div className="flex justify-center">
-            <div className="w-1/2">
+            <div className="w-full">
               <h2 className="font-semibold text-2xl">Discipleship Data</h2>
               <DataTable
                 columns={discColumns}

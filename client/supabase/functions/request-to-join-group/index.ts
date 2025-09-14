@@ -98,13 +98,13 @@ serve(async (req) => {
       inviteId = invite?.id;
     }
 
-    const { data: _notification, error: notiError } = await supabase
-      .from("notifications")
-      .insert([{ user_id: userId, related_id: inviteId, type_id: 1 }]);
+    // const { error: notiError } = await supabase
+    //   .from("notifications")
+    //   .insert([{ user_id: userId, related_id: inviteId, type_id: 1 }]);
 
-    if (notiError) {
-      return errorResponse(`An error occured sending the notification`, 400);
-    }
+    // if (notiError) {
+    //   return errorResponse(`An error occured sending the notification`, 400);
+    // }
 
     return new Response(
       JSON.stringify({

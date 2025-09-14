@@ -15,15 +15,20 @@ const ManageGroup = ({ leaderGroup, coLeaderGroup }: ManageGroupProps) => {
         </h3>
         <hr className="mb-2 xl:mb-10 text-stone-300 xl:w-7/8" />
       </div>
-
       <div>
         {leaderGroup && leaderGroup.length > 0 ? (
-          <GroupManager group={leaderGroup} />
+          <div className="flex flex-col mb-10 xl:mb-20">
+            <GroupManager group={leaderGroup} />
+            <hr className="w-full mt-10 mb-2 xl:mb-10 text-stone-300 xl:w-7/8 self-center" />
+          </div>
         ) : null}
       </div>
       <div>
         {coLeaderGroup && coLeaderGroup.length > 0 ? (
-          <GroupManager group={coLeaderGroup} />
+          <div className="flex flex-col mb-10 xl:mb-20">
+            <GroupManager group={coLeaderGroup} />
+            <hr className="w-full mt-10 mb-2 xl:mb-10 text-stone-300 xl:w-7/8 self-center" />
+          </div>
         ) : null}
       </div>
     </div>

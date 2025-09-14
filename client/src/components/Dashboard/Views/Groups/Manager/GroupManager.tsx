@@ -174,8 +174,8 @@ const GroupManager = ({ group }: GroupManagerProps) => {
   return (
     <div className="group-management w-full flex flex-col gap-y-10 2xl:grid 2xl:grid-cols-2 2xl:gap-2">
       <div>
-        <div className="managed-members flex flex-col">
-          <div className=" self-center mt-10 mb-2 xl:mt-0 xl:mb-10">
+        <div className="managed-members flex flex-col mt-10 mb-2">
+          <div className=" self-center xl:mt-0 xl:mb-0">
             <h3 className="text-xl">Manage {groupName}</h3>
             <hr className="text-stone-300 w-full" />
           </div>

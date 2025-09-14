@@ -54,9 +54,11 @@ const GeneralView = ({ otherGroups }: GeneralViewProps) => {
           <GroupDescCard group={group} edit={false} />
         </div>
       ) : (
-        <p className="text-stone-500">
-          You are not in any {otherGroups ? "other " : ""}groups
-        </p>
+        <div className="w-full flex justify-center">
+          <p className="text-stone-500">
+            You are not in any {otherGroups ? "other " : ""}groups
+          </p>
+        </div>
       )}
     </div>
   );

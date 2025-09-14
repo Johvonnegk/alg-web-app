@@ -15,7 +15,7 @@ const DashboardContainer: React.FC<DashboardContainerProps> = ({
   View,
 }) => {
   return (
-    <div className="w-full bg-white rounded-lg pb-4 shadow h-fit">
+    <div className="w-full pt-21 bg-white rounded-lg pb-4 shadow h-fit">
       <TopBar name={profile.fname} />
       {View}
     </div>

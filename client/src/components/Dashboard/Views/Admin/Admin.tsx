@@ -34,7 +34,7 @@ import {
   CardFooter,
 } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-
+import RoleChangeChart from "@/components/Charts/RoleChangeChart";
 const GRANULARITIES = [
   "day",
   "week",
@@ -257,6 +257,7 @@ const Admin = () => {
             </div>
           )}
         </div>
+        <RoleChangeChart />
       </div>
     </div>
   );

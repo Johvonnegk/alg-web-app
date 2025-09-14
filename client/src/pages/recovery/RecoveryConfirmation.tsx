@@ -4,7 +4,7 @@ import { MailCheck } from "lucide-react";
 
 const RecoveryConfirmation = () => {
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center text-center px-4">
+    <div className="min-h-screen flex flex-col items-center justify-center text-center px-4 pt-21">
       <MailCheck className="h-16 w-16 text-accent mb-4" />
       <h1 className="text-2xl font-semibold mb-2">Check your email</h1>
       <p className="text-stone-600 max-w-md">

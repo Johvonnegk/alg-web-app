@@ -40,7 +40,7 @@ const MemberDetail = () => {
     error: growthError,
   } = useGetGrowth("group_leader", userId);
   return (
-    <div className="px-4 py-10 lg:px-14 min-h-screen min-w-screen flex flex-col gap-y-20 xl:gap-y-10 xl:grid xl:grid-cols-2 xl:gap-x-10">
+    <div className="px-4 py-10 lg:px-14 min-h-screen min-w-screen flex flex-col gap-y-20 xl:gap-y-10 xl:grid xl:grid-cols-2 xl:gap-x-10 pt-21">
       <div className="flex flex-col items-center col-span-2">
         {userLoading ? (
           <div className="flex flex-col w-1/2 min-h-full col-span-2 space-y-3">

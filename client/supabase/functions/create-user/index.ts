@@ -61,6 +61,13 @@ serve(async (req) => {
       if (growthError) console.error("Growth insert failed:", growthError);
     }
 
+    const { error: promotionsError } = await supabase
+      .from("promotions")
+      .insert({ new_id: 5, user_id: user.id });
+
+    if (promotionsError)
+      console.error("Assignment insert failed:", promotionsError);
+
     const { id, ...userWithoutId } = user ?? {};
     return new Response(
       JSON.stringify({
