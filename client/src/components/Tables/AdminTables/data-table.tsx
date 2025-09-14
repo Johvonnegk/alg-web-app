@@ -9,6 +9,7 @@ import {
   VisibilityState,
   useReactTable,
   getFilteredRowModel,
+  getPaginationRowModel,
 } from "@tanstack/react-table";
 import {
   DropdownMenu,
@@ -17,7 +18,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -26,6 +26,14 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -44,6 +52,10 @@ export function DataTable<TData, TValue>({
     React.useState<VisibilityState>({
       confirmed: false,
     });
+  const [pagination, setPagination] = React.useState({
+    pageIndex: 0,
+    pageSize: 5,
+  });
   const table = useReactTable({
     data,
     columns,
@@ -57,7 +69,10 @@ export function DataTable<TData, TValue>({
       sorting,
       columnFilters,
       columnVisibility,
+      pagination,
     },
+    getPaginationRowModel: getPaginationRowModel(),
+    onPaginationChange: setPagination,
   });
 
   return (
@@ -159,6 +174,46 @@ export function DataTable<TData, TValue>({
             )}
           </TableBody>
         </Table>
+      </div>
+      <div className="flex items-center justify-end space-x-2 py-4">
+        <div className="flex items-center space-x-2">
+          <span className="text-sm text-gray-600">Rows per page:</span>
+          <Select
+            value={String(table.getState().pagination.pageSize)}
+            onValueChange={(value) => {
+              table.setPageIndex(0); // reset page so you don't land on an empty page
+              table.setPageSize(Number(value));
+            }}
+          >
+            <SelectTrigger className="w-[120px] border-accent text-accent">
+              <SelectValue placeholder="Select" />
+            </SelectTrigger>
+            <SelectContent className="bg-white ">
+              {[5, 10, 20, 50].map((size) => (
+                <SelectItem key={size} value={String(size)}>
+                  Show {size}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => table.previousPage()}
+          disabled={!table.getCanPreviousPage()}
+        >
+          Previous
+        </Button>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => table.nextPage()}
+          disabled={!table.getCanNextPage()}
+        >
+          Next
+        </Button>
       </div>
     </div>
   );

@@ -4,7 +4,7 @@ const Homepage = () => {
     <>
       <div className="flex flex-col items-center mt-20 justify-center min-h-screen text-white page-sections bg-secondary">
         <div id="home" className="relative w-full bg-accent/40">
-          <div className="w-full absolute inset-0 bg-[url('/public/alg_logo.png')] bg-center opacity-20"></div>
+          <div className="w-full absolute inset-0 bg-[url('/alg_logo.png')] bg-center opacity-20"></div>
           <div className="w-full h-[200px] xl:h-[500px] flex items-center justify-center">
             <h1 className="text-3xl xl:text-5xl text-center text-white font-bold z-2">
               ABUNDANT LIFE GOSPEL CENTRE ASSIMILATION
@@ -21,9 +21,12 @@ const Homepage = () => {
               connected, stay involved, and find a group where you can grow in
               faith and community. Whether you’re a new visitor or a long-time
               member of Abundant Life Gospel Centre, this tool is designed to
-              help you easily find and <a href="/signup">sign up</a> for an
-              ACTIVATE Group or get involved as a group leader. Let’s grow
-              together—welcome home!
+              help you easily find and{" "}
+              <a href="/signup" className="underline hover:text-accent">
+                sign up
+              </a>{" "}
+              for an ACTIVATE Group or get involved as a group leader. Let’s
+              grow together—welcome home!
             </p>
           </div>
           <span className="absolute top-[91%] left-0 w-full h-[20%] bg-secondary transform skew-y-1 origin-bottom z-2"></span>

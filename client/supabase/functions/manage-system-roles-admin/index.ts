@@ -56,7 +56,7 @@ serve(async (req) => {
           new_role: role,
           old_role: candidate.role_id,
           changed_by: user.id,
-          promotion_type: promotionType,
+          change_type: promotionType,
         });
 
       if (promoteErr)

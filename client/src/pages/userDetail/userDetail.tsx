@@ -32,7 +32,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import Profile from "@/components/Profile/Profile";
 
 const GRANULARITIES = ["day", "week", "month", "quarter", "year"] as const;
-const MemberDetail = () => {
+const UserDetail = () => {
   const [gGranularity, setGGranularity] = useState("month");
   const [gRange, setGRange] = React.useState<DateRange | undefined>();
   const [mGranularity, setMGranularity] = useState("month");
@@ -44,27 +44,27 @@ const MemberDetail = () => {
     user,
     loading: userLoading,
     error,
-  } = useGetUserDetails("group_leader", userId);
+  } = useGetUserDetails("admin", userId);
   const {
     ministries,
     loading: minLoading,
     error: minError,
-  } = useGetMinistry("group_leader", userId);
+  } = useGetMinistry("admin", userId);
   const {
     gifts,
     loading: giftsLoading,
     error: giftsError,
-  } = useGetGifts("group_leader", userId);
+  } = useGetGifts("admin", userId);
   const {
     discipleship,
     loading: discipleshipLoading,
     error: discipleshipError,
-  } = useGetDiscipleship("group_leader", userId);
+  } = useGetDiscipleship("admin", userId);
   const {
     growth,
     loading: growthLoading,
     error: growthError,
-  } = useGetGrowth("group_leader", userId);
+  } = useGetGrowth("admin", userId);
 
   const {
     gifts: giftsGrowth,
@@ -72,7 +72,7 @@ const MemberDetail = () => {
     loading: gGLoading,
     error: gGError,
   } = useGetGiftsGrowth({
-    authorization: "group_leader",
+    authorization: "admin",
     granularity: gGranularity,
     filterId: userId,
   });
@@ -92,7 +92,7 @@ const MemberDetail = () => {
     loading: mGLoading,
     error: mGError,
   } = useGetMinistryGrowth({
-    authorization: "group_leader",
+    authorization: "admin",
     granularity: mGranularity,
     filterId: userId,
   });
@@ -117,7 +117,7 @@ const MemberDetail = () => {
     loading: dGLoading,
     error: dGError,
   } = useGetDiscipleshipGrowth({
-    authorization: "group_leader",
+    authorization: "admin",
     granularity: dGranularity,
     filterId: userId,
   });
@@ -416,4 +416,4 @@ const MemberDetail = () => {
   );
 };
 
-export default MemberDetail;
+export default UserDetail;

@@ -183,7 +183,7 @@ const Profile: React.FC<ProfileProps> = ({ profile, edit }) => {
       lname: profile.lname,
       phone: profile.phone,
       address: profile.address,
-      birthday: new Date(profile.birthday),
+      birthday: new Date(formattedBirthday),
     },
   });
 

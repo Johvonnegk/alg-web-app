@@ -276,6 +276,7 @@ const Surveys = () => {
                 <a
                   className="font-semibold btn-primary px-2 py-1.5 rounded-lg"
                   href="https://app.agolix.com/assessment/9922"
+                  target="_blank"
                 >
                   Assessment here
                 </a>
@@ -413,16 +414,18 @@ const Surveys = () => {
               </CardHeader>
               <CardContent>
                 <p key="Kingdom Description">
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                  Eligendi dignissimos facilis rerum accusamus earum. Labore ex
-                  asperiores error laborum quo recusandae suscipit? Harum
-                  quaerat rem ratione nemo modi natus alias!
+                  The goal of the Discipleship Maker Assessment Tool is to
+                  provide you and your spiritual leaders with valuable insights
+                  to better guide your journey. By completing the survey, you’ll
+                  be able to track your progress and celebrate milestones as you
+                  work toward your goals!
                 </p>
               </CardContent>
               <CardFooter>
                 <a
                   className="font-semibold btn-primary px-2 py-1.5 rounded-lg"
-                  href="https://app.agolix.com/assessment/9922"
+                  href="https://church-multiplication.com/disciplemaker/?mc_cid=cc782d17da&mc_eid=eda198c8bc"
+                  target="_blank"
                 >
                   Assessment here
                 </a>

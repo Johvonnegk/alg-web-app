@@ -8,6 +8,7 @@ import { useAuth } from "@/context/AuthContext";
 import { useManageAdminRoles } from "@/hooks/admin/useManageAdminRoles";
 import { useDeleteUser } from "@/hooks/admin/useDeleteUser";
 import { useGetUserGrowth as useGetTotalGrowth } from "@/hooks/admin/useGetUserGrowth";
+import { UseGetRoleChangeStats } from "@/hooks/admin/useGetRoleChangeStats";
 import UsersPerTier from "@/components/Charts/UsersPerTier";
 import TotalUsers from "@/components/Charts/TotalUsers";
 import GrowthTrackCompletion from "@/components/Charts/GrowthTrackCompletion";
@@ -35,6 +36,7 @@ import {
 } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import RoleChangeChart from "@/components/Charts/RoleChangeChart";
+import { Divide } from "lucide-react";
 const GRANULARITIES = [
   "day",
   "week",
@@ -47,8 +49,10 @@ const GRANULARITIES = [
 const Admin = () => {
   const { email: sessionEmail } = useAuth();
   const [granularity, setGranularity] = useState("month");
+  const [rcGranularity, setRcGranularity] = useState("month");
   const [cumulative, setCumulative] = useState(true);
   const [range, setRange] = React.useState<DateRange | undefined>();
+  const [rcRange, setRcRange] = React.useState<DateRange | undefined>();
   const { role, loading: roleLoading, error: roleError } = useUserRole();
   const { handleDelete: remove, loading: removeLoading } = useDeleteUser();
   const { handlePromotion: promote, loading: promoteLoading } =
@@ -69,7 +73,6 @@ const Admin = () => {
     range?.from ?? null,
     range?.to ?? null
   );
-
   const endExclusive = range?.to
     ? new Date(
         range.to.getFullYear(),
@@ -81,6 +84,29 @@ const Admin = () => {
   const apply = () => {
     fetchGrowth(granularity, cumulative, range?.from ?? null, endExclusive);
   };
+
+  const rcEndExclusive = rcRange?.to
+    ? new Date(
+        rcRange.to.getFullYear(),
+        rcRange.to.getMonth(),
+        rcRange.to.getDate() + 1
+      )
+    : null;
+  const {
+    stats,
+    fetchRoleChangeStats,
+    loading: rcLoading,
+    error: rcError,
+  } = UseGetRoleChangeStats({
+    granularity: rcGranularity,
+    start: rcRange?.from ?? null,
+    end: rcRange?.from ?? null,
+  });
+
+  const applyRoleChangeStats = () => {
+    fetchRoleChangeStats(rcGranularity, rcRange?.from ?? null, rcEndExclusive);
+  };
+  console.log(stats);
   const handlePromotion = async (newRole: string, email: string) => {
     const result = await promote(newRole, email);
     if (result.success) {
@@ -257,7 +283,58 @@ const Admin = () => {
             </div>
           )}
         </div>
-        <RoleChangeChart />
+        {rcLoading ? (
+          <div className="w-full flex flex-col items-center space-y-3">
+            <Skeleton className="h-[450px] w-[700px] rounded-xl" />
+            <div className="space-y-2">
+              <Skeleton className="h-4 w-[550px]" />
+              <Skeleton className="h-4 w-[500px]" />
+            </div>
+          </div>
+        ) : (
+          stats && (
+            <div className="w-full col-span-3">
+              <Card>
+                <CardContent>
+                  <div className="flex flex-col gap-4">
+                    <div className="flex flex-wrap items-center gap-3">
+                      <Select
+                        value={rcGranularity}
+                        onValueChange={(v) => setRcGranularity(v as any)}
+                      >
+                        <SelectTrigger className="w-[180px]">
+                          <SelectValue placeholder="Granularity" />
+                        </SelectTrigger>
+                        <SelectContent className="bg-white">
+                          {GRANULARITIES.map((g) => (
+                            <SelectItem key={g} value={g}>
+                              {g}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+
+                      <DateRangePicker value={rcRange} onChange={setRcRange} />
+
+                      <Button
+                        onClick={applyRoleChangeStats}
+                        disabled={rcLoading}
+                      >
+                        {rcLoading ? "Loading…" : "Apply"}
+                      </Button>
+                    </div>
+
+                    {rcError && (
+                      <div className="text-red-600 text-sm">{rcError}</div>
+                    )}
+
+                    <RoleChangeChart data={stats} />
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          )
+        )}
       </div>
     </div>
   );

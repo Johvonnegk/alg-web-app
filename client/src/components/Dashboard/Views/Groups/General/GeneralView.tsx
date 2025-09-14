@@ -9,6 +9,7 @@ import toast from "react-hot-toast";
 import { columns } from "@/components/Tables/GroupsTables/GeneralGroupTable/columns";
 import { DataTable } from "@/components/Tables/GroupsTables/GeneralGroupTable/data-table";
 import { Button } from "@/components/ui/button";
+import { Divide } from "lucide-react";
 
 const GeneralView = ({ otherGroups }: GeneralViewProps) => {
   const { group, loading, error } = useViewGeneralGroups();
@@ -33,8 +34,13 @@ const GeneralView = ({ otherGroups }: GeneralViewProps) => {
   };
   return (
     <div className="view-group w-full">
+      {group && (
+        <div className="pb-15 flex justify-center">
+          <GroupDescCard group={group} edit={false} />
+        </div>
+      )}
       {group ? (
-        <div className="flex flex-col items-center gap-y-10 lg:flex-row gap-x-10">
+        <div className="flex justify-center items-center gap-y-10 gap-x-10">
           <div className="flex flex-col items-center">
             <h3 className="text-xl text-center">Welcome to {groupName}</h3>
             <hr className="text-stone-300 w-full" />
@@ -50,8 +56,6 @@ const GeneralView = ({ otherGroups }: GeneralViewProps) => {
               </Button>
             </div>
           </div>
-
-          <GroupDescCard group={group} edit={false} />
         </div>
       ) : (
         <div className="w-full flex justify-center">

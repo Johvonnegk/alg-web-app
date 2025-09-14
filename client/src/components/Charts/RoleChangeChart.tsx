@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import {
   BarChart,
   Bar,
@@ -8,34 +8,36 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
-import { supabase } from "@/supabaseClient";
 
-type RoleChangeStat = {
+type PivotedRoleChangeStat = {
   period: string;
-  role: number;
-  promotions: number;
-  demotions: number;
+  [key: string]: number | string;
 };
 
-const RoleChangeChart: React.FC = () => {
-  const [data, setData] = useState<RoleChangeStat[]>([]);
+interface RoleChangeChartProps {
+  data: PivotedRoleChangeStat[];
+}
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const { data, error } = await supabase.rpc("get_role_change_stats", {
-        granularity: "month",
-      });
+const RoleChangeChart: React.FC<RoleChangeChartProps> = ({ data }) => {
+  const roles = [1, 2, 3, 4, 5]; // 5 tiers including Admin
 
-      if (error) {
-        console.error(error);
-      } else {
-        setData(data || []);
-      }
+  const tierColors: Record<number, { promotions: string; demotions: string }> =
+    {
+      1: { promotions: "#16a34a", demotions: "#964B00" }, // Tier 1
+      2: { promotions: "#2563eb", demotions: "#9333ea" }, // Tier 2
+      3: { promotions: "#f59e0b", demotions: "#d946ef" }, // Tier 3
+      4: { promotions: "#0ea5e9", demotions: "#ea580c" }, // Tier 4
+      5: { promotions: "#64748b", demotions: "#e11d48" }, // Admin
     };
 
-    fetchData();
-  }, []);
-  console.log(data);
+  const tierLabels: Record<number, string> = {
+    1: "Tier 1",
+    2: "Tier 2",
+    3: "Tier 3",
+    4: "Tier 4",
+    5: "Admin",
+  };
+
   return (
     <div className="w-full h-[500px]">
       <ResponsiveContainer width="100%" height="100%">
@@ -43,27 +45,27 @@ const RoleChangeChart: React.FC = () => {
           data={data}
           margin={{ top: 20, right: 30, left: 20, bottom: 50 }}
         >
-          <XAxis
-            dataKey="period"
-            tickMargin={10}
-            label={{ value: "Period", position: "bottom", offset: 0 }}
-          />
-          <YAxis
-            allowDecimals={false}
-            label={{
-              value: "Events",
-              angle: -90,
-              position: "insideLeft",
-            }}
-          />
+          <XAxis dataKey="period" tickMargin={10} />
+          <YAxis allowDecimals={false} />
           <Tooltip />
           <Legend verticalAlign="top" wrapperStyle={{ marginBottom: 20 }} />
 
-          {/* Promotions bar (green) */}
-          <Bar dataKey="promotions" fill="#22c55e" name="Promotions" />
-
-          {/* Demotions bar (red) */}
-          <Bar dataKey="demotions" fill="#ef4444" name="Demotions" />
+          {roles.map((role) => (
+            <React.Fragment key={role}>
+              <Bar
+                dataKey={`role${role}_promotions`}
+                fill={tierColors[role].promotions}
+                name={`${tierLabels[role]} Promotions`}
+                stackId={`tier${role}`}
+              />
+              <Bar
+                dataKey={`role${role}_demotions`}
+                fill={tierColors[role].demotions}
+                name={`${tierLabels[role]} Demotions`}
+                stackId={`tier${role}`}
+              />
+            </React.Fragment>
+          ))}
         </BarChart>
       </ResponsiveContainer>
     </div>

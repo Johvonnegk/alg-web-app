@@ -406,3 +406,47 @@ entrypoint = "./functions/update-group/index.ts"
 # Specifies static files to be bundled with the function. Supports glob patterns.
 # For example, if you want to serve static HTML pages in your function:
 # static_files = [ "./functions/update-group/*.html" ]
+
+[functions.get-gifts-growth]
+enabled = true
+verify_jwt = true
+import_map = "./functions/get-gifts-growth/deno.json"
+# Uncomment to specify a custom file path to the entrypoint.
+# Supported file extensions are: .ts, .js, .mjs, .jsx, .tsx
+entrypoint = "./functions/get-gifts-growth/index.ts"
+# Specifies static files to be bundled with the function. Supports glob patterns.
+# For example, if you want to serve static HTML pages in your function:
+# static_files = [ "./functions/get-gifts-growth/*.html" ]
+
+[functions.get-ministry-growth]
+enabled = true
+verify_jwt = true
+import_map = "./functions/get-ministry-growth/deno.json"
+# Uncomment to specify a custom file path to the entrypoint.
+# Supported file extensions are: .ts, .js, .mjs, .jsx, .tsx
+entrypoint = "./functions/get-ministry-growth/index.ts"
+# Specifies static files to be bundled with the function. Supports glob patterns.
+# For example, if you want to serve static HTML pages in your function:
+# static_files = [ "./functions/get-ministry-growth/*.html" ]
+
+[functions.get-discipleship-growth]
+enabled = true
+verify_jwt = true
+import_map = "./functions/get-discipleship-growth/deno.json"
+# Uncomment to specify a custom file path to the entrypoint.
+# Supported file extensions are: .ts, .js, .mjs, .jsx, .tsx
+entrypoint = "./functions/get-discipleship-growth/index.ts"
+# Specifies static files to be bundled with the function. Supports glob patterns.
+# For example, if you want to serve static HTML pages in your function:
+# static_files = [ "./functions/get-discipleship-growth/*.html" ]
+
+[functions.get-role-change-stats]
+enabled = true
+verify_jwt = true
+import_map = "./functions/get-role-change-stats/deno.json"
+# Uncomment to specify a custom file path to the entrypoint.
+# Supported file extensions are: .ts, .js, .mjs, .jsx, .tsx
+entrypoint = "./functions/get-role-change-stats/index.ts"
+# Specifies static files to be bundled with the function. Supports glob patterns.
+# For example, if you want to serve static HTML pages in your function:
+# static_files = [ "./functions/get-role-change-stats/*.html" ]
