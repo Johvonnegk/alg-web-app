@@ -46,9 +46,9 @@ serve(async (req) => {
         return errorResponse(error.message, error.code);
       }
     }
-    console.log(
-      `start_date: ${start_date}, end_date: ${end_date}, granularity: ${granularity}, filter_user_id: ${filter_id}, p_group_id: ${group_id}`
-    );
+    // console.log(
+    //   `start_date: ${start_date}, end_date: ${end_date}, granularity: ${granularity}, filter_user_id: ${filter_id}, p_group_id: ${group_id}`
+    // );
     const { data, error } = await supabase.rpc("get_gifts_over_time", {
       start_date,
       end_date,
