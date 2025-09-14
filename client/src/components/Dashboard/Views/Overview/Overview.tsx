@@ -8,7 +8,7 @@ import Profile from "@/components/Profile/Profile";
 import { DataTable } from "@/components/Tables/SurveyTables/data-table";
 import GrowthTable from "@/components/Tables/GrowthTracksTables/GrowthTable";
 import { UserProfile } from "@/types/UserProfile";
-import { useGetMinistry } from "@/hooks/surveys/useGetMinisty";
+import { useGetMinistry } from "@/hooks/surveys/useGetMinistry";
 import { useGetGifts } from "@/hooks/surveys/useGetGifts";
 import { useGetDiscipleship } from "@/hooks/surveys/useGetDiscipleship";
 import { useGetGrowth } from "@/hooks/growth/useGetGrowth";

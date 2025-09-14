@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import { useGetUserDetails } from "@/hooks/profile/useGetUserDetails";
 import { useGetGifts } from "@/hooks/surveys/useGetGifts";
-import { useGetMinistry } from "@/hooks/surveys/useGetMinisty";
+import { useGetMinistry } from "@/hooks/surveys/useGetMinistry";
 import { useGetDiscipleship } from "@/hooks/surveys/useGetDiscipleship";
 import { columns as giftColumns } from "@/components/Tables/SurveyTables/GiftsTable/columns";
 import { columns as minColumns } from "@/components/Tables/SurveyTables/MinistriesTable/columns";
