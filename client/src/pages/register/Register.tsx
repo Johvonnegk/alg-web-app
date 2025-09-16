@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { z } from "zod";
 import zxcvbn from "zxcvbn";
+import { IoEye, IoEyeOff } from "react-icons/io5";
 import {
   Form,
   FormControl,
@@ -33,6 +34,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
 import { Calendar } from "@/components/ui/calendar";
 import { CalendarIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -123,6 +125,8 @@ const Register = () => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const { session, signUpNewUser } = useAuth();
+  const [showPass, setShowPass] = useState(false);
+  const [showPassC, setShowPassC] = useState(false);
 
   const navigate = useNavigate();
 
@@ -254,14 +258,33 @@ const Register = () => {
                           <FormLabel className="font-semibold">
                             Password
                           </FormLabel>
-                          <FormControl>
-                            <Input
-                              type="password"
-                              className="border border-stone-300"
-                              placeholder="Password"
-                              {...field}
-                            />
-                          </FormControl>
+                          <FormDescription>
+                            <ul className="font-semibold text-xs text-stone-500">
+                              <li>*Password must be 8 characters long*</li>
+                              <li>
+                                *Must include at least one of these special
+                                characters'!#$&?'*
+                              </li>
+                              <li>*Must have 2 digits*</li>
+                            </ul>
+                          </FormDescription>
+                          <div className="relative">
+                            <FormControl>
+                              <Input
+                                type={showPass ? "text" : "password"}
+                                className="border border-stone-300"
+                                placeholder="Password"
+                                {...field}
+                              />
+                            </FormControl>
+                            <Button
+                              className="absolute right-0 top-1/2 -translate-y-1/2 bg-transparent text-stone-500 hover:text-stone-700 hover:bg-transparent"
+                              type="button"
+                              onClick={() => setShowPass((prev) => !prev)}
+                            >
+                              {showPass ? <IoEyeOff /> : <IoEye />}
+                            </Button>
+                          </div>
 
                           <FormMessage className="text-sm text-red-500" />
                         </FormItem>
@@ -277,14 +300,26 @@ const Register = () => {
                           <FormLabel className="font-semibold">
                             Confirm Password
                           </FormLabel>
-                          <FormControl>
-                            <Input
-                              type="password"
-                              className="border border-stone-300"
-                              placeholder="Confirm Password"
-                              {...field}
-                            />
-                          </FormControl>
+                          <FormDescription className="font-semibold text-xs text-stone-500">
+                            *Confirmed password must match your password above*
+                          </FormDescription>
+                          <div className="relative">
+                            <FormControl>
+                              <Input
+                                type={showPassC ? "text" : "password"}
+                                className="border border-stone-300"
+                                placeholder="Password"
+                                {...field}
+                              />
+                            </FormControl>
+                            <Button
+                              className="absolute right-0 top-1/2 -translate-y-1/2 bg-transparent text-stone-500 hover:text-stone-700 hover:bg-transparent"
+                              type="button"
+                              onClick={() => setShowPassC((prev) => !prev)}
+                            >
+                              {showPassC ? <IoEyeOff /> : <IoEye />}
+                            </Button>
+                          </div>
                           <FormMessage className="text-sm text-red-500" />
                         </FormItem>
                       )}

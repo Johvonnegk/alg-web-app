@@ -21,12 +21,15 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
+  FormDescription,
 } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useUserProfile } from "@/hooks/profile/useUserProfile";
-
+import { IoEye, IoEyeOff } from "react-icons/io5";
 const Recovery = () => {
+  const [showPass, setShowPass] = useState(false);
+  const [showPassC, setShowPassC] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const { updatePassword } = useAuth();
@@ -42,6 +45,11 @@ const Recovery = () => {
       password: z
         .string()
         .min(8, { message: "Password must be at least 8 characters." })
+        .regex(/\d.*\d/, "Password must contain at least 2 digits")
+        .regex(
+          /[!#$&?]/,
+          "Password must contain at least one special character (!, #, $, &, ?)"
+        )
         .max(50, { message: "Maximum password length is 50 characters." }),
       confirmPassword: z
         .string()
@@ -146,17 +154,38 @@ const Recovery = () => {
                       control={form.control}
                       name="password"
                       render={({ field }) => (
-                        <FormItem className="flex flex-col">
+                        <FormItem>
                           <FormLabel className="font-semibold">
                             Password
                           </FormLabel>
-                          <FormControl>
-                            <Input
-                              className="border border-stone-300"
-                              placeholder="Password"
-                              {...field}
-                            />
-                          </FormControl>
+                          <FormDescription>
+                            <ul className="font-semibold text-xs text-stone-500">
+                              <li>*Password must be 8 characters long*</li>
+                              <li>
+                                *Must include at least one of these special
+                                characters'!#$&?'*
+                              </li>
+                              <li>*Must have 2 digits*</li>
+                            </ul>
+                          </FormDescription>
+                          <div className="relative">
+                            <FormControl>
+                              <Input
+                                type={showPass ? "text" : "password"}
+                                className="border border-stone-300"
+                                placeholder="Password"
+                                {...field}
+                              />
+                            </FormControl>
+                            <Button
+                              className="absolute right-0 top-1/2 -translate-y-1/2 bg-transparent text-stone-500 hover:text-stone-700 hover:bg-transparent"
+                              type="button"
+                              onClick={() => setShowPass((prev) => !prev)}
+                            >
+                              {showPass ? <IoEyeOff /> : <IoEye />}
+                            </Button>
+                          </div>
+
                           <FormMessage className="text-sm text-red-500" />
                         </FormItem>
                       )}
@@ -169,13 +198,26 @@ const Recovery = () => {
                           <FormLabel className="font-semibold">
                             Confrim Password
                           </FormLabel>
-                          <FormControl>
-                            <Input
-                              className="border border-stone-300"
-                              placeholder="Confirm Password"
-                              {...field}
-                            />
-                          </FormControl>
+                          <FormDescription className="font-semibold text-xs text-stone-500">
+                            *Confirmed password must match your password above*
+                          </FormDescription>
+                          <div className="relative">
+                            <FormControl>
+                              <Input
+                                type={showPassC ? "text" : "password"}
+                                className="border border-stone-300"
+                                placeholder="Password"
+                                {...field}
+                              />
+                            </FormControl>
+                            <Button
+                              className="absolute right-0 top-1/2 -translate-y-1/2 bg-transparent text-stone-500 hover:text-stone-700 hover:bg-transparent"
+                              type="button"
+                              onClick={() => setShowPassC((prev) => !prev)}
+                            >
+                              {showPassC ? <IoEyeOff /> : <IoEye />}
+                            </Button>
+                          </div>
                           <FormMessage className="text-sm text-red-500" />
                         </FormItem>
                       )}

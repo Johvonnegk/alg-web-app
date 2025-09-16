@@ -1,4 +1,6 @@
 import React from "react";
+import { Link } from "react-router-dom";
+import { Button } from "@/components/ui/button";
 const Homepage = () => {
   return (
     <>
@@ -12,7 +14,7 @@ const Homepage = () => {
           </div>
         </div>
 
-        <div className="relative home-section">
+        <div className="relative flex home-section">
           <div className="bg-secondary">
             <h2>WELCOME</h2>
             <p>
@@ -29,6 +31,20 @@ const Homepage = () => {
               grow together—welcome home!
             </p>
           </div>
+          <div className="flex self-start items-center gap-x-2 font-bold">
+            <Button className="btn-primary">
+              <Link className="font-bold tracking-wide" to="/signup">
+                SIGN-UP
+              </Link>
+            </Button>
+            <span className="tracking-wide">- OR -</span>
+            <Button className="btn-primary">
+              <Link className="font-bold tracking-wide" to="/login">
+                LOGIN
+              </Link>
+            </Button>
+          </div>
+
           <span className="absolute top-[91%] left-0 w-full h-[20%] bg-secondary transform skew-y-1 origin-bottom z-2"></span>
         </div>
         <div id="about" className="relative about-section bg-accent">

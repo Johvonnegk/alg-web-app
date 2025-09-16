@@ -21,6 +21,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { IoEye, IoEyeOff } from "react-icons/io5";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
@@ -34,6 +35,7 @@ const formSchema = z.object({
 
 const Login = () => {
   const [error, setError] = useState("");
+  const [showPass, setShowPass] = useState(false);
   const [loading, setLoading] = useState(false);
   const { session, signInUser } = useAuth();
   const navigate = useNavigate();
@@ -119,14 +121,23 @@ const Login = () => {
                           <FormLabel className="font-semibold">
                             Password
                           </FormLabel>
-                          <FormControl>
-                            <Input
-                              type="password"
-                              className="border border-stone-300"
-                              placeholder="Password"
-                              {...field}
-                            />
-                          </FormControl>
+                          <div className="relative">
+                            <FormControl>
+                              <Input
+                                type={showPass ? "text" : "password"}
+                                className="border border-stone-300"
+                                placeholder="Password"
+                                {...field}
+                              />
+                            </FormControl>
+                            <Button
+                              className="absolute right-0 top-1/2 -translate-y-1/2 bg-transparent text-stone-500 hover:text-stone-700 hover:bg-transparent"
+                              type="button"
+                              onClick={() => setShowPass((prev) => !prev)}
+                            >
+                              {showPass ? <IoEyeOff /> : <IoEye />}
+                            </Button>
+                          </div>
                           <FormMessage className="text-sm text-red-500" />
                         </FormItem>
                       )}
