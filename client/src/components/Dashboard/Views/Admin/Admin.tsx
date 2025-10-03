@@ -14,9 +14,11 @@ import TotalUsers from "@/components/Charts/TotalUsers";
 import GrowthTrackCompletion from "@/components/Charts/GrowthTrackCompletion";
 import { useGetUsersGrowth } from "@/hooks/growth/useGetUsersGrowth";
 import { Button } from "@/components/ui/button";
+import { FaLongArrowAltRight } from "react-icons/fa";
 import DateRangePicker, {
   DateRange,
 } from "@/components/DateRangePicker/DateRangePicker";
+import { format } from "date-fns";
 import { Label } from "@/components/ui/label";
 import {
   Select,
@@ -37,6 +39,7 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import RoleChangeChart from "@/components/Charts/RoleChangeChart";
 import { Divide } from "lucide-react";
+import { roleMap } from "../Groups/Groups";
 const GRANULARITIES = [
   "day",
   "week",
@@ -98,13 +101,13 @@ const Admin = () => {
     loading: rcLoading,
     error: rcError,
   } = UseGetRoleChangeStats({
-    granularity: rcGranularity,
     start: rcRange?.from ?? null,
     end: rcRange?.from ?? null,
   });
 
   const applyRoleChangeStats = () => {
-    fetchRoleChangeStats(rcGranularity, rcRange?.from ?? null, rcEndExclusive);
+    console.log(rcRange);
+    fetchRoleChangeStats(rcRange?.from ?? null, rcEndExclusive);
   };
   console.log(stats);
   const handlePromotion = async (newRole: string, email: string) => {
@@ -155,7 +158,7 @@ const Admin = () => {
           </div>
         </div>
         <div className="flex items-start">
-          <Card className="border-accent h-fit w-full shadow-lg">
+          <Card className="border-stone-300 h-fit w-full shadow-lg">
             <CardHeader>
               <CardTitle className="text-lg">
                 <h2>Manage the members of the database</h2>
@@ -298,22 +301,6 @@ const Admin = () => {
                 <CardContent>
                   <div className="flex flex-col gap-4">
                     <div className="flex flex-wrap items-center gap-3">
-                      <Select
-                        value={rcGranularity}
-                        onValueChange={(v) => setRcGranularity(v as any)}
-                      >
-                        <SelectTrigger className="w-[180px]">
-                          <SelectValue placeholder="Granularity" />
-                        </SelectTrigger>
-                        <SelectContent className="bg-white">
-                          {GRANULARITIES.map((g) => (
-                            <SelectItem key={g} value={g}>
-                              {g}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-
                       <DateRangePicker value={rcRange} onChange={setRcRange} />
 
                       <Button
@@ -323,12 +310,43 @@ const Admin = () => {
                         {rcLoading ? "Loading…" : "Apply"}
                       </Button>
                     </div>
-
                     {rcError && (
                       <div className="text-red-600 text-sm">{rcError}</div>
                     )}
-
-                    <RoleChangeChart data={stats} />
+                    {rcRange?.from && rcRange?.to && (
+                      <div className="flex flex-row gap-x-1 text-lg items-center">
+                        <p>Showing data from</p>
+                        <span className="font-semibold">
+                          {format(rcRange.from, "MMMM do")}
+                        </span>
+                        <FaLongArrowAltRight />
+                        <span className="font-semibold">
+                          {format(rcRange.to, "MMMM do")}
+                        </span>
+                      </div>
+                    )}
+                    {stats.length > 0
+                      ? stats.map((stat, index) => (
+                          <div key={index} className="flex flex-col">
+                            <p>
+                              People moved into "
+                              <span className="font-semibold">
+                                {roleMap[stat.new_role]}
+                              </span>
+                              "
+                            </p>
+                            <p
+                              className={`font-bold ${
+                                stat.change_type === "promotion"
+                                  ? "text-green-600"
+                                  : ""
+                              }`}
+                            >
+                              {stat.count}
+                            </p>
+                          </div>
+                        ))
+                      : "No data to display"}
                   </div>
                 </CardContent>
               </Card>

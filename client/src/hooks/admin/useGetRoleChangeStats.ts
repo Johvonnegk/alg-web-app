@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/supabaseClient";
 
 interface UseGetRoleChangeStatsOptions {
-  granularity: string;
   start?: Date | null;
   end?: Date | null;
 }
@@ -12,14 +11,22 @@ interface UseGetRoleChangeStatsReturn {
   loading: boolean;
   error: string;
   fetchRoleChangeStats: (
-    granularity: string,
     start?: Date | null,
     end?: Date | null
   ) => Promise<void>;
 }
 
+function getLastMonthsDate() {
+  const now = new Date(); // Get the current date and time
+  const lastMonth = new Date(
+    now.getFullYear(),
+    now.getMonth(),
+    now.getDate() - 30
+  ); // Create a new Date object by subtracting 7 days
+  return lastMonth;
+}
+
 export const UseGetRoleChangeStats = ({
-  granularity,
   start = null,
   end = null,
 }: UseGetRoleChangeStatsOptions): UseGetRoleChangeStatsReturn => {
@@ -28,7 +35,6 @@ export const UseGetRoleChangeStats = ({
   const [error, setError] = useState<string>("");
 
   const fetchRoleChangeStats = async (
-    granularity: string,
     start: Date | null = null,
     end: Date | null = null
   ) => {
@@ -43,32 +49,20 @@ export const UseGetRoleChangeStats = ({
         setError(userError?.message || "No authenticated user found");
         return;
       }
-
+      const prevDate = getLastMonthsDate();
       const { data, error } = await supabase.functions.invoke(
         "get-role-change-stats",
         {
           body: {
-            start_date: start ? start.toISOString() : null,
-            end_date: end ? end.toISOString() : null,
-            granularity,
+            start_date: start ? start.toISOString() : prevDate.toISOString(),
+            end_date: end ? end.toISOString() : new Date().toISOString(),
           },
         }
       );
-
       if (error) {
         setError(error.message);
       } else {
-        const pivoted = (data.data || []).reduce((acc: any[], row: any) => {
-          let entry = acc.find((e) => e.period === row.period);
-          if (!entry) {
-            entry = { period: row.period };
-            acc.push(entry);
-          }
-          entry[`role${row.role}_promotions`] = Number(row.promotions);
-          entry[`role${row.role}_demotions`] = Number(row.demotions);
-          return acc;
-        }, []);
-        setStats(pivoted);
+        setStats(data.data);
       }
     } catch (err: any) {
       setError(err.message || "Unexpected error occurred");
@@ -78,8 +72,8 @@ export const UseGetRoleChangeStats = ({
   };
 
   useEffect(() => {
-    fetchRoleChangeStats(granularity, start, end);
-  }, [granularity, start, end]);
+    fetchRoleChangeStats(start, end);
+  }, [start, end]);
 
   return { stats, fetchRoleChangeStats, loading, error };
 };

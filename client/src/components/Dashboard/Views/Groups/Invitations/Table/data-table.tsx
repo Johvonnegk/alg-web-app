@@ -9,7 +9,6 @@ import {
   VisibilityState,
   useReactTable,
   getFilteredRowModel,
-  getPaginationRowModel,
 } from "@tanstack/react-table";
 import {
   DropdownMenu,
@@ -18,6 +17,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -26,14 +26,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -49,13 +41,7 @@ export function DataTable<TData, TValue>({
     []
   );
   const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({
-      confirmed: false,
-    });
-  const [pagination, setPagination] = React.useState({
-    pageIndex: 0,
-    pageSize: 5,
-  });
+    React.useState<VisibilityState>({});
   const table = useReactTable({
     data,
     columns,
@@ -69,10 +55,7 @@ export function DataTable<TData, TValue>({
       sorting,
       columnFilters,
       columnVisibility,
-      pagination,
     },
-    getPaginationRowModel: getPaginationRowModel(),
-    onPaginationChange: setPagination,
   });
 
   return (
@@ -83,22 +66,19 @@ export function DataTable<TData, TValue>({
             <Input
               placeholder="Filter by name..."
               value={
-                (table.getColumn("name")?.getFilterValue() as string) ?? ""
+                (table.getColumn("requester")?.getFilterValue() as string) ?? ""
               }
               onChange={(event) =>
-                table.getColumn("name")?.setFilterValue(event.target.value)
+                table.getColumn("requester")?.setFilterValue(event.target.value)
               }
-              className="border-stone-300 shadow-md max-w-sm"
+              className="max-w-sm"
             />
           </div>
         </div>
         <div>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button
-                variant="outline"
-                className="text-accent hover:text-white border-stone-300 ml-auto shadow-md"
-              >
+              <Button variant="outline" className="ml-auto">
                 Columns
               </Button>
             </DropdownMenuTrigger>
@@ -124,11 +104,11 @@ export function DataTable<TData, TValue>({
           </DropdownMenu>
         </div>
       </div>
-      <div className="rounded-md border shadow-lg border-stone-300">
+      <div className="rounded-md border">
         <Table>
-          <TableHeader className="">
+          <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow className="border-gray-300" key={headerGroup.id}>
+              <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   return (
                     <TableHead className="text-center" key={header.id}>
@@ -148,7 +128,7 @@ export function DataTable<TData, TValue>({
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
-                  className="text-center border-gray-300"
+                  className="text-center"
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
                 >
@@ -174,48 +154,6 @@ export function DataTable<TData, TValue>({
             )}
           </TableBody>
         </Table>
-      </div>
-      <div className="flex items-center justify-end space-x-2 py-4">
-        <div className="flex items-center space-x-2">
-          <span className="text-sm text-gray-600">Rows per page:</span>
-          <Select
-            value={String(table.getState().pagination.pageSize)}
-            onValueChange={(value) => {
-              table.setPageIndex(0); // reset page so you don't land on an empty page
-              table.setPageSize(Number(value));
-            }}
-          >
-            <SelectTrigger className="w-[120px] border-stone-300 text-accent">
-              <SelectValue placeholder="Select" />
-            </SelectTrigger>
-            <SelectContent className="bg-white ">
-              {[5, 10, 20, 50].map((size) => (
-                <SelectItem key={size} value={String(size)}>
-                  Show {size}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-
-        <Button
-          className="border-stone-300 hover:text-white"
-          variant="outline"
-          size="sm"
-          onClick={() => table.previousPage()}
-          disabled={!table.getCanPreviousPage()}
-        >
-          Previous
-        </Button>
-        <Button
-          className="border-stone-300 hover:text-white"
-          variant="outline"
-          size="sm"
-          onClick={() => table.nextPage()}
-          disabled={!table.getCanNextPage()}
-        >
-          Next
-        </Button>
       </div>
     </div>
   );

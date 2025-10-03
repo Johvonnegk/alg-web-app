@@ -24,15 +24,19 @@ serve(async (req) => {
     if (adminError)
       return errorResponse("An error occured fetching auth user", 400);
     if (admin.role_id !== 1) return errorResponse("Unauthorized", 401);
-    const { start_date, end_date, granularity } = await req.json();
+    const { start_date, end_date } = await req.json();
+    console.log("Start date: ", start_date);
+    console.log("End date: ", end_date);
+    const { data, error } = await supabase
+      .from("role_change_events")
+      .select("new_role, change_type, old_role.count()")
+      .gte("created_at", start_date)
+      .lte("created_at", end_date)
+      .order("new_role", { ascending: true })
+      .order("change_type", { ascending: false });
 
-    const { data, error } = await supabase.rpc("get_role_change_stats", {
-      start_date,
-      end_date,
-      granularity,
-    });
-
-    if (error) throw error;
+    if (error) return errorResponse(`Error: ${error.message}`, 400);
+    console.log("Data: ", data);
     return new Response(
       JSON.stringify({
         message: "Fetched role change stats successfully",

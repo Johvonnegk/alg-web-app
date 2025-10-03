@@ -27,6 +27,13 @@ type Props = {
   align?: "start" | "center" | "end";
 };
 
+const isSameDay = (a?: Date, b?: Date) =>
+  !!a &&
+  !!b &&
+  a.getFullYear() === b.getFullYear() &&
+  a.getMonth() === b.getMonth() &&
+  a.getDate() === b.getDate();
+
 export default function DateRangePicker({
   value,
   onChange,
@@ -78,12 +85,30 @@ export default function DateRangePicker({
             numberOfMonths={2}
             selected={range}
             onSelect={(r) => {
+              // Normalize selection:
+              // - First click -> { from: date, to: undefined }
+              // - If react-day-picker gives same-day range, keep it "open" until second click
+              if (!r) {
+                setRange(undefined);
+                onChange?.(undefined);
+                return;
+              }
+
+              if (r.from && r.to && isSameDay(r.from, r.to)) {
+                const next = { from: r.from, to: undefined };
+                setRange(next);
+                onChange?.(next);
+                return;
+              }
+
               setRange(r);
               onChange?.(r);
+
+              // Close only when a full range is set
+              if (r.from && r.to) setOpen(false);
             }}
             initialFocus
-            // disable all future dates
-            disabled={(date) => date > new Date()}
+            disabled={(date) => date > new Date()} // keep your future-date rule
           />
 
           {/* Presets */}

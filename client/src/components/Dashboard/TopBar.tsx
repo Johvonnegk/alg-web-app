@@ -32,9 +32,9 @@ const TopBar = ({ name }) => {
             </span>
           </div>
         </div>
-        <button className="flex rounded-lg text-sm items-center gap-2 bg-stone-100 transition-colors hover:bg-accent hover:text-white px-3 py-1.5">
+        {/* <button className="flex rounded-lg text-sm items-center gap-2 bg-stone-100 transition-colors hover:bg-accent hover:text-white px-3 py-1.5">
           <FaBell />
-        </button>
+        </button> */}
       </div>
     </div>
   );
