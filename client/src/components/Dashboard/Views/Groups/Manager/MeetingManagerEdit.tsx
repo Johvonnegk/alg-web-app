@@ -207,7 +207,7 @@ const MeetingManager = ({ meeting }: MeetingManagerProps) => {
                       control={meetingForm.control}
                       name="time"
                       render={({ field }) => (
-                        <FormItem>
+                        <FormItem className="flex flex-wrap flex-col">
                           <FormLabel
                             htmlFor="time"
                             className="font-semibold flex flex-col items-start"
@@ -342,7 +342,7 @@ const MeetingManager = ({ meeting }: MeetingManagerProps) => {
                           control={meetingForm.control}
                           name={`attendances.${idx}.attendance` as any}
                           render={({ field, fieldState }) => (
-                            <FormItem className="flex items-center justify-between">
+                            <FormItem className="flex flex-wrap items-center justify-between">
                               <Select
                                 onValueChange={field.onChange}
                                 value={field.value}

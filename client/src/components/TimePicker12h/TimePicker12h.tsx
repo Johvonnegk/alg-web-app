@@ -87,7 +87,10 @@ export function TimePicker12h({
 
   return (
     <div
-      className={cn("flex items-center gap-2 bg-background py-1", className)}
+      className={cn(
+        "flex flex-wrap items-center gap-2 bg-background py-1",
+        className
+      )}
     >
       {/* Hour */}
       <Select value={hour12} onValueChange={(h) => emitChange({ hour12: h })}>
