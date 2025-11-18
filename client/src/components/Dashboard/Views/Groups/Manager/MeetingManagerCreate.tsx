@@ -374,7 +374,7 @@ const MeetingManager = ({ group }: MeetingManagerProps) => {
                                 onValueChange={field.onChange}
                                 value={field.value}
                               >
-                                <div className="flex flex-col w-full">
+                                <div className="flex flex-wrap flex-col w-full">
                                   <span>
                                     {a.fname} {a.lname}
                                   </span>
