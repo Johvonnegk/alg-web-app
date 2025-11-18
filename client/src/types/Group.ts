@@ -18,3 +18,11 @@ export interface Groups {
   created_at: string;
   users: { fname: string; lname: string; role_id: number; email?: string };
 }
+
+export type Attendee = {
+  id: string;
+  email: string;
+  fname: string;
+  lname: string;
+  defaultAttendance: "present" | "absent" | "late" | "excused";
+};

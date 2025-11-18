@@ -26,8 +26,6 @@ export const useViewAllGroups = (): useViewAllGroupsReturn => {
         } else {
           setGroups(data);
         }
-      } catch (e) {
-        console.log(e);
       } finally {
         setLoading(false);
       }

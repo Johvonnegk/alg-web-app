@@ -363,17 +363,6 @@ entrypoint = "./functions/get-users-ministry/index.ts"
 # For example, if you want to serve static HTML pages in your function:
 # static_files = [ "./functions/get-users-ministry/*.html" ]
 
-[functions.get-users-gifts]
-enabled = true
-verify_jwt = true
-import_map = "./functions/get-users-gifts/deno.json"
-# Uncomment to specify a custom file path to the entrypoint.
-# Supported file extensions are: .ts, .js, .mjs, .jsx, .tsx
-entrypoint = "./functions/get-users-gifts/index.ts"
-# Specifies static files to be bundled with the function. Supports glob patterns.
-# For example, if you want to serve static HTML pages in your function:
-# static_files = [ "./functions/get-users-gifts/*.html" ]
-
 [functions.update-user-profile]
 enabled = true
 verify_jwt = true
@@ -450,3 +439,47 @@ entrypoint = "./functions/get-role-change-stats/index.ts"
 # Specifies static files to be bundled with the function. Supports glob patterns.
 # For example, if you want to serve static HTML pages in your function:
 # static_files = [ "./functions/get-role-change-stats/*.html" ]
+
+[functions.record-group-meeting]
+enabled = true
+verify_jwt = true
+import_map = "./functions/record-group-meeting/deno.json"
+# Uncomment to specify a custom file path to the entrypoint.
+# Supported file extensions are: .ts, .js, .mjs, .jsx, .tsx
+entrypoint = "./functions/record-group-meeting/index.ts"
+# Specifies static files to be bundled with the function. Supports glob patterns.
+# For example, if you want to serve static HTML pages in your function:
+# static_files = [ "./functions/record-group-meeting/*.html" ]
+
+[functions.get-group-meetings]
+enabled = true
+verify_jwt = true
+import_map = "./functions/get-group-meetings/deno.json"
+# Uncomment to specify a custom file path to the entrypoint.
+# Supported file extensions are: .ts, .js, .mjs, .jsx, .tsx
+entrypoint = "./functions/get-group-meetings/index.ts"
+# Specifies static files to be bundled with the function. Supports glob patterns.
+# For example, if you want to serve static HTML pages in your function:
+# static_files = [ "./functions/get-group-meetings/*.html" ]
+
+[functions.update-group-meeting]
+enabled = true
+verify_jwt = true
+import_map = "./functions/update-group-meeting/deno.json"
+# Uncomment to specify a custom file path to the entrypoint.
+# Supported file extensions are: .ts, .js, .mjs, .jsx, .tsx
+entrypoint = "./functions/update-group-meeting/index.ts"
+# Specifies static files to be bundled with the function. Supports glob patterns.
+# For example, if you want to serve static HTML pages in your function:
+# static_files = [ "./functions/update-group-meeting/*.html" ]
+
+[functions.delete-group-meeting]
+enabled = true
+verify_jwt = true
+import_map = "./functions/delete-group-meeting/deno.json"
+# Uncomment to specify a custom file path to the entrypoint.
+# Supported file extensions are: .ts, .js, .mjs, .jsx, .tsx
+entrypoint = "./functions/delete-group-meeting/index.ts"
+# Specifies static files to be bundled with the function. Supports glob patterns.
+# For example, if you want to serve static HTML pages in your function:
+# static_files = [ "./functions/delete-group-meeting/*.html" ]

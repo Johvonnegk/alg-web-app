@@ -61,7 +61,6 @@ const CreateGroup = () => {
         window.location.reload();
       }, 300);
     } else {
-      console.error("Error creating group:", result.error);
       setError(
         `An nerror occurred while creating the group please try again: ${result.error}`
       );

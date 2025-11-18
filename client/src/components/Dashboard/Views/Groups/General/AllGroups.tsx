@@ -111,7 +111,7 @@ const AllGroups = () => {
             <SelectTrigger className="w-[180px] border-stone-300 shadow-sm">
               <SelectValue placeholder="Items per page" />
             </SelectTrigger>
-            <SelectContent className="bg-white">
+            <SelectContent className="bg-white border-stone-300">
               <SelectItem value="4">4</SelectItem>
               <SelectItem value="8">8</SelectItem>
               <SelectItem value="16">16</SelectItem>
@@ -155,7 +155,7 @@ const AllGroups = () => {
                   </button>
                 )}
               </CardContent>
-              <CardFooter className="flex justify-center space-x-5">
+              <CardFooter className="flex space-x-5">
                 <div>
                   <Button
                     onClick={() =>

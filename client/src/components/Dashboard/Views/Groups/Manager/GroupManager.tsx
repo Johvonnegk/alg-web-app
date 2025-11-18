@@ -8,12 +8,13 @@ import { useRemoveGroupMembers } from "@/hooks/groups/useRemoveGroupMembers";
 import { RemoveMemberConfirmDialog } from "../RemoveMemberConfirmDialog";
 import { useInviteToGroup } from "@/hooks/groups/useInviteToGroup";
 import { useManageGroupRoles } from "@/hooks/groups/useManageGroupRoles";
-import { GroupMember } from "../../../../../types/Group";
+import { GroupMember } from "@/types/Group";
 import toast from "react-hot-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { LeaveGroupDialog } from "../LeaveGroupDialog";
+import MeetingViewer from "./MeetingViewer";
 import { z } from "zod";
 import {
   Form,
@@ -35,6 +36,7 @@ import GroupDescCard from "../GroupDescCard";
 import { columns as baseColumns } from "../../../../Tables/GroupsTables/ManagerGroupTable/columns";
 import { DataTable } from "@/components/Tables/GroupsTables/ManagerGroupTable/data-table";
 import { useAuth } from "../../../../../context/AuthContext";
+import MeetingManager from "./MeetingManagerCreate";
 
 const inviteFormSchema = z.object({
   email: z.string().email(),
@@ -207,6 +209,10 @@ const GroupManager = ({ group }: GroupManagerProps) => {
             />
           </div>
           <hr className="w-full border-2 text-stone-200 mb-5" />
+          <MeetingManager group={group} />
+          <hr className="w-full border-2 text-stone-200 mt-5 mb-5" />
+          <MeetingViewer groupId={groupId} />
+          <hr className="w-full border-2 text-stone-200 mt-5 mb-5" />
           <Form {...transferForm}>
             <form
               onSubmit={transferForm.handleSubmit(transferOwnership)}

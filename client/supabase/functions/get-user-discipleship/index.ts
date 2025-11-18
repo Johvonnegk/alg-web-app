@@ -8,7 +8,6 @@ import {
   corsHeaders,
   handleOptions,
   checkViewingAuthorization,
-  transformUserEmailtoId,
 } from "../utils/helper.ts";
 
 serve(async (req) => {
