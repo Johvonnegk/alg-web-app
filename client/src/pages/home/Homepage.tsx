@@ -73,8 +73,9 @@ const Homepage = () => {
               Abundant Life Gospel Centre 17 Erie Street Oshawa, ON, L1H 3R1
               Phone: (905) 433-1438 | Multiplication Director: Pastor Kevin
               Cole, Email: kevin@abundantlifegospelcentre.ca | Multiplication
-              Director’s Assistant: [TBA] | Church Secretary: Sharon Webb,
-              Email: hello@abundantlifegospelcentre.ca | Church Website:{" "}
+              Director’s Assistant: Marsha Shepherd
+              connect@abundatlifegospelcentre.ca | Church Secretary: Sharon
+              Webb, Email: hello@abundantlifegospelcentre.ca | Church Website:{" "}
               <a
                 href="abundantlifegospelcentre.ca"
                 className="hover:underline hover:text-accent font-semibold"
