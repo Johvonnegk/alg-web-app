@@ -77,7 +77,7 @@ const Homepage = () => {
               connect@abundatlifegospelcentre.ca | Church Secretary: Sharon
               Webb, Email: hello@abundantlifegospelcentre.ca | Church Website:{" "}
               <a
-                href="abundantlifegospelcentre.ca"
+                href="https://abundantlifegospelcentre.ca/"
                 className="hover:underline hover:text-accent font-semibold"
               >
                 abundantlifegospelcentre.ca
