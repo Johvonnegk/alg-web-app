@@ -8,18 +8,16 @@ interface useViewAllGroupsReturn {
 }
 
 export const useViewAllGroups = (): useViewAllGroupsReturn => {
-  const [groups, setGroups] = useState([]);
-  const [success, setSucceess] = useState(false);
-  const [error, setError] = useState("");
+  const [groups, setGroups] = useState<Groups[]>([]);
+  const [error, setError] = useState<string | undefined>(undefined);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchGroups = async () => {
       try {
         setLoading(true);
-        const { data, error } = await supabase.functions.invoke(
-          "view-all-groups"
-        );
+        const { data, error } =
+          await supabase.functions.invoke("view-all-groups");
         if (!data || error) {
           setGroups([]);
           setError(error?.message);

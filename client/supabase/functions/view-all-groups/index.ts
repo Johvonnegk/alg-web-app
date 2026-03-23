@@ -16,12 +16,41 @@ serve(async (req) => {
   try {
     const id = await getUserId(req);
     if (!id) return errorResponse("Unauthorized", 401);
-    const { data: groups, error: groupError } = await supabase
-      .from("groups")
-      .select(
-        "id, name, description, users!owner_id(fname, lname, role_id, email, profile_icon), created_at"
-      );
+    const { data: user, error: userError } = await supabase
+      .from("users")
+      .select("role_id")
+      .eq("user_id", id)
+      .single();
 
+    if (userError || !user)
+      return errorResponse("Could not get user data", 400);
+
+    let query = supabase.from("groups");
+
+    if (user.role_id === 1) {
+      query = query.select(`
+        id,
+        name,
+        description,
+        created_at,
+        users!owner_id(fname, lname, role_id, email, profile_icon),
+        members:group_members(
+          user_id,
+          role_id,
+          user:users(fname, lname, email, role_id, profile_icon)
+        )
+      `);
+    } else {
+      query = query.select(`
+        id,
+        name,
+        description,
+        created_at,
+        users!owner_id(fname, lname, role_id, email, profile_icon)
+      `);
+    }
+
+    const { data: groups, error: groupError } = await query;
     if (groupError) {
       return errorResponse(`Error fetching group: ${groupError.message}`, 400);
     }

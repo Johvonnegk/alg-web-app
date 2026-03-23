@@ -25,7 +25,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { DataTable } from "@/components/Tables/SurveyTables/data-table";
 import GrowthTable from "@/components/Tables/GrowthTracksTables/GrowthTable";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -80,7 +80,7 @@ const UserDetail = () => {
     ? new Date(
         gRange.to.getFullYear(),
         gRange.to.getMonth(),
-        gRange.to.getDate() + 1
+        gRange.to.getDate() + 1,
       )
     : null;
   const applyGiftsGrowth = () => {
@@ -100,7 +100,7 @@ const UserDetail = () => {
     ? new Date(
         mRange.to.getFullYear(),
         mRange.to.getMonth(),
-        mRange.to.getDate() + 1
+        mRange.to.getDate() + 1,
       )
     : null;
   const applyMinistryGrowth = () => {
@@ -108,7 +108,7 @@ const UserDetail = () => {
       mGranularity,
       null,
       mRange?.from ?? null,
-      mEndExclusive
+      mEndExclusive,
     );
   };
   const {
@@ -125,7 +125,7 @@ const UserDetail = () => {
     ? new Date(
         dRange.to.getFullYear(),
         dRange.to.getMonth(),
-        dRange.to.getDate() + 1
+        dRange.to.getDate() + 1,
       )
     : null;
   const applyDiscipleshipGrowth = () => {
@@ -133,11 +133,11 @@ const UserDetail = () => {
       dGranularity,
       null,
       dRange?.from ?? null,
-      dEndExclusive
+      dEndExclusive,
     );
   };
   return (
-    <div className="px-4 py-10 lg:px-14 min-h-screen min-w-screen flex flex-col gap-y-20 xl:gap-y-10 xl:grid xl:grid-cols-2 xl:gap-x-10 pt-21">
+    <div className="px-4 py-10 lg:px-14 min-h-screen min-w-screen flex flex-col gap-y-20 xl:gap-y-10 xl:grid xl:grid-cols-2 xl:gap-x-10 pt-30">
       <div className="flex flex-col items-center col-span-2">
         {userLoading ? (
           <div className="flex flex-col w-1/2 min-h-full col-span-2 space-y-3">
@@ -152,7 +152,7 @@ const UserDetail = () => {
           <div className="flex flex-col items-center w-full">
             <div className="w-full xl:w-1/2">
               <h2 className="font-semibold text-2xl mb-4">User Profile</h2>
-              <Profile profile={user} edit={false} />
+              <Profile profile={user} edit={false} extraDetails={true} />
             </div>
           </div>
         ) : (
@@ -256,6 +256,11 @@ const UserDetail = () => {
           giftsGrowth && (
             <div className="w-full">
               <Card className="border-stone-300 shadow-lg">
+                <CardHeader>
+                  <h2 className="font-semibold text-2xl mb-4">
+                    Gifts Growth Over Time
+                  </h2>
+                </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="flex flex-col gap-4">
                     <div className="flex flex-wrap items-center gap-3">
@@ -311,6 +316,11 @@ const UserDetail = () => {
           ministryGrowth && (
             <div className="w-full">
               <Card className="border-stone-300 shadow-lg">
+                <CardHeader>
+                  <h2 className="font-semibold text-2xl mb-4">
+                    Ministry Growth Over Time
+                  </h2>
+                </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="flex flex-col gap-4">
                     <div className="flex flex-wrap items-center gap-3">
@@ -368,6 +378,11 @@ const UserDetail = () => {
           discipleshipGrowth && (
             <div className="w-full col-span-2">
               <Card className="border-stone-300 shadow-lg">
+                <CardHeader>
+                  <h2 className="font-semibold text-2xl mb-4">
+                    Discipleship Growth Over Time
+                  </h2>
+                </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="flex flex-col gap-4">
                     <div className="flex flex-wrap items-center gap-3">

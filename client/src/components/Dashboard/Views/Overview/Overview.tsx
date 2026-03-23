@@ -64,7 +64,7 @@ const Overview: React.FC<OverviewProps> = ({ profile }) => {
     ? new Date(
         gRange.to.getFullYear(),
         gRange.to.getMonth(),
-        gRange.to.getDate() + 1
+        gRange.to.getDate() + 1,
       )
     : null;
   const applyGiftsGrowth = () => {
@@ -84,7 +84,7 @@ const Overview: React.FC<OverviewProps> = ({ profile }) => {
     ? new Date(
         mRange.to.getFullYear(),
         mRange.to.getMonth(),
-        mRange.to.getDate() + 1
+        mRange.to.getDate() + 1,
       )
     : null;
   const applyMinistryGrowth = () => {
@@ -92,7 +92,7 @@ const Overview: React.FC<OverviewProps> = ({ profile }) => {
       mGranularity,
       null,
       mRange?.from ?? null,
-      mEndExclusive
+      mEndExclusive,
     );
   };
   const {
@@ -109,7 +109,7 @@ const Overview: React.FC<OverviewProps> = ({ profile }) => {
     ? new Date(
         dRange.to.getFullYear(),
         dRange.to.getMonth(),
-        dRange.to.getDate() + 1
+        dRange.to.getDate() + 1,
       )
     : null;
   const applyDiscipleshipGrowth = () => {
@@ -117,14 +117,14 @@ const Overview: React.FC<OverviewProps> = ({ profile }) => {
       dGranularity,
       null,
       dRange?.from ?? null,
-      dEndExclusive
+      dEndExclusive,
     );
   };
   return (
     <div className="w-full flex flex-col gap-y-10 px-4 2xl:px-14 2xl:grid 2xl:grid-cols-2 2xl:gap-y-10 2xl:gap-x-10">
       <div className="col-span-2 flex justify-center">
         <div className="w-full 2xl:w-1/2">
-          <Profile profile={profile} edit={true} />
+          <Profile profile={profile} edit={true} extraDetails={false} />
         </div>
       </div>
       {minLoading ? (
@@ -217,6 +217,7 @@ const Overview: React.FC<OverviewProps> = ({ profile }) => {
       ) : (
         giftsGrowth && (
           <div className="w-full">
+            <h2 className="font-semibold text-2xl mb-4">Gifts Data</h2>
             <Card className="border-stone-300 shadow-lg">
               <CardContent className="space-y-4">
                 <div className="flex flex-col gap-4">
@@ -269,6 +270,7 @@ const Overview: React.FC<OverviewProps> = ({ profile }) => {
       ) : (
         ministryGrowth && (
           <div className="w-full">
+            <h2 className="font-semibold text-2xl mb-4">Ministry Data</h2>
             <Card className="border-stone-300 shadow-lg">
               <CardContent className="space-y-4">
                 <div className="flex flex-col gap-4">
@@ -321,6 +323,7 @@ const Overview: React.FC<OverviewProps> = ({ profile }) => {
       ) : (
         discipleshipGrowth && (
           <div className="w-full col-span-2">
+            <h2 className="font-semibold text-2xl mb-4">Discipleship Data</h2>
             <Card className="border-stone-300 shadow-lg">
               <CardContent className="space-y-4">
                 <div className="flex flex-col gap-4">

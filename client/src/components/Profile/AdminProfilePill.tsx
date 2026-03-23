@@ -2,6 +2,8 @@ import React from "react";
 import CustomAvatar from "./CustomAvatar";
 import { UserProfile } from "@/types/UserProfile";
 import { roleMap } from "@/components/Dashboard/Views/Groups/Groups";
+import { HiDotsHorizontal } from "react-icons/hi";
+import { Link } from "react-router-dom";
 const AdminProfilePill = ({ profile }: { profile: UserProfile }) => {
   return (
     <div className="flex justify-between rounded-md bg-white shadow-md px-2 py-2 items-center">
@@ -17,6 +19,14 @@ const AdminProfilePill = ({ profile }: { profile: UserProfile }) => {
           {profile.fname} {profile.lname}
         </span>
         <span className="text-stone-400 font-semibold">{profile.email}</span>
+      </div>
+      <div className="px-2">
+        <Link
+          className="underline text-accent hover:text-black"
+          to={`/user-details/${profile.user_id}`}
+        >
+          <HiDotsHorizontal className="text-accent size-7" />
+        </Link>
       </div>
     </div>
   );

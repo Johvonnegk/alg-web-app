@@ -46,6 +46,7 @@ import { Label } from "@/components/ui/label";
 import { UseUpdateIcon } from "@/hooks/profile/useUpdateIcon";
 import ProfilePill from "./UserProfilePill";
 import { UseUpdateUserProfile } from "@/hooks/profile/useUpdateUserProfile";
+import { memberMap } from "@/components/Dashboard/Views/Groups/Groups";
 
 function formatPhoneNumber(phone: string) {
   const cleaned = ("" + phone).replace(/\D/g, "");
@@ -62,9 +63,10 @@ function formatPhoneNumber(phone: string) {
 interface ProfileProps {
   profile: UserProfile;
   edit: boolean;
+  extraDetails: boolean;
 }
 
-const Profile: React.FC<ProfileProps> = ({ profile, edit }) => {
+const Profile: React.FC<ProfileProps> = ({ profile, edit, extraDetails }) => {
   const [updateBtn, setUpdateBtn] = useState<boolean>(false);
   const [editProfile, setEditProfile] = useState<boolean>(false);
   const [preview, setPreview] = useState<string | null>(null);
@@ -130,7 +132,7 @@ const Profile: React.FC<ProfileProps> = ({ profile, edit }) => {
         .refine(
           (file) =>
             ["image/jpeg", "image/png", "image/webp"].includes(file.type),
-          "Only .jpg, .png, .webp formats are supported"
+          "Only .jpg, .png, .webp formats are supported",
         )
         .optional(),
 
@@ -141,7 +143,7 @@ const Profile: React.FC<ProfileProps> = ({ profile, edit }) => {
           .url("Must be a valid URL")
           .refine(
             (url) => /\.(jpg|jpeg|png|webp|gif)$/i.test(url),
-            "URL must point to an image"
+            "URL must point to an image",
           ),
       ]),
     })
@@ -226,7 +228,7 @@ const Profile: React.FC<ProfileProps> = ({ profile, edit }) => {
     }
   };
   const updateProfileReq = async (
-    values: z.infer<typeof profileFormSchema>
+    values: z.infer<typeof profileFormSchema>,
   ) => {
     const { fname, lname, phone, address, birthday } = values;
     const userData = { fname, lname, phone, address, birthday };
@@ -240,6 +242,7 @@ const Profile: React.FC<ProfileProps> = ({ profile, edit }) => {
       toast.error("Could not update user data");
     }
   };
+
   return (
     <Card className="border-stone-300 shadow-xl">
       <CardHeader>
@@ -350,7 +353,7 @@ const Profile: React.FC<ProfileProps> = ({ profile, edit }) => {
                                 <Button
                                   className={cn(
                                     "pl-3 text-left font-normal w-full border border-stone-300",
-                                    !field.value && "text-muted-foreground"
+                                    !field.value && "text-muted-foreground",
                                   )}
                                 >
                                   {field.value ? (
@@ -501,18 +504,39 @@ const Profile: React.FC<ProfileProps> = ({ profile, edit }) => {
             )}
           </div>
         ) : (
-          <ul>
-            <li key="email">Email: {profile.email}</li>
-            <li key="phone">
-              Phone Number: {formatPhoneNumber(profile.phone)}
-            </li>
-            <li key="address">Address: {profile.address}</li>
-            <li key="birthday">Birthday: {formattedBirthday}</li>
-            <li key="age">Age: {age}</li>
-            <li key="join date">
-              Joined: {memberSince} {timeUnit} ago
-            </li>
-          </ul>
+          <>
+            <ul>
+              <li key="email">Email: {profile.email}</li>
+              <li key="phone">
+                Phone Number: {formatPhoneNumber(profile.phone)}
+              </li>
+              <li key="address">Address: {profile.address}</li>
+              <li key="birthday">Birthday: {formattedBirthday}</li>
+              <li key="age">Age: {age}</li>
+              <li key="join date">
+                Joined: {memberSince} {timeUnit} ago
+              </li>
+            </ul>
+            {extraDetails && (
+              <CardDescription className="mt-4">
+                Group Memberships
+              </CardDescription>
+            )}
+            <ul>
+              {extraDetails &&
+                (profile.memberships && profile.memberships.length > 0 ? (
+                  profile.memberships.map((membership) => (
+                    <li key={`${memberMap[membership.role_id - 1]}`}>
+                      {memberMap[membership.role_id - 1]}
+                      {membership.role_id - 1 === 3 ? " Member" : ""} of:{" "}
+                      {membership.groups.name}
+                    </li>
+                  ))
+                ) : (
+                  <li>None</li>
+                ))}
+            </ul>
+          </>
         )}
       </CardContent>
       <CardFooter>

@@ -13,7 +13,7 @@ const GroupProfilePill = ({ p }: { p: GroupMember }) => {
         </span>
       </div>
 
-      <div className="flex flex-col pl-5 pr-3 text-xs">
+      <div className="flex flex-col pl-5 pr-3 text-xs items-center">
         <span className="font-semibold">
           {profile.fname} {profile.lname}
         </span>

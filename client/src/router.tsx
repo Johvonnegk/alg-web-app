@@ -13,6 +13,7 @@ import { createBrowserRouter, Outlet } from "react-router-dom";
 import PrivateRoute from "./triggers/PrivateRoute";
 import Navbar from "./components/Navbar/Navbar";
 import MemberDetail from "./pages/memberDetail/MemberDetail";
+import UserDetail from "./pages/userDetail/userDetail";
 import ScrollToHashElement from "./hooks/ScrollToHashElement";
 
 const Layout = () => {
@@ -46,6 +47,14 @@ export const router = createBrowserRouter([
         element: (
           <PrivateRoute>
             <MemberDetail />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "/user-details/:userId",
+        element: (
+          <PrivateRoute>
+            <UserDetail />
           </PrivateRoute>
         ),
       },

@@ -1,8 +1,7 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useViewAllGroups } from "@/hooks/groups/useViewAllGroups";
 import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
-import toast from "react-hot-toast";
 import {
   Card,
   CardContent,
@@ -19,13 +18,13 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
-import { useJoinGroup } from "@/hooks/groups/useJoinGroup";
-import { roleMap } from "../Groups";
+import { roleMap } from "@/components/Dashboard/Views/Groups/Groups";
+import GroupProfilePill from "@/components/Profile/GroupProfilePill";
 
-const AllGroups = () => {
+const AllGroupsAdmin = () => {
   const { groups, loading, error } = useViewAllGroups();
-  const { join: joinGroup, loading: joinLoading } = useJoinGroup();
   const [search, setSearch] = useState("");
+  const [viewedGroups, setViewedGroups] = useState<Record<number, boolean>>({});
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState<number | undefined>(undefined);
   const DEFAULT_PAGE_VALUE = 4;
@@ -35,6 +34,12 @@ const AllGroups = () => {
   );
   const toggleExpand = (id: number) => {
     setExpandedGroups((prev) => ({
+      ...prev,
+      [id]: !prev[id],
+    }));
+  };
+  const toggleView = (id: number) => {
+    setViewedGroups((prev) => ({
       ...prev,
       [id]: !prev[id],
     }));
@@ -57,15 +62,6 @@ const AllGroups = () => {
     startIndex,
     startIndex + effectivePageSize,
   );
-
-  const requestToJoin = async (groupId: number, email: string) => {
-    const result = await joinGroup(groupId, email);
-    if (result.success) {
-      toast.success("Successfully requested to join group");
-    } else {
-      toast.error(`Error joining the group: ${result.error}`);
-    }
-  };
   return (
     <div>
       <div className="flex flex-col lg:flex-row justify-center items-center gap-x-2 gap-y-5">
@@ -126,6 +122,7 @@ const AllGroups = () => {
             new Date(group.created_at),
             "yyyy-MM-dd",
           );
+          const isViewing = viewedGroups[group.id] || false;
           const isExpanded = expandedGroups[group.id] || false;
           return (
             <Card
@@ -154,18 +151,36 @@ const AllGroups = () => {
                     {isExpanded ? "See less" : "See more"}
                   </button>
                 )}
+                {isViewing && (
+                  <div>
+                    <ul className="flex flex-col gap-y-2">
+                      <h4 className="text-sm text-center">
+                        Members: {group.members ? group.members.length : 0}
+                      </h4>
+                      {group.members?.map((member) => (
+                        <li key={member.user.email}>
+                          <GroupProfilePill
+                            p={{
+                              ...member,
+                              users: {
+                                ...member.user,
+                                role_id: member.role_id,
+                              },
+                            }}
+                          />
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
               </CardContent>
               <CardFooter className="flex space-x-5">
                 <div>
                   <Button
-                    onClick={() =>
-                      group.id &&
-                      group.users.email &&
-                      requestToJoin(group.id, group.users.email)
-                    }
+                    onClick={() => toggleView(group.id)}
                     className="btn-primary"
                   >
-                    Join Group
+                    {isViewing ? "Close" : "View"}
                   </Button>
                 </div>
                 <div>Since: {formattedDate}</div>
@@ -178,4 +193,4 @@ const AllGroups = () => {
   );
 };
 
-export default AllGroups;
+export default AllGroupsAdmin;

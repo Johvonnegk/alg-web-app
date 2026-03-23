@@ -28,7 +28,7 @@ serve(async (req) => {
   const result = await checkViewingAuthorization(
     authorization,
     userId,
-    targetId
+    targetId,
   );
   if ("error" in result)
     return errorResponse(result.error.message, result.error.code);
@@ -36,7 +36,8 @@ serve(async (req) => {
   const { data, error } = await supabase
     .from("users")
     .select(
-      "user_id, role_id, fname, lname, phone, address, email, profile_icon, birthday, created_at"
+      `user_id, role_id, fname, lname, phone, address, email, profile_icon, birthday, created_at, 
+       memberships:group_members(group_id, role_id, groups(id, name))`,
     )
     .eq("id", targetId)
     .maybeSingle();
@@ -51,7 +52,7 @@ serve(async (req) => {
     {
       status: 200,
       headers: corsHeaders,
-    }
+    },
   );
 });
 

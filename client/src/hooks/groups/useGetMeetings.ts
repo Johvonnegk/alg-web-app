@@ -10,7 +10,7 @@ interface GetMeetingsResponse {
 
 export const useGetMeetings = (
   groupId: number,
-  authorization: string
+  authorization: string,
 ): GetMeetingsResponse => {
   const [loading, setLoading] = useState(false);
   const [meetings, setMeetings] = useState([]);
@@ -26,13 +26,12 @@ export const useGetMeetings = (
               authorization: authorization,
               group_id: groupId,
             },
-          }
+          },
         );
         if (!data || error) {
           setMeetings([]);
           setError(error?.message);
         } else {
-          console.log("Data: ", data);
           setMeetings(data);
         }
       } finally {

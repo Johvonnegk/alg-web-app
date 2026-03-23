@@ -20,6 +20,7 @@ import DateRangePicker, {
 } from "@/components/DateRangePicker/DateRangePicker";
 import { format } from "date-fns";
 import { Label } from "@/components/ui/label";
+import AllGroupsAdmin from "./AllGroupsAdmin";
 import {
   Select,
   SelectTrigger,
@@ -74,13 +75,13 @@ const Admin = () => {
     granularity,
     cumulative,
     range?.from ?? null,
-    range?.to ?? null
+    range?.to ?? null,
   );
   const endExclusive = range?.to
     ? new Date(
         range.to.getFullYear(),
         range.to.getMonth(),
-        range.to.getDate() + 1
+        range.to.getDate() + 1,
       )
     : null;
 
@@ -92,7 +93,7 @@ const Admin = () => {
     ? new Date(
         rcRange.to.getFullYear(),
         rcRange.to.getMonth(),
-        rcRange.to.getDate() + 1
+        rcRange.to.getDate() + 1,
       )
     : null;
   const {
@@ -106,10 +107,9 @@ const Admin = () => {
   });
 
   const applyRoleChangeStats = () => {
-    console.log(rcRange);
     fetchRoleChangeStats(rcRange?.from ?? null, rcEndExclusive);
   };
-  console.log(stats);
+
   const handlePromotion = async (newRole: string, email: string) => {
     const result = await promote(newRole, email);
     if (result.success) {
@@ -178,6 +178,13 @@ const Admin = () => {
               </p>
             </CardContent>
           </Card>
+        </div>
+        <div className="w-full col-span-3 text-lg">
+          <div className="flex justify-center my-5">
+            <h2 className="font-semibold text-2xl">View Groups</h2>
+          </div>
+
+          <AllGroupsAdmin />
         </div>
         <div className="w-full col-span-2">
           <Card className="primary-card">
