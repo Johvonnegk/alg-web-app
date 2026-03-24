@@ -12,7 +12,7 @@ import GiftsOverTime from "@/components/Charts/GiftsOverTime";
 import MinistryOverTime from "@/components/Charts/MinistryOverTime";
 import { useGetGiftsGrowth } from "@/hooks/charts/useGetGiftsGrowth";
 import { DiscipleshipOneUserChart } from "@/components/Charts/DiscipleshipOverTimeOneUser";
-import { useGetDiscipleshipGrowth } from "@/hooks/charts/useGetDiscipleShipGrowth";
+import { useGetDiscipleshipGrowth } from "@/hooks/charts/useGetDiscipleshipGrowth";
 import { useGetMinistryGrowth } from "@/hooks/charts/useGetMinistryGrowth";
 import DateRangePicker, {
   DateRange,
