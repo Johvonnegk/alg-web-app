@@ -10,7 +10,7 @@ const ProfilePill = ({ profile }: { profile: UserProfile }) => {
         <CustomAvatar profile={profile} />
       </div>
 
-      <div className="flex flex-col pl-5 pr-3 min-w-0">
+      <div className="flex flex-col pl-0 pr-3 min-w-0 text-center">
         <span className="text-xs font-semibold">
           {profile.fname} {profile.lname}
         </span>

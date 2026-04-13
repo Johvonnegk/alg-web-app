@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/supabaseClient";
 import { GrowthGroups } from "@/types/Growth";
-import { min } from "date-fns";
 
 interface UseGetUsersGrowthReturn {
   growth: GrowthGroups[] | null;
@@ -12,7 +11,7 @@ interface UseGetUsersGrowthReturn {
 
 export const useGetUsersGrowth = (
   authorization?: string,
-  groupId?: string | undefined
+  groupId?: string | undefined,
 ): UseGetUsersGrowthReturn => {
   const [growth, setGrowth] = useState<GrowthGroups[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -22,7 +21,7 @@ export const useGetUsersGrowth = (
     try {
       const { data, error } = await supabase.functions.invoke(
         "get-users-growth",
-        { body: { authorization, groupId } }
+        { body: { authorization, groupId } },
       );
       if (error) {
         setError(error);

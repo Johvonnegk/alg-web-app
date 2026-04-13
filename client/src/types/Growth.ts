@@ -12,3 +12,11 @@ export interface GrowthGroups {
   status: string;
   user: { fname: string; lname: string; email: string; role_id: number };
 }
+
+export interface GrowthSummary {
+  fname: string;
+  lname: string;
+  email: string;
+  profile_icon: string;
+  courses: [];
+}

@@ -28,6 +28,9 @@ import { useForm, useFieldArray } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useSubmitGrowth } from "@/hooks/growth/useSubmitGrowth";
+import { useGetAllGrowth } from "@/hooks/growth/useGetAllGrowth";
+import { DataTable } from "@/components/Tables/GrowthTracksTables/AllGrowthTracks/data-table";
+import { columns } from "@/components/Tables/GrowthTracksTables/AllGrowthTracks/columns";
 import toast from "react-hot-toast";
 
 const courses = ["101", "201", "301", "401"];
@@ -46,7 +49,7 @@ const growthFormSchema = z.object({
         status: z.enum(["passed", "incomplete", "failed"], {
           required_error: "Status is required",
         }),
-      })
+      }),
     )
     .min(1, "provide at least one course")
     .max(4, "You can only enter up to 4 courses")
@@ -79,12 +82,38 @@ const Growth = () => {
 
   const { submit: submitGrowth, loading: growthLoading } = useSubmitGrowth();
 
+  const { growth, loading, error } = useGetAllGrowth("admin");
+
   const { control, handleSubmit } = growthForm;
 
   const { fields, append, remove } = useFieldArray({
     control,
     name: "courses",
   });
+
+  function transformGrowthData(data) {
+    const groupedUsers = Object.values(
+      data.reduce((acc, item) => {
+        const email = item.user.email;
+
+        if (!acc[email]) {
+          acc[email] = {
+            ...item.user,
+            courses: [],
+          };
+        }
+
+        acc[email].courses.push({
+          course_name: item.course_name,
+          status: item.status,
+          completed_at: item.completed_at,
+        });
+
+        return acc;
+      }, {}),
+    );
+    return groupedUsers;
+  }
 
   const onSubmit = async (data: growthFormInput) => {
     const result = await submitGrowth(data);
@@ -253,6 +282,22 @@ const Growth = () => {
             </Form>
           </CardContent>
         </Card>
+      </div>
+      <div>
+        {loading ? (
+          <div>loading...</div>
+        ) : (
+          <div className="mt-30">
+            <h3 className="text-center font-semibold text-2xl">
+              Growth Tracks Progress
+            </h3>
+            <DataTable
+              data={transformGrowthData(growth)}
+              columns={columns}
+              showDate={false}
+            />
+          </div>
+        )}
       </div>
     </div>
   );

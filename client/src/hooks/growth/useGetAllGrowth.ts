@@ -1,27 +1,25 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/supabaseClient";
-import { Growth } from "@/types/Growth";
+import { GrowthGroups } from "@/types/Growth";
 
-interface UseGetGrowthReturn {
-  growth: Growth[] | null;
-  fetchGrowth: (authorization: string, targetId: string) => Promise<void>;
+interface UseGetAllGrowthReturn {
+  growth: GrowthGroups[] | null;
   loading: boolean;
   error: string;
 }
 
-export const useGetGrowth = (
+export const useGetAllGrowth = (
   authorization?: string,
-  targetId?: string,
-): UseGetGrowthReturn => {
-  const [growth, setGrowth] = useState<Growth[]>([]);
+): UseGetAllGrowthReturn => {
+  const [growth, setGrowth] = useState<GrowthGroups[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
   const fetchGrowth = async () => {
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke(
-        "get-user-growth",
-        { body: { authorization, targetId } },
+        "get-all-growth",
+        { body: { authorization } },
       );
       if (error) {
         setError(error);
@@ -40,7 +38,7 @@ export const useGetGrowth = (
 
   useEffect(() => {
     fetchGrowth();
-  }, [authorization, targetId]);
+  }, [authorization]);
 
-  return { growth, fetchGrowth, loading, error };
+  return { growth, loading, error };
 };
